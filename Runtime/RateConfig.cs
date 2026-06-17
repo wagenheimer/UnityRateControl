@@ -10,21 +10,13 @@ namespace Wagenheimer.RateControl
 
         [Header("Platform")]
         [Tooltip(
-            "Which store this build targets.
-
-" +
-            "GoogleAndroid  - Google Play In-App Review API (no browser). Falls back to market://.
-" +
-            "AmazonAndroid  - Amazon Appstore via amzn:// deep-link.
-" +
-            "iOS            - SKStoreReviewManager native prompt. Falls back to itms-apps://.
-" +
-            "MacAppStore    - macappstore:// review URL.
-" +
-            "Steam          - Opens the Steam reviews page in the system browser.
-" +
-            "WindowsStore   - ms-windows-store:// deep-link.
-" +
+            "Which store this build targets.\n\n" +
+            "GoogleAndroid  - Google Play In-App Review API (no browser). Falls back to market://.\n" +
+            "AmazonAndroid  - Amazon Appstore via amzn:// deep-link.\n" +
+            "iOS            - SKStoreReviewManager native prompt. Falls back to itms-apps://.\n" +
+            "MacAppStore    - macappstore:// review URL.\n" +
+            "Steam          - Opens the Steam reviews page in the system browser.\n" +
+            "WindowsStore   - ms-windows-store:// deep-link.\n" +
             "Custom         - Implement IRateStoreOpener and pass it to RateControl.Initialize().")]
         public RatePlatform Platform = RatePlatform.GoogleAndroid;
 
@@ -32,39 +24,27 @@ namespace Wagenheimer.RateControl
 
         [Header("Store IDs")]
         [Tooltip(
-            "Android package name for Google Play and Amazon links.
-" +
-            "Example: com.mystudio.mygame
-
-" +
+            "Android package name for Google Play and Amazon links.\n" +
+            "Example: com.mystudio.mygame\n\n" +
             "Leave empty to use Application.identifier at runtime (recommended).")]
         public string AndroidPackageId = "";
 
         [Tooltip(
-            "Numeric App Store ID for iOS and Mac App Store builds.
-" +
-            "Found in App Store Connect > App Information > Apple ID.
-" +
-            "Example: 123456789
-
-" +
+            "Numeric App Store ID for iOS and Mac App Store builds.\n" +
+            "Found in App Store Connect > App Information > Apple ID.\n" +
+            "Example: 123456789\n\n" +
             "Used as fallback itms-apps:// URL when SKStoreReviewManager is unavailable.")]
         public string iOSAppId = "";
 
         [Tooltip(
-            "Numeric App Store ID for the Mac App Store.
-" +
-            "Same as iOSAppId for universal purchases.
-" +
+            "Numeric App Store ID for the Mac App Store.\n" +
+            "Same as iOSAppId for universal purchases.\n" +
             "Used to build the macappstore:// review URL.")]
         public string MacAppStoreId = "";
 
         [Tooltip(
-            "Steam App ID (numbers only). Found in the Steamworks dashboard URL.
-" +
-            "Example: 123456
-
-" +
+            "Steam App ID (numbers only). Found in the Steamworks dashboard URL.\n" +
+            "Example: 123456\n\n" +
             "Opens: https://store.steampowered.com/app/{SteamAppId}/reviews/")]
         public string SteamAppId = "";
 
@@ -111,38 +91,26 @@ namespace Wagenheimer.RateControl
 
         [Header("Trigger Thresholds")]
         [Tooltip(
-            "Calls to RateControl.LogEvent() needed to queue the rate prompt.
-
-" +
-            "Call LogEvent() at meaningful moments: level completions, puzzle solves, match wins.
-" +
+            "Calls to RateControl.LogEvent() needed to queue the rate prompt.\n\n" +
+            "Call LogEvent() at meaningful moments: level completions, puzzle solves, match wins.\n" +
             "Recommended: 5-15 depending on how often milestones occur.")]
         [Min(1)] public int EventsPerPrompt = 10;
 
         [Tooltip(
-            "Minimum app launches before the very first prompt can appear.
-
-" +
-            "Ensures players have had enough sessions to form an opinion before being asked.
-" +
+            "Minimum app launches before the very first prompt can appear.\n\n" +
+            "Ensures players have had enough sessions to form an opinion before being asked.\n" +
             "Recommended: 3-5.")]
         [Min(1)] public int StartsBeforeFirstPrompt = 3;
 
         [Tooltip(
-            "Minimum app launches between each subsequent prompt after the first
-" +
-            "(e.g. after the player taps Remind Me Later).
-
-" +
+            "Minimum app launches between each subsequent prompt after the first\n" +
+            "(e.g. after the player taps Remind Me Later).\n\n" +
             "Recommended: 7-14 to avoid feeling intrusive.")]
         [Min(1)] public int StartsBeforeSubsequentPrompts = 8;
 
         [Tooltip(
-            "Days before re-showing the prompt after the player taps Remind Me Later.
-
-" +
-            "Based on real calendar days from when the reminder was set.
-" +
+            "Days before re-showing the prompt after the player taps Remind Me Later.\n\n" +
+            "Based on real calendar days from when the reminder was set.\n" +
             "Set to 0 for no day cooldown - re-queues on the next eligible session.")]
         [Min(0)] public int RemindLaterCooldownDays = 3;
 
@@ -150,11 +118,8 @@ namespace Wagenheimer.RateControl
 
         [Header("Scene Filter")]
         [Tooltip(
-            "Scene names where the prompt is always suppressed, regardless of thresholds.
-
-" +
-            "Add loading screens, battle scenes, or cutscenes where an interruption breaks flow.
-" +
+            "Scene names where the prompt is always suppressed, regardless of thresholds.\n\n" +
+            "Add loading screens, battle scenes, or cutscenes where an interruption breaks flow.\n" +
             "Use the exact name from Build Settings (no path, no .unity extension).")]
         public List<string> BlacklistedScenes = new();
 
@@ -162,16 +127,10 @@ namespace Wagenheimer.RateControl
 
         [Header("Storage")]
         [Tooltip(
-            "Prefix for every PlayerPrefs key used by this package.
-
-" +
-            "IMPORTANT: use a unique value per game. Two games sharing the same prefix on the
-" +
-            "same device will overwrite each other state (event count, do-not-ask flag, etc.).
-
-" +
-            "Recommended format: Studio.GameName.Rate
-" +
+            "Prefix for every PlayerPrefs key used by this package.\n\n" +
+            "IMPORTANT: use a unique value per game. Two games sharing the same prefix on the\n" +
+            "same device will overwrite each other state (event count, do-not-ask flag, etc.).\n\n" +
+            "Recommended format: Studio.GameName.Rate\n" +
             "Example: PixelCrate.NordStorm.Rate")]
         public string StorageKeyPrefix = "RateControl";
 
@@ -179,19 +138,11 @@ namespace Wagenheimer.RateControl
 
         [Header("UI")]
         [Tooltip(
-            "Path inside any Resources/ folder where the rate dialog prefab lives,
-" +
-            "WITHOUT the .prefab extension.
-
-" +
-            "The system calls Resources.Load<RateDialog>(DialogResourcePath) at runtime.
-" +
-            "The prefab must have a component that inherits from RateDialog.
-
-" +
-            "Example: prefab at Assets/UI/Resources/MyPopup.prefab -> set to MyPopup.
-
-" +
+            "Path inside any Resources/ folder where the rate dialog prefab lives,\n" +
+            "WITHOUT the .prefab extension.\n\n" +
+            "The system calls Resources.Load<RateDialog>(DialogResourcePath) at runtime.\n" +
+            "The prefab must have a component that inherits from RateDialog.\n\n" +
+            "Example: prefab at Assets/UI/Resources/MyPopup.prefab -> set to MyPopup.\n\n" +
             "Tip: pass the dialog instance directly to RateControl.Initialize() to skip this.")]
         public string DialogResourcePath = "RateDialog";
 
