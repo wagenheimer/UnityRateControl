@@ -71,45 +71,40 @@ namespace Wagenheimer.RateControl
         // More Games
 
         [Header("More Games - opened by RateControl.ShowMoreGames()")]
-        [Tooltip(
-            "Google Play developer page, opened automatically on GoogleAndroid and AmazonAndroid builds.
-" +
-            "Example: https://play.google.com/store/apps/developer?id=MyStudio
-
-" +
-            "Leave empty to fall back to MoreGamesUrl.")]
-        public string MoreGamesGooglePlayUrl = "";
 
         [Tooltip(
-            "Apple App Store developer page, opened automatically on iOS and MacAppStore builds.
-" +
-            "Example: https://apps.apple.com/developer/id123456789
-
-" +
-            "Leave empty to fall back to MoreGamesUrl.")]
-        public string MoreGamesAppleUrl = "";
+            "Your publisher/developer name exactly as it appears on Google Play.\n" +
+            "Auto-builds: market://search?q=pub:{name}\n" +
+            "Where to find: play.google.com/console → Setup → App info → Developer name\n\n" +
+            "NOTE: Amazon Appstore URL is auto-generated from Application.identifier — no field needed.")]
+        public string MoreGamesGoogleDeveloperName = "";
 
         [Tooltip(
-            "Steam developer or publisher page, opened automatically on Steam builds.
-" +
-            "Example: https://store.steampowered.com/developer/mystudio
-
-" +
-            "Leave empty to fall back to MoreGamesUrl.")]
-        public string MoreGamesSteamUrl = "";
+            "Numeric Apple Developer ID (NOT the bundle ID).\n" +
+            "Example: 964191738\n" +
+            "Auto-builds iOS URL:  https://apps.apple.com/developer/id{AppleDeveloperId}\n" +
+            "Auto-builds Mac URL:  https://apps.apple.com/mac/developer/id{AppleDeveloperId}\n" +
+            "Where to find: appstoreconnect.apple.com → click your name (top-right) → View My Profile")]
+        public string MoreGamesAppleDeveloperId = "";
 
         [Tooltip(
-            "Fallback URL used when the current Platform has no specific More Games URL configured
-" +
-            "above (WindowsStore, Custom), or when a platform-specific URL is left empty.
+            "Publisher display name as registered in Microsoft Partner Center.\n" +
+            "Auto-builds: ms-windows-store://search/?query={name}\n" +
+            "Where to find: partner.microsoft.com/dashboard → [app] → Product management → Product identity → Publisher display name")]
+        public string MoreGamesWindowsPublisherName = "";
 
-" +
-            "Can also serve as a single cross-platform link if you prefer one URL for all stores.
-" +
-            "Example: https://mystudio.com/games
+        [Tooltip(
+            "Developer slug from your Steamworks developer page URL.\n" +
+            "Example: for store.steampowered.com/developer/mystudio → type mystudio\n" +
+            "Auto-builds: https://store.steampowered.com/developer/{slug}\n" +
+            "Where to find: open your Steamworks developer page and copy the slug from the URL.")]
+        public string MoreGamesSteamDeveloperSlug = "";
 
-" +
-            "Leave empty to disable ShowMoreGames() entirely.")]
+        [Tooltip(
+            "Fallback URL when no platform-specific field is configured above.\n" +
+            "Also used for Custom, sideloaded, or unknown distribution channels.\n" +
+            "Example: https://mystudio.com/games\n" +
+            "Leave empty to disable ShowMoreGames() on unsupported platforms.")]
         public string MoreGamesUrl = "";
 
         // Trigger Thresholds
@@ -207,17 +202,6 @@ namespace Wagenheimer.RateControl
 
         internal string ResolvedSteamUrl =>
             $"https://store.steampowered.com/app/{SteamAppId}/reviews/";
-
-        internal string ResolvedMoreGamesUrl => Platform switch
-        {
-            RatePlatform.GoogleAndroid or RatePlatform.AmazonAndroid =>
-                FirstNonEmpty(MoreGamesGooglePlayUrl, MoreGamesUrl),
-            RatePlatform.iOS or RatePlatform.MacAppStore =>
-                FirstNonEmpty(MoreGamesAppleUrl, MoreGamesUrl),
-            RatePlatform.Steam =>
-                FirstNonEmpty(MoreGamesSteamUrl, MoreGamesUrl),
-            _ => MoreGamesUrl
-        };
 
         private static string FirstNonEmpty(string a, string b) =>
             !string.IsNullOrEmpty(a) ? a : b;

@@ -58,13 +58,51 @@ namespace Wagenheimer.RateControl
 
         public void OpenMoreGames()
         {
-            if (string.IsNullOrEmpty(_config.ResolvedMoreGamesUrl))
+            var url = BuildMoreGamesUrl();
+            if (string.IsNullOrEmpty(url))
             {
-                Debug.LogWarning("[RateControl] MoreGamesUrl is not configured in RateConfig.");
+                Debug.LogWarning("[RateControl] ShowMoreGames() — no URL configured in RateConfig for this platform.");
                 return;
             }
-            Debug.Log($"[RateControl] Opening more games URL: {_config.ResolvedMoreGamesUrl}");
-            Application.OpenURL(_config.ResolvedMoreGamesUrl);
+            Debug.Log($"[RateControl] Opening more games: {url}");
+            Application.OpenURL(url);
+        }
+
+        private string BuildMoreGamesUrl()
+        {
+#if UNITY_ANDROID
+            // Amazon: auto-generated from app's package identifier — no config needed.
+            if (Application.installerName.Contains("com.amazon.venezia"))
+                return $"amzn://apps/android?p={Application.identifier}&showAll=1";
+
+            if (!string.IsNullOrEmpty(_config.MoreGamesGoogleDeveloperName))
+                return $"market://search?q=pub:{_config.MoreGamesGoogleDeveloperName}";
+
+            return _config.MoreGamesUrl;
+
+#elif UNITY_IOS
+            if (!string.IsNullOrEmpty(_config.MoreGamesAppleDeveloperId))
+                return $"https://apps.apple.com/developer/id{_config.MoreGamesAppleDeveloperId}";
+            return _config.MoreGamesUrl;
+
+#elif UNITY_STANDALONE_OSX
+            if (!string.IsNullOrEmpty(_config.MoreGamesAppleDeveloperId))
+                return $"https://apps.apple.com/mac/developer/id{_config.MoreGamesAppleDeveloperId}";
+            return _config.MoreGamesUrl;
+
+#elif UNITY_WSA
+            if (!string.IsNullOrEmpty(_config.MoreGamesWindowsPublisherName))
+                return $"ms-windows-store://search/?query={_config.MoreGamesWindowsPublisherName}";
+            return _config.MoreGamesUrl;
+
+#elif UNITY_STANDALONE_WIN
+            if (!string.IsNullOrEmpty(_config.MoreGamesSteamDeveloperSlug))
+                return $"https://store.steampowered.com/developer/{_config.MoreGamesSteamDeveloperSlug}";
+            return _config.MoreGamesUrl;
+
+#else
+            return _config.MoreGamesUrl;
+#endif
         }
 
         // ── Android ───────────────────────────────────────────────────────────────
