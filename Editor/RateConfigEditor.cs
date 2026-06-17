@@ -10,7 +10,7 @@ namespace Wagenheimer.RateControl.Editor
     internal sealed class RateConfigEditor : UnityEditor.Editor
     {
         // Brand accent colors per platform
-        private static readonly Color kPurple  = new Color(0.55f, 0.42f, 0.82f);
+        private static readonly Color kPurple  = new Color(0.55f, 0.42f, 0.82f); // kept for potential future use
         private static readonly Color kCyan    = new Color(0.30f, 0.62f, 0.82f);
         private static readonly Color kGreen   = new Color(0.20f, 0.68f, 0.32f);
         private static readonly Color kOrange  = new Color(0.95f, 0.58f, 0.10f);
@@ -27,7 +27,6 @@ namespace Wagenheimer.RateControl.Editor
             var root = new VisualElement();
             root.style.paddingBottom = 8;
 
-            root.Add(BuildFoldout("Platform", kPurple, BuildPlatformContent(so)));
             root.Add(BuildFoldout("Store IDs", kCyan, BuildStoreIdsContent(so)));
             root.Add(BuildFoldout("More Games", kGreen, BuildMoreGamesContent(so)));
             root.Add(BuildFoldout("Trigger Thresholds", kYellow, BuildThresholdsContent(so)));
@@ -40,16 +39,21 @@ namespace Wagenheimer.RateControl.Editor
 
         // ── Section contents ──────────────────────────────────────────────────────
 
-        private static VisualElement BuildPlatformContent(SerializedObject so)
-        {
-            var c = new VisualElement();
-            c.Add(new PropertyField(so.FindProperty("Platform")));
-            return c;
-        }
-
         private static VisualElement BuildStoreIdsContent(SerializedObject so)
         {
             var c = new VisualElement();
+
+            var note = new HelpBox(
+                "Platform is auto-detected at runtime — no manual selection needed.\n" +
+                "Android: Application.installerName → Google Play or Amazon\n" +
+                "iOS: compile-time (#if UNITY_IOS)\n" +
+                "macOS: MacAppStoreId set → Mac App Store, else SteamAppId → Steam\n" +
+                "Windows standalone: SteamAppId → Steam review page\n" +
+                "WSA: Windows Store (ms-windows-store://)",
+                HelpBoxMessageType.Info);
+            note.style.marginBottom = 6;
+            c.Add(note);
+
             c.Add(new PropertyField(so.FindProperty("AndroidPackageId")));
             c.Add(new PropertyField(so.FindProperty("iOSAppId")));
             c.Add(new PropertyField(so.FindProperty("MacAppStoreId")));

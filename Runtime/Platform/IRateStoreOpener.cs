@@ -5,9 +5,10 @@ namespace Wagenheimer.RateControl
     /// <summary>
     /// Abstraction over the platform rate-page and "more games" actions.
     ///
-    /// The default implementation (<see cref="DefaultRateStoreOpener"/>) handles all
-    /// platforms listed in <see cref="RatePlatform"/>. Provide your own only when you
-    /// need custom behavior (e.g. a proprietary in-app review SDK).
+    /// The default implementation (<see cref="DefaultRateStoreOpener"/>) auto-detects
+    /// the platform at runtime (compile-time <c>#if</c> + <c>Application.installerName</c>
+    /// for Android store discrimination). Provide your own only when you need custom
+    /// behavior (e.g. a proprietary in-app review SDK).
     /// </summary>
     public interface IRateStoreOpener
     {

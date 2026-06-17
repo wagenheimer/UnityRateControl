@@ -29,31 +29,40 @@ namespace Wagenheimer.RateControl
 
         public IEnumerator OpenRatePage()
         {
-            Debug.Log($"[RateControl] Opening rate page. Platform={_config.Platform} Id={_config.ResolvedAndroidId}");
+            Debug.Log($"[RateControl] Opening rate page (auto-detect). Installer={Application.installerName}");
 
-            switch (_config.Platform)
-            {
-                case RatePlatform.GoogleAndroid: yield return OpenAndroid(); break;
-                case RatePlatform.AmazonAndroid:
-                    Application.OpenURL($"amzn://apps/android?p={_config.ResolvedAndroidId}");
-                    break;
-                case RatePlatform.iOS:
-                    OpeniOS();
-                    break;
-                case RatePlatform.MacAppStore:
-                    Application.OpenURL($"macappstore://apps.apple.com/app/id{_config.MacAppStoreId}?action=write-review");
-                    break;
-                case RatePlatform.Steam:
-                    Debug.Log($"[RateControl] Steam URL: {_config.ResolvedSteamUrl}");
-                    Application.OpenURL(_config.ResolvedSteamUrl);
-                    break;
-                case RatePlatform.WindowsStore:
-                    OpenWindowsStore();
-                    break;
-                default:
-                    Debug.LogWarning($"[RateControl] Platform '{_config.Platform}' has no built-in opener. Provide IRateStoreOpener.");
-                    break;
-            }
+#if UNITY_ANDROID
+            // Distinguish Google Play vs Amazon at runtime via installer package name.
+            if (Application.installerName.Contains("com.amazon.venezia"))
+                Application.OpenURL($"amzn://apps/android?p={_config.ResolvedAndroidId}");
+            else
+                yield return OpenAndroid();
+
+#elif UNITY_IOS
+            OpeniOS();
+
+#elif UNITY_STANDALONE_OSX
+            // Prefer Mac App Store when MacAppStoreId is set; fall back to Steam.
+            if (!string.IsNullOrEmpty(_config.MacAppStoreId))
+                Application.OpenURL($"macappstore://apps.apple.com/app/id{_config.MacAppStoreId}?action=write-review");
+            else if (!string.IsNullOrEmpty(_config.SteamAppId))
+                Application.OpenURL(_config.ResolvedSteamUrl);
+            else
+                Debug.LogWarning("[RateControl] macOS: set MacAppStoreId or SteamAppId in RateConfig.");
+
+#elif UNITY_WSA
+            OpenWindowsStore();
+
+#elif UNITY_STANDALONE_WIN
+            if (!string.IsNullOrEmpty(_config.SteamAppId))
+                Application.OpenURL(_config.ResolvedSteamUrl);
+            else
+                Debug.LogWarning("[RateControl] Windows: set SteamAppId in RateConfig for the Steam review URL.");
+
+#else
+            Debug.LogWarning("[RateControl] Platform not supported by DefaultRateStoreOpener. Implement IRateStoreOpener.");
+#endif
+            yield break;
         }
 
         public void OpenMoreGames()

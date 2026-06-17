@@ -6,20 +6,6 @@ namespace Wagenheimer.RateControl
     [CreateAssetMenu(menuName = "Rate Control/Rate Config", fileName = "RateConfig", order = 0)]
     public sealed class RateConfig : ScriptableObject
     {
-        // Platform
-
-        [Header("Platform")]
-        [Tooltip(
-            "Which store this build targets.\n\n" +
-            "GoogleAndroid  - Google Play In-App Review API (no browser). Falls back to market://.\n" +
-            "AmazonAndroid  - Amazon Appstore via amzn:// deep-link.\n" +
-            "iOS            - SKStoreReviewManager native prompt. Falls back to itms-apps://.\n" +
-            "MacAppStore    - macappstore:// review URL.\n" +
-            "Steam          - Opens the Steam reviews page in the system browser.\n" +
-            "WindowsStore   - ms-windows-store:// deep-link.\n" +
-            "Custom         - Implement IRateStoreOpener and pass it to RateControl.Initialize().")]
-        public RatePlatform Platform = RatePlatform.GoogleAndroid;
-
         // Store IDs
 
         [Header("Store IDs")]
