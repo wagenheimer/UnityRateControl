@@ -1,0 +1,20 @@
+{
+  "name": "Wagenheimer.RateControl",
+  "rootNamespace": "Wagenheimer.RateControl",
+  "references": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [
+    {
+      "name": "com.google.play.review",
+      "expression": "",
+      "define": "PIXELCRATE_GOOGLE_PLAY_REVIEW"
+    }
+  ],
+  "noEngineReferences": false
+}
