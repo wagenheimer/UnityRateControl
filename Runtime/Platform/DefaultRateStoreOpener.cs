@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-#if PIXELCRATE_GOOGLE_PLAY_REVIEW && UNITY_ANDROID
+#if RATECONTROL_GOOGLE_PLAY_REVIEW && UNITY_ANDROID
 using Google.Play.Review;
 #endif
 
@@ -18,7 +18,7 @@ namespace Wagenheimer.RateControl
     /// </list>
     ///
     /// The asmdef <c>versionDefines</c> entry automatically defines
-    /// <c>PIXELCRATE_GOOGLE_PLAY_REVIEW</c> when <c>com.google.play.review</c> is in the
+    /// <c>RATECONTROL_GOOGLE_PLAY_REVIEW</c> when <c>com.google.play.review</c> is in the
     /// project — no manual scripting define is required.
     /// </summary>
     internal sealed class DefaultRateStoreOpener : IRateStoreOpener
@@ -71,7 +71,7 @@ namespace Wagenheimer.RateControl
 
         private IEnumerator OpenAndroid()
         {
-#if PIXELCRATE_GOOGLE_PLAY_REVIEW && UNITY_ANDROID
+#if RATECONTROL_GOOGLE_PLAY_REVIEW && UNITY_ANDROID
             yield return TryInAppReview();
 #else
             var url = $"market://details?id={_config.ResolvedAndroidId}";
@@ -81,7 +81,7 @@ namespace Wagenheimer.RateControl
 #endif
         }
 
-#if PIXELCRATE_GOOGLE_PLAY_REVIEW && UNITY_ANDROID
+#if RATECONTROL_GOOGLE_PLAY_REVIEW && UNITY_ANDROID
         private IEnumerator TryInAppReview()
         {
             Debug.Log("[RateControl] Requesting Google Play In-App Review flow.");

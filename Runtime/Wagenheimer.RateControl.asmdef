@@ -1,7 +1,7 @@
 {
   "name": "Wagenheimer.RateControl",
   "rootNamespace": "Wagenheimer.RateControl",
-  "references": ["Unity.TextMeshPro", "UnityEngine.UI"],
+  "references": ["Unity.TextMeshPro", "UnityEngine.UI", "Google.Play.Review"],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
@@ -13,7 +13,7 @@
     {
       "name": "com.google.play.review",
       "expression": "",
-      "define": "PIXELCRATE_GOOGLE_PLAY_REVIEW"
+      "define": "RATECONTROL_GOOGLE_PLAY_REVIEW"
     }
   ],
   "noEngineReferences": false
