@@ -1,7 +1,7 @@
 {
   "name": "Wagenheimer.RateControl",
   "rootNamespace": "Wagenheimer.RateControl",
-  "references": ["Unity.TextMeshPro", "UnityEngine.UI", "Google.Play.Review"],
+  "references": ["Unity.TextMeshPro", "UnityEngine.UI", "Google.Play.Review", "Google.Play.Common"],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
