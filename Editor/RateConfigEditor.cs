@@ -9,138 +9,424 @@ namespace Wagenheimer.RateControl.Editor
     [CustomEditor(typeof(RateConfig))]
     internal sealed class RateConfigEditor : UnityEditor.Editor
     {
+        // Brand accent colors per platform
+        private static readonly Color kPurple  = new Color(0.55f, 0.42f, 0.82f);
+        private static readonly Color kCyan    = new Color(0.30f, 0.62f, 0.82f);
+        private static readonly Color kGreen   = new Color(0.20f, 0.68f, 0.32f);
+        private static readonly Color kOrange  = new Color(0.95f, 0.58f, 0.10f);
+        private static readonly Color kSilver  = new Color(0.65f, 0.65f, 0.68f);
+        private static readonly Color kBlue    = new Color(0.15f, 0.47f, 0.83f);
+        private static readonly Color kSteam   = new Color(0.24f, 0.52f, 0.80f);
+        private static readonly Color kGray    = new Color(0.48f, 0.48f, 0.48f);
+        private static readonly Color kYellow  = new Color(0.85f, 0.68f, 0.20f);
+        private static readonly Color kRed     = new Color(0.75f, 0.28f, 0.28f);
+
         public override VisualElement CreateInspectorGUI()
         {
-            var so = serializedObject;
+            var so   = serializedObject;
             var root = new VisualElement();
-            root.style.paddingTop = 4;
+            root.style.paddingBottom = 8;
 
-            root.Add(CreateSection("Platform", so, "Platform"));
-            root.Add(CreateSection("Store IDs", so,
-                "AndroidPackageId", "iOSAppId", "MacAppStoreId", "SteamAppId"));
-            root.Add(CreateMoreGamesSection(so));
-            root.Add(CreateSection("Trigger Thresholds", so,
-                "EventsPerPrompt", "StartsBeforeFirstPrompt",
-                "StartsBeforeSubsequentPrompts", "RemindLaterCooldownDays"));
-            root.Add(CreateSection("Scene Filter", so, "BlacklistedScenes"));
-            root.Add(CreateSection("Storage", so, "StorageKeyPrefix"));
-            root.Add(CreateSection("UI", so, "DialogResourcePath"));
+            root.Add(BuildFoldout("Platform", kPurple, BuildPlatformContent(so)));
+            root.Add(BuildFoldout("Store IDs", kCyan, BuildStoreIdsContent(so)));
+            root.Add(BuildFoldout("More Games", kGreen, BuildMoreGamesContent(so)));
+            root.Add(BuildFoldout("Trigger Thresholds", kYellow, BuildThresholdsContent(so)));
+            root.Add(BuildFoldout("Scene Filter", kRed, BuildSceneFilterContent(so)));
+            root.Add(BuildFoldout("Storage", kGray, BuildStorageContent(so)));
+            root.Add(BuildFoldout("UI", kGray, BuildUiContent(so)));
 
             return root;
         }
 
-        // ── More Games ────────────────────────────────────────────────────────────
+        // ── Section contents ──────────────────────────────────────────────────────
 
-        private static VisualElement CreateMoreGamesSection(SerializedObject so)
+        private static VisualElement BuildPlatformContent(SerializedObject so)
         {
-            var foldout = new Foldout { text = "More Games", value = true };
-            foldout.style.marginBottom = 8;
-
-            foldout.Add(CreatePlatformBlock(
-                "Google Play",
-                "Publisher name as shown on your Google Play listing.",
-                "play.google.com/console → Setup → App info → Developer name",
-                "https://play.google.com/console",
-                new PropertyField(so.FindProperty("MoreGamesGoogleDeveloperName"), "Developer Name")));
-
-            var amazonNote = new HelpBox(
-                "Amazon Appstore: URL auto-generated from Application.identifier at runtime.\nNo field needed.",
-                HelpBoxMessageType.Info);
-            amazonNote.style.marginTop = 4;
-            amazonNote.style.marginBottom = 4;
-            foldout.Add(amazonNote);
-
-            foldout.Add(CreatePlatformBlock(
-                "Apple App Store  /  Mac App Store",
-                "Numeric Developer ID — not the bundle ID. Looks like: 964191738",
-                "appstoreconnect.apple.com → click your name (top-right) → View My Profile",
-                "https://appstoreconnect.apple.com",
-                new PropertyField(so.FindProperty("MoreGamesAppleDeveloperId"), "Apple Developer ID")));
-
-            foldout.Add(CreatePlatformBlock(
-                "Windows Store",
-                "Publisher display name as registered in Partner Center.",
-                "partner.microsoft.com/dashboard → [app] → Product management → Product identity → Publisher display name",
-                "https://partner.microsoft.com/dashboard",
-                new PropertyField(so.FindProperty("MoreGamesWindowsPublisherName"), "Publisher Name")));
-
-            foldout.Add(CreatePlatformBlock(
-                "Steam",
-                "Developer slug from your Steamworks developer page URL (the part after /developer/).",
-                "store.steampowered.com/developer/YOUR_SLUG — copy the slug from the URL",
-                "https://partner.steamgames.com",
-                new PropertyField(so.FindProperty("MoreGamesSteamDeveloperSlug"), "Developer Slug")));
-
-            var fallback = new Foldout { text = "Fallback / Website", value = false };
-            fallback.style.marginTop = 4;
-            fallback.Add(new HelpBox(
-                "Used when no platform-specific field is configured, or for sideloaded / Custom builds.",
-                HelpBoxMessageType.None));
-            fallback.Add(new PropertyField(so.FindProperty("MoreGamesUrl"), "Fallback URL"));
-            foldout.Add(fallback);
-
-            return foldout;
+            var c = new VisualElement();
+            c.Add(new PropertyField(so.FindProperty("Platform")));
+            return c;
         }
 
-        private static VisualElement CreatePlatformBlock(
-            string title, string description, string howToFind, string link, PropertyField field)
+        private static VisualElement BuildStoreIdsContent(SerializedObject so)
         {
-            var box = new Box();
-            box.style.paddingTop    = 6;
-            box.style.paddingBottom = 6;
-            box.style.paddingLeft   = 8;
-            box.style.paddingRight  = 8;
-            box.style.marginTop     = 4;
-            box.style.marginBottom  = 4;
+            var c = new VisualElement();
+            c.Add(new PropertyField(so.FindProperty("AndroidPackageId")));
+            c.Add(new PropertyField(so.FindProperty("iOSAppId")));
+            c.Add(new PropertyField(so.FindProperty("MacAppStoreId")));
+            c.Add(new PropertyField(so.FindProperty("SteamAppId")));
+            return c;
+        }
 
-            var header = new Label(title);
-            header.style.unityFontStyleAndWeight = FontStyle.Bold;
-            header.style.marginBottom = 3;
-            box.Add(header);
+        private static VisualElement BuildThresholdsContent(SerializedObject so)
+        {
+            var c = new VisualElement();
+            c.Add(new PropertyField(so.FindProperty("EventsPerPrompt")));
+            c.Add(new PropertyField(so.FindProperty("StartsBeforeFirstPrompt")));
+            c.Add(new PropertyField(so.FindProperty("StartsBeforeSubsequentPrompts")));
+            c.Add(new PropertyField(so.FindProperty("RemindLaterCooldownDays")));
+            return c;
+        }
 
+        private static VisualElement BuildSceneFilterContent(SerializedObject so)
+        {
+            var c = new VisualElement();
+            c.Add(new PropertyField(so.FindProperty("BlacklistedScenes")));
+            return c;
+        }
+
+        private static VisualElement BuildStorageContent(SerializedObject so)
+        {
+            var c = new VisualElement();
+            c.Add(new PropertyField(so.FindProperty("StorageKeyPrefix")));
+            return c;
+        }
+
+        private static VisualElement BuildUiContent(SerializedObject so)
+        {
+            var c = new VisualElement();
+            c.Add(new PropertyField(so.FindProperty("DialogResourcePath")));
+            return c;
+        }
+
+        // ── More Games ────────────────────────────────────────────────────────────
+
+        private VisualElement BuildMoreGamesContent(SerializedObject so)
+        {
+            var c = new VisualElement();
+
+            c.Add(BuildPlatformCard(
+                title:       "Google Play",
+                accent:      kGreen,
+                description: "Publisher name exactly as shown on your Google Play Console listing.",
+                howToFind:   "play.google.com/console  →  Setup  →  App info  →  Developer name",
+                consoleUrl:  "https://play.google.com/console",
+                prop:        so.FindProperty("MoreGamesGoogleDeveloperName"),
+                fieldLabel:  "Developer Name",
+                previewUrl:  v => string.IsNullOrEmpty(v) ? null
+                                  : $"market://search?q=pub:{v}",
+                testUrl:     v => string.IsNullOrEmpty(v) ? null
+                                  : $"https://play.google.com/store/apps/developer?id={v}"));
+
+            c.Add(BuildAmazonCard());
+
+            c.Add(BuildPlatformCard(
+                title:       "Apple App Store  /  Mac App Store",
+                accent:      kSilver,
+                description: "Numeric Developer ID — not the bundle ID. Example: 964191738",
+                howToFind:   "appstoreconnect.apple.com  →  click your name (top-right)  →  View My Profile",
+                consoleUrl:  "https://appstoreconnect.apple.com",
+                prop:        so.FindProperty("MoreGamesAppleDeveloperId"),
+                fieldLabel:  "Apple Developer ID",
+                previewUrl:  v => string.IsNullOrEmpty(v) ? null
+                                  : $"https://apps.apple.com/developer/id{v}",
+                testUrl:     v => string.IsNullOrEmpty(v) ? null
+                                  : $"https://apps.apple.com/developer/id{v}"));
+
+            c.Add(BuildPlatformCard(
+                title:       "Windows Store",
+                accent:      kBlue,
+                description: "Publisher display name as registered in Microsoft Partner Center.",
+                howToFind:   "partner.microsoft.com/dashboard  →  [app]  →  Product identity  →  Publisher display name",
+                consoleUrl:  "https://partner.microsoft.com/dashboard",
+                prop:        so.FindProperty("MoreGamesWindowsPublisherName"),
+                fieldLabel:  "Publisher Name",
+                previewUrl:  v => string.IsNullOrEmpty(v) ? null
+                                  : $"ms-windows-store://search/?query={v}",
+                testUrl:     v => string.IsNullOrEmpty(v) ? null
+                                  : $"https://www.microsoft.com/store/apps/windows?search={v}"));
+
+            c.Add(BuildPlatformCard(
+                title:       "Steam",
+                accent:      kSteam,
+                description: "Developer slug from your Steamworks page URL (part after /developer/).",
+                howToFind:   "store.steampowered.com/developer/YOUR_SLUG  —  copy the slug from the URL",
+                consoleUrl:  "https://partner.steamgames.com",
+                prop:        so.FindProperty("MoreGamesSteamDeveloperSlug"),
+                fieldLabel:  "Developer Slug",
+                previewUrl:  v => string.IsNullOrEmpty(v) ? null
+                                  : $"https://store.steampowered.com/developer/{v}",
+                testUrl:     v => string.IsNullOrEmpty(v) ? null
+                                  : $"https://store.steampowered.com/developer/{v}"));
+
+            c.Add(BuildFallbackCard(so));
+
+            return c;
+        }
+
+        // ── Card builders ─────────────────────────────────────────────────────────
+
+        private VisualElement BuildPlatformCard(
+            string title, Color accent,
+            string description, string howToFind, string consoleUrl,
+            SerializedProperty prop, string fieldLabel,
+            System.Func<string, string> previewUrl,
+            System.Func<string, string> testUrl)
+        {
+            var card = MakeCard(accent);
+
+            // Title row
+            var titleRow = new VisualElement();
+            titleRow.style.flexDirection  = FlexDirection.Row;
+            titleRow.style.alignItems     = Align.Center;
+            titleRow.style.marginBottom   = 5;
+
+            var titleLabel = new Label(title);
+            titleLabel.style.fontSize                = 11;
+            titleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            titleLabel.style.color                   = accent;
+            titleLabel.style.flexGrow                = 1;
+            titleRow.Add(titleLabel);
+            card.Add(titleRow);
+
+            // Description
             var desc = new Label(description);
             desc.style.whiteSpace   = WhiteSpace.Normal;
             desc.style.fontSize     = 10;
-            desc.style.color        = new Color(0.65f, 0.65f, 0.65f);
-            desc.style.marginBottom = 4;
-            box.Add(desc);
+            desc.style.color        = new Color(0.58f, 0.58f, 0.58f);
+            desc.style.marginBottom = 5;
+            card.Add(desc);
 
-            var howToRow = new VisualElement();
-            howToRow.style.flexDirection = FlexDirection.Row;
-            howToRow.style.alignItems    = Align.FlexStart;
-            howToRow.style.marginBottom  = 6;
+            // How-to row with Open Console button
+            var howRow = new VisualElement();
+            howRow.style.flexDirection = FlexDirection.Row;
+            howRow.style.alignItems    = Align.FlexStart;
+            howRow.style.marginBottom  = 7;
 
-            var howToLabel = new Label(howToFind);
-            howToLabel.style.whiteSpace = WhiteSpace.Normal;
-            howToLabel.style.fontSize   = 10;
-            howToLabel.style.color      = new Color(0.45f, 0.75f, 1f);
-            howToLabel.style.flexGrow   = 1;
-            howToLabel.style.flexShrink = 1;
-            howToRow.Add(howToLabel);
+            var howLabel = new Label(howToFind);
+            howLabel.style.whiteSpace = WhiteSpace.Normal;
+            howLabel.style.fontSize   = 10;
+            howLabel.style.color      = new Color(0.38f, 0.72f, 0.98f);
+            howLabel.style.flexGrow   = 1;
+            howLabel.style.flexShrink = 1;
+            howRow.Add(howLabel);
 
-            var openBtn = new Button(() => Application.OpenURL(link)) { text = "Open ↗" };
-            openBtn.style.fontSize     = 10;
-            openBtn.style.paddingLeft  = 8;
-            openBtn.style.paddingRight = 8;
-            openBtn.style.marginLeft   = 6;
-            openBtn.style.alignSelf    = Align.Center;
-            howToRow.Add(openBtn);
+            var consoleBtn = new Button(() => Application.OpenURL(consoleUrl))
+                { text = "Open Console ↗" };
+            StyleSmallButton(consoleBtn, accent);
+            howRow.Add(consoleBtn);
+            card.Add(howRow);
 
-            box.Add(howToRow);
-            box.Add(field);
+            // Field
+            card.Add(new PropertyField(prop, fieldLabel));
 
-            return box;
+            // Divider
+            var divider = new VisualElement();
+            divider.style.height          = 1;
+            divider.style.backgroundColor = new Color(0.28f, 0.28f, 0.28f);
+            divider.style.marginTop       = 7;
+            divider.style.marginBottom    = 6;
+            card.Add(divider);
+
+            // URL preview row
+            AddLiveUrlRow(card, prop, previewUrl, testUrl);
+
+            return card;
         }
 
-        // ── Generic section ───────────────────────────────────────────────────────
-
-        private static VisualElement CreateSection(string title, SerializedObject so, params string[] propertyNames)
+        private static VisualElement BuildAmazonCard()
         {
-            var foldout = new Foldout { text = title, value = true };
-            foldout.style.marginBottom = 8;
-            foreach (var name in propertyNames)
-                foldout.Add(new PropertyField(so.FindProperty(name)));
-            return foldout;
+            var card = MakeCard(kOrange);
+
+            var titleLabel = new Label("Amazon Appstore");
+            titleLabel.style.fontSize                = 11;
+            titleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            titleLabel.style.color                   = kOrange;
+            titleLabel.style.marginBottom            = 5;
+            card.Add(titleLabel);
+
+            var info = new HelpBox(
+                "URL auto-generated at runtime from Application.identifier — no configuration needed.",
+                HelpBoxMessageType.Info);
+            card.Add(info);
+
+            var previewLabel = new Label("amzn://apps/android?p={Application.identifier}&showAll=1");
+            previewLabel.style.fontSize                  = 9;
+            previewLabel.style.color                     = new Color(0.50f, 0.50f, 0.50f);
+            previewLabel.style.unityFontStyleAndWeight   = FontStyle.Italic;
+            previewLabel.style.marginTop                 = 5;
+            previewLabel.style.whiteSpace                = WhiteSpace.Normal;
+            card.Add(previewLabel);
+
+            return card;
+        }
+
+        private VisualElement BuildFallbackCard(SerializedObject so)
+        {
+            var card = MakeCard(kGray);
+
+            var titleLabel = new Label("Fallback  /  Website");
+            titleLabel.style.fontSize                = 11;
+            titleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            titleLabel.style.color                   = kGray;
+            titleLabel.style.marginBottom            = 5;
+            card.Add(titleLabel);
+
+            var desc = new Label("Used when no platform-specific field is configured, or for Custom / sideloaded builds.");
+            desc.style.whiteSpace   = WhiteSpace.Normal;
+            desc.style.fontSize     = 10;
+            desc.style.color        = new Color(0.55f, 0.55f, 0.55f);
+            desc.style.marginBottom = 6;
+            card.Add(desc);
+
+            var prop = so.FindProperty("MoreGamesUrl");
+            card.Add(new PropertyField(prop, "Fallback URL"));
+
+            var divider = new VisualElement();
+            divider.style.height          = 1;
+            divider.style.backgroundColor = new Color(0.28f, 0.28f, 0.28f);
+            divider.style.marginTop       = 7;
+            divider.style.marginBottom    = 6;
+            card.Add(divider);
+
+            AddLiveUrlRow(card, prop, v => v, v => v);
+
+            return card;
+        }
+
+        // ── Live URL preview ──────────────────────────────────────────────────────
+
+        private void AddLiveUrlRow(
+            VisualElement parent,
+            SerializedProperty prop,
+            System.Func<string, string> buildPreview,
+            System.Func<string, string> buildTest)
+        {
+            var row = new VisualElement();
+            row.style.flexDirection = FlexDirection.Row;
+            row.style.alignItems    = Align.FlexStart;
+
+            var urlLabel = new Label("URL: (fill in the field above)");
+            urlLabel.style.fontSize                = 9;
+            urlLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
+            urlLabel.style.color                   = new Color(0.40f, 0.40f, 0.40f);
+            urlLabel.style.whiteSpace              = WhiteSpace.Normal;
+            urlLabel.style.flexGrow                = 1;
+            urlLabel.style.flexShrink              = 1;
+            row.Add(urlLabel);
+
+            var openBtn = new Button { text = "Open ↗" };
+            StyleSmallButton(openBtn, new Color(0.40f, 0.78f, 0.45f));
+            openBtn.style.display = DisplayStyle.None;
+            row.Add(openBtn);
+
+            parent.Add(row);
+
+            // Capture mutable URL for the click handler (registered once)
+            var currentUrl = new string[1];
+            openBtn.clicked += () =>
+            {
+                if (!string.IsNullOrEmpty(currentUrl[0]))
+                    Application.OpenURL(currentUrl[0]);
+            };
+
+            // Poll every 300 ms to update preview
+            string lastValue = null;
+            row.schedule.Execute(() =>
+            {
+                prop.serializedObject.Update();
+                var v = prop.stringValue;
+                if (v == lastValue) return;
+                lastValue = v;
+
+                var preview = buildPreview?.Invoke(v);
+                var test    = buildTest?.Invoke(v);
+                currentUrl[0] = test;
+
+                bool hasUrl = !string.IsNullOrEmpty(preview);
+                urlLabel.text               = hasUrl ? "URL: " + preview : "URL: (fill in the field above)";
+                urlLabel.style.color        = hasUrl
+                    ? new Color(0.42f, 0.82f, 0.48f)
+                    : new Color(0.40f, 0.40f, 0.40f);
+                openBtn.style.display       = !string.IsNullOrEmpty(test)
+                    ? DisplayStyle.Flex : DisplayStyle.None;
+            }).Every(300);
+        }
+
+        // ── Section Foldout ───────────────────────────────────────────────────────
+
+        private static VisualElement BuildFoldout(string title, Color accent, VisualElement content)
+        {
+            var wrapper = new VisualElement();
+            wrapper.style.marginBottom    = 6;
+            wrapper.style.borderLeftWidth = 2;
+            wrapper.style.borderLeftColor = accent;
+
+            var foldout = new Foldout { text = string.Empty, value = true };
+
+            // Style the toggle label inside the foldout
+            var toggle = foldout.Q<Toggle>();
+            toggle.style.backgroundColor = new Color(0.20f, 0.20f, 0.20f);
+            toggle.style.paddingTop      = 4;
+            toggle.style.paddingBottom   = 4;
+            toggle.style.paddingLeft     = 8;
+            toggle.style.marginBottom    = 0;
+
+            var checkmark = toggle.Q<VisualElement>(className: "unity-toggle__checkmark");
+            if (checkmark != null) checkmark.style.display = DisplayStyle.None;
+
+            var headerLabel = new Label(title.ToUpper());
+            headerLabel.style.fontSize                = 10;
+            headerLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            headerLabel.style.color                   = accent;
+            headerLabel.style.flexGrow                = 1;
+            headerLabel.style.alignSelf               = Align.Center;
+            toggle.Add(headerLabel);
+
+            var contentWrapper = foldout.Q<VisualElement>(className: "unity-foldout__content");
+            if (contentWrapper != null)
+            {
+                contentWrapper.style.marginLeft = 0;
+                contentWrapper.style.paddingTop = 4;
+            }
+
+            foldout.Add(content);
+            wrapper.Add(foldout);
+            return wrapper;
+        }
+
+        // ── Visual primitives ─────────────────────────────────────────────────────
+
+        private static VisualElement MakeCard(Color accent)
+        {
+            var card = new VisualElement();
+            card.style.backgroundColor       = new Color(0.17f, 0.17f, 0.17f);
+            card.style.borderLeftColor        = accent;
+            card.style.borderLeftWidth        = 3;
+            card.style.borderTopColor         = new Color(0.26f, 0.26f, 0.26f);
+            card.style.borderTopWidth         = 1;
+            card.style.borderBottomColor      = new Color(0.26f, 0.26f, 0.26f);
+            card.style.borderBottomWidth      = 1;
+            card.style.borderRightColor       = new Color(0.26f, 0.26f, 0.26f);
+            card.style.borderRightWidth       = 1;
+            card.style.borderTopLeftRadius    = 3;
+            card.style.borderTopRightRadius   = 3;
+            card.style.borderBottomLeftRadius = 3;
+            card.style.borderBottomRightRadius = 3;
+            card.style.paddingTop             = 8;
+            card.style.paddingBottom          = 8;
+            card.style.paddingLeft            = 10;
+            card.style.paddingRight           = 10;
+            card.style.marginBottom           = 5;
+            return card;
+        }
+
+        private static void StyleSmallButton(Button btn, Color accent)
+        {
+            btn.style.fontSize          = 9;
+            btn.style.paddingTop        = 3;
+            btn.style.paddingBottom     = 3;
+            btn.style.paddingLeft       = 7;
+            btn.style.paddingRight      = 7;
+            btn.style.marginLeft        = 5;
+            btn.style.alignSelf         = Align.Center;
+            btn.style.borderTopColor    = accent;
+            btn.style.borderBottomColor = accent;
+            btn.style.borderLeftColor   = accent;
+            btn.style.borderRightColor  = accent;
+            btn.style.borderTopWidth    = 1;
+            btn.style.borderBottomWidth = 1;
+            btn.style.borderLeftWidth   = 1;
+            btn.style.borderRightWidth  = 1;
         }
     }
 }
