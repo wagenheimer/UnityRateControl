@@ -58,13 +58,13 @@ namespace Wagenheimer.RateControl
 
         public void OpenMoreGames()
         {
-            if (string.IsNullOrEmpty(_config.MoreGamesUrl))
+            if (string.IsNullOrEmpty(_config.ResolvedMoreGamesUrl))
             {
                 Debug.LogWarning("[RateControl] MoreGamesUrl is not configured in RateConfig.");
                 return;
             }
-            Debug.Log($"[RateControl] Opening more games URL: {_config.MoreGamesUrl}");
-            Application.OpenURL(_config.MoreGamesUrl);
+            Debug.Log($"[RateControl] Opening more games URL: {_config.ResolvedMoreGamesUrl}");
+            Application.OpenURL(_config.ResolvedMoreGamesUrl);
         }
 
         // ── Android ───────────────────────────────────────────────────────────────

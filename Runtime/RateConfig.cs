@@ -3,86 +3,223 @@ using UnityEngine;
 
 namespace Wagenheimer.RateControl
 {
-    /// <summary>
-    /// ScriptableObject that holds all configuration for the rate prompt system.
-    ///
-    /// <b>Quick setup:</b>
-    /// <list type="number">
-    ///   <item>Right-click in the Project window → Create → Rate Control → Rate Config.</item>
-    ///   <item>Set <see cref="Platform"/> to match your target store.</item>
-    ///   <item>Fill in the store ID for your platform.</item>
-    ///   <item>Assign the asset to your bootstrap component that calls <see cref="RateControl.Initialize"/>.</item>
-    /// </list>
-    /// </summary>
-    [CreateAssetMenu(
-        menuName = "Rate Control/Rate Config",
-        fileName = "RateConfig",
-        order = 0)]
+    [CreateAssetMenu(menuName = "Rate Control/Rate Config", fileName = "RateConfig", order = 0)]
     public sealed class RateConfig : ScriptableObject
     {
-        // ── Platform ─────────────────────────────────────────────────────────────
+        // Platform
 
         [Header("Platform")]
-        [Tooltip("Which store the Rate Now button targets.")]
+        [Tooltip(
+            "Which store this build targets.
+
+" +
+            "GoogleAndroid  - Google Play In-App Review API (no browser). Falls back to market://.
+" +
+            "AmazonAndroid  - Amazon Appstore via amzn:// deep-link.
+" +
+            "iOS            - SKStoreReviewManager native prompt. Falls back to itms-apps://.
+" +
+            "MacAppStore    - macappstore:// review URL.
+" +
+            "Steam          - Opens the Steam reviews page in the system browser.
+" +
+            "WindowsStore   - ms-windows-store:// deep-link.
+" +
+            "Custom         - Implement IRateStoreOpener and pass it to RateControl.Initialize().")]
         public RatePlatform Platform = RatePlatform.GoogleAndroid;
 
-        // ── Store IDs ─────────────────────────────────────────────────────────────
+        // Store IDs
 
         [Header("Store IDs")]
-        [Tooltip("Android package name. Leave empty to use Application.identifier at runtime.")]
+        [Tooltip(
+            "Android package name for Google Play and Amazon links.
+" +
+            "Example: com.mystudio.mygame
+
+" +
+            "Leave empty to use Application.identifier at runtime (recommended).")]
         public string AndroidPackageId = "";
 
-        [Tooltip("Numeric iOS App Store ID (e.g. 123456789).")]
+        [Tooltip(
+            "Numeric App Store ID for iOS and Mac App Store builds.
+" +
+            "Found in App Store Connect > App Information > Apple ID.
+" +
+            "Example: 123456789
+
+" +
+            "Used as fallback itms-apps:// URL when SKStoreReviewManager is unavailable.")]
         public string iOSAppId = "";
 
-        [Tooltip("Numeric Mac App Store ID.")]
+        [Tooltip(
+            "Numeric App Store ID for the Mac App Store.
+" +
+            "Same as iOSAppId for universal purchases.
+" +
+            "Used to build the macappstore:// review URL.")]
         public string MacAppStoreId = "";
 
-        [Tooltip("Steam App ID (numeric). Used to build the review URL.")]
+        [Tooltip(
+            "Steam App ID (numbers only). Found in the Steamworks dashboard URL.
+" +
+            "Example: 123456
+
+" +
+            "Opens: https://store.steampowered.com/app/{SteamAppId}/reviews/")]
         public string SteamAppId = "";
 
-        [Tooltip("URL for the More Games page. Leave empty to disable.")]
+        // More Games
+
+        [Header("More Games - opened by RateControl.ShowMoreGames()")]
+        [Tooltip(
+            "Google Play developer page, opened automatically on GoogleAndroid and AmazonAndroid builds.
+" +
+            "Example: https://play.google.com/store/apps/developer?id=MyStudio
+
+" +
+            "Leave empty to fall back to MoreGamesUrl.")]
+        public string MoreGamesGooglePlayUrl = "";
+
+        [Tooltip(
+            "Apple App Store developer page, opened automatically on iOS and MacAppStore builds.
+" +
+            "Example: https://apps.apple.com/developer/id123456789
+
+" +
+            "Leave empty to fall back to MoreGamesUrl.")]
+        public string MoreGamesAppleUrl = "";
+
+        [Tooltip(
+            "Steam developer or publisher page, opened automatically on Steam builds.
+" +
+            "Example: https://store.steampowered.com/developer/mystudio
+
+" +
+            "Leave empty to fall back to MoreGamesUrl.")]
+        public string MoreGamesSteamUrl = "";
+
+        [Tooltip(
+            "Fallback URL used when the current Platform has no specific More Games URL configured
+" +
+            "above (WindowsStore, Custom), or when a platform-specific URL is left empty.
+
+" +
+            "Can also serve as a single cross-platform link if you prefer one URL for all stores.
+" +
+            "Example: https://mystudio.com/games
+
+" +
+            "Leave empty to disable ShowMoreGames() entirely.")]
         public string MoreGamesUrl = "";
 
-        // ── Trigger thresholds ────────────────────────────────────────────────────
+        // Trigger Thresholds
 
         [Header("Trigger Thresholds")]
-        [Tooltip("Queue the prompt after every N calls to RateControl.LogEvent().")]
+        [Tooltip(
+            "Calls to RateControl.LogEvent() needed to queue the rate prompt.
+
+" +
+            "Call LogEvent() at meaningful moments: level completions, puzzle solves, match wins.
+" +
+            "Recommended: 5-15 depending on how often milestones occur.")]
         [Min(1)] public int EventsPerPrompt = 10;
 
-        [Tooltip("Number of app launches before the very first prompt.")]
+        [Tooltip(
+            "Minimum app launches before the very first prompt can appear.
+
+" +
+            "Ensures players have had enough sessions to form an opinion before being asked.
+" +
+            "Recommended: 3-5.")]
         [Min(1)] public int StartsBeforeFirstPrompt = 3;
 
-        [Tooltip("Number of app launches between subsequent prompts.")]
+        [Tooltip(
+            "Minimum app launches between each subsequent prompt after the first
+" +
+            "(e.g. after the player taps Remind Me Later).
+
+" +
+            "Recommended: 7-14 to avoid feeling intrusive.")]
         [Min(1)] public int StartsBeforeSubsequentPrompts = 8;
 
-        [Tooltip("Days before re-prompting after Remind Me Later. Set 0 for no cooldown.")]
+        [Tooltip(
+            "Days before re-showing the prompt after the player taps Remind Me Later.
+
+" +
+            "Based on real calendar days from when the reminder was set.
+" +
+            "Set to 0 for no day cooldown - re-queues on the next eligible session.")]
         [Min(0)] public int RemindLaterCooldownDays = 3;
 
-        // ── Scene filter ──────────────────────────────────────────────────────────
+        // Scene Filter
 
         [Header("Scene Filter")]
-        [Tooltip("Scene names where the rate prompt is suppressed (e.g. loading screens, battle scenes).")]
+        [Tooltip(
+            "Scene names where the prompt is always suppressed, regardless of thresholds.
+
+" +
+            "Add loading screens, battle scenes, or cutscenes where an interruption breaks flow.
+" +
+            "Use the exact name from Build Settings (no path, no .unity extension).")]
         public List<string> BlacklistedScenes = new();
 
-        // ── Storage ───────────────────────────────────────────────────────────────
+        // Storage
 
         [Header("Storage")]
-        [Tooltip("Prefix for all PlayerPrefs keys. Change per game to avoid key collisions between titles using this package.")]
+        [Tooltip(
+            "Prefix for every PlayerPrefs key used by this package.
+
+" +
+            "IMPORTANT: use a unique value per game. Two games sharing the same prefix on the
+" +
+            "same device will overwrite each other state (event count, do-not-ask flag, etc.).
+
+" +
+            "Recommended format: Studio.GameName.Rate
+" +
+            "Example: PixelCrate.NordStorm.Rate")]
         public string StorageKeyPrefix = "RateControl";
 
-        // ── UI ────────────────────────────────────────────────────────────────────
+        // UI
 
         [Header("UI")]
-        [Tooltip("Path inside Resources/ for the rate dialog prefab. Example: 'RateDialog' loads Resources/RateDialog.prefab")]
+        [Tooltip(
+            "Path inside any Resources/ folder where the rate dialog prefab lives,
+" +
+            "WITHOUT the .prefab extension.
+
+" +
+            "The system calls Resources.Load<RateDialog>(DialogResourcePath) at runtime.
+" +
+            "The prefab must have a component that inherits from RateDialog.
+
+" +
+            "Example: prefab at Assets/UI/Resources/MyPopup.prefab -> set to MyPopup.
+
+" +
+            "Tip: pass the dialog instance directly to RateControl.Initialize() to skip this.")]
         public string DialogResourcePath = "RateDialog";
 
-        // ── Internal helpers ──────────────────────────────────────────────────────
+        // Internal helpers
 
         internal string ResolvedAndroidId =>
             string.IsNullOrEmpty(AndroidPackageId) ? Application.identifier : AndroidPackageId;
 
         internal string ResolvedSteamUrl =>
             $"https://store.steampowered.com/app/{SteamAppId}/reviews/";
+
+        internal string ResolvedMoreGamesUrl => Platform switch
+        {
+            RatePlatform.GoogleAndroid or RatePlatform.AmazonAndroid =>
+                FirstNonEmpty(MoreGamesGooglePlayUrl, MoreGamesUrl),
+            RatePlatform.iOS or RatePlatform.MacAppStore =>
+                FirstNonEmpty(MoreGamesAppleUrl, MoreGamesUrl),
+            RatePlatform.Steam =>
+                FirstNonEmpty(MoreGamesSteamUrl, MoreGamesUrl),
+            _ => MoreGamesUrl
+        };
+
+        private static string FirstNonEmpty(string a, string b) =>
+            !string.IsNullOrEmpty(a) ? a : b;
     }
 }
