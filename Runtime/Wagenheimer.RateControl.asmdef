@@ -1,7 +1,7 @@
 {
   "name": "Wagenheimer.RateControl",
   "rootNamespace": "Wagenheimer.RateControl",
-  "references": [],
+  "references": ["Unity.TextMeshPro", "UnityEngine.UI"],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
