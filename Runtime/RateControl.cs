@@ -113,7 +113,7 @@ namespace Wagenheimer.RateControl
             Instance = go.AddComponent<RateControl>();
             Instance.Boot(config, blocker, version, opener, dialog);
 
-            Debug.Log($"[RateControl] Initialized. Platform={config.Platform} EventsPerPrompt={config.EventsPerPrompt} KeyPrefix={config.StorageKeyPrefix}");
+            Debug.Log($"[RateControl] Initialized. EventsPerPrompt={config.EventsPerPrompt} KeyPrefix={config.StorageKeyPrefix}");
         }
 
         private void Boot(RateConfig config, IRateBlocker blocker, IRateVersionProvider version, IRateStoreOpener opener, RateDialog dialog)
