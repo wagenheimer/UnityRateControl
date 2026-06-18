@@ -29,7 +29,7 @@ namespace Wagenheimer.RateControl.Editor
             helpRow.style.flexDirection  = FlexDirection.RowReverse;
             helpRow.style.marginBottom   = 4;
             helpRow.style.paddingRight   = 2;
-            var helpBtn = new Button(RateControlDocWindow.Open) { text = "?  Setup Guide" };
+            var helpBtn = new Button(OpenSetupGuide) { text = "?  Setup Guide" };
             helpBtn.style.fontSize        = 10;
             helpBtn.style.paddingLeft     = 10;
             helpBtn.style.paddingRight    = 10;
@@ -501,6 +501,18 @@ namespace Wagenheimer.RateControl.Editor
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────────
+
+        private static void OpenSetupGuide()
+        {
+            foreach (var t in TypeCache.GetTypesDerivedFrom<EditorWindow>())
+            {
+                if (t.FullName != "Wagenheimer.RateControl.Editor.RateControlDocWindow") continue;
+                var m = t.GetMethod("Open",
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                if (m != null) { m.Invoke(null, null); return; }
+            }
+            Application.OpenURL("https://github.com/wagenheimer/UnityRateControl#readme");
+        }
 
         private static void SmallBtn(Button btn, Color accent)
         {
