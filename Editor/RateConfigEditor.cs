@@ -30,7 +30,7 @@ namespace Wagenheimer.RateControl.Editor
             helpRow.style.flexDirection  = FlexDirection.RowReverse;
             helpRow.style.marginBottom   = 4;
             helpRow.style.paddingRight   = 2;
-            var helpBtn = new Button(RateControlDocWindow.Open) { text = "?  Setup Guide" };
+            var helpBtn = new Button(() => EditorApplication.ExecuteMenuItem("Tools/Rate Control/Setup Guide")) { text = "?  Setup Guide" };
             helpBtn.style.fontSize        = 10;
             helpBtn.style.paddingLeft     = 10;
             helpBtn.style.paddingRight    = 10;
