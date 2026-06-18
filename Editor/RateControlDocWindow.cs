@@ -102,6 +102,16 @@ namespace Wagenheimer.RateControl.Editor
                 btn.style.borderBottomLeftRadius = btn.style.borderBottomRightRadius = 0;
                 btn.style.backgroundColor        = new Color(0, 0, 0, 0);
                 btn.style.color                  = kBody;
+                btn.RegisterCallback<MouseEnterEvent>(_ =>
+                {
+                    if (idx != _selectedPage)
+                        btn.style.backgroundColor = new Color(0.18f, 0.20f, 0.24f);
+                });
+                btn.RegisterCallback<MouseLeaveEvent>(_ =>
+                {
+                    if (idx != _selectedPage)
+                        btn.style.backgroundColor = new Color(0, 0, 0, 0);
+                });
                 sidebar.Add(btn);
                 _tocBtns.Add(btn);
             }
@@ -146,10 +156,11 @@ namespace Wagenheimer.RateControl.Editor
             _selectedPage = idx;
             for (int i = 0; i < _tocBtns.Count; i++)
             {
-                _tocBtns[i].style.backgroundColor =
-                    i == idx ? kSelect : new Color(0, 0, 0, 0);
-                _tocBtns[i].style.color =
-                    i == idx ? Color.white : kBody;
+                var sel = i == idx;
+                _tocBtns[i].style.backgroundColor = sel ? kSelect : new Color(0, 0, 0, 0);
+                _tocBtns[i].style.color           = sel ? Color.white : kBody;
+                _tocBtns[i].style.borderLeftWidth = sel ? 3 : 0;
+                _tocBtns[i].style.borderLeftColor = kAccent;
             }
             _content.Clear();
             _content.Add(Pages[idx].build());
