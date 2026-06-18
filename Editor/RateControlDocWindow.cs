@@ -36,6 +36,17 @@ namespace Wagenheimer.RateControl.Editor
         private VisualElement _content;
         private readonly List<Button> _tocBtns = new();
 
+        private void OnEnable() => EditorApplication.delayCall += TryRebuildGUI;
+
+        private void TryRebuildGUI()
+        {
+            if (this == null) return;
+            if (_content != null) return;
+            rootVisualElement.Clear();
+            _tocBtns.Clear();
+            CreateGUI();
+        }
+
         private void CreateGUI()
         {
             var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(kUxml);
