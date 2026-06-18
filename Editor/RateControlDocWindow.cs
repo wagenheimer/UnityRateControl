@@ -14,11 +14,11 @@ namespace Wagenheimer.RateControl.Editor
         [MenuItem("Help/Rate Control Setup Guide")]
         public static void Open()
         {
-            var w = GetWindow<RateControlDocWindow>(true, "Rate Control — Setup Guide", true);
+            var w = GetWindow<RateControlDocWindow>(false, "Rate Control — Setup Guide");
             w.minSize = new Vector2(720, 480);
-            // Always reposition to ensure on-screen visibility
-            // (saved positions from dockable mode can be off-screen)
-            w.position = new Rect(120, 120, 860, 580);
+            var p = w.position;
+            if (p.width < 50 || p.x < -2000 || p.y < -2000)
+                w.position = new Rect(120, 120, 860, 580);
             w.Show();
             w.Focus();
         }
@@ -45,13 +45,15 @@ namespace Wagenheimer.RateControl.Editor
         {
             if (this == null) return;
             if (_content != null) return;
-            rootVisualElement.Clear();
-            _tocBtns.Clear();
             CreateGUI();
         }
 
         private void CreateGUI()
         {
+            rootVisualElement.Clear();
+            _tocBtns.Clear();
+            _content = null;
+
             var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(kUxml);
             if (uxml == null)
             {
