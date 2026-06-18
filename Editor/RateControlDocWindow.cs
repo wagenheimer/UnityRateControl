@@ -11,7 +11,9 @@ namespace Wagenheimer.RateControl.Editor
         [MenuItem("Help/Rate Control Setup Guide")]
         public static void Open()
         {
-            var w = GetWindow<RateControlDocWindow>(true, "Rate Control — Setup Guide");
+            // O primeiro parâmetro (utility) como true faz ela ser flutuante. 
+            // Certifique-se de que não há nenhuma instância anterior perdida em background
+            var w = GetWindow<RateControlDocWindow>(true, "Rate Control — Setup Guide", true);
             w.minSize = new Vector2(720, 480);
             w.Show();
             w.Focus();
@@ -35,7 +37,7 @@ namespace Wagenheimer.RateControl.Editor
         // ── TOC pages ─────────────────────────────────────────────────────────────
         private static readonly (string label, System.Func<VisualElement> build)[] Pages =
         {
-            ("Quick Start",           BuildQuickStart),
+            ("Quick Start",          BuildQuickStart),
             ("Distribution Channels", BuildDistribution),
             ("Store IDs",             BuildStoreIds),
             ("More Games",            BuildMoreGames),
@@ -154,7 +156,9 @@ namespace Wagenheimer.RateControl.Editor
 
         private void SelectPage(int idx)
         {
+            if (idx < 0 || idx >= Pages.Length) return;
             _selectedPage = idx;
+            
             for (int i = 0; i < _tocBtns.Count; i++)
             {
                 var sel = i == idx;
@@ -529,6 +533,7 @@ namespace Wagenheimer.RateControl.Editor
         private static Label Body(string text)
         {
             var l = new Label(text);
+            l.enableRichText = true; // CORREÇÃO: Habilita rich text para processar tags HTML inline
             l.style.fontSize     = 11;
             l.style.color        = kBody;
             l.style.whiteSpace   = WhiteSpace.Normal;
@@ -539,6 +544,7 @@ namespace Wagenheimer.RateControl.Editor
         private static Label Hint(string text)
         {
             var l = new Label(text);
+            l.enableRichText = true; // CORREÇÃO
             l.style.fontSize     = 10;
             l.style.color        = kMuted;
             l.style.whiteSpace   = WhiteSpace.Normal;
@@ -586,6 +592,7 @@ namespace Wagenheimer.RateControl.Editor
             box.style.borderLeftWidth = 3;
 
             var l = new Label("ℹ  " + text);
+            l.enableRichText = true; // CORREÇÃO
             l.style.fontSize   = 11;
             l.style.color      = new Color(0.72f, 0.85f, 0.98f);
             l.style.whiteSpace = WhiteSpace.Normal;
@@ -640,7 +647,7 @@ namespace Wagenheimer.RateControl.Editor
                     cell.style.color                   = hdr ? kAccent : kBody;
                     cell.style.whiteSpace              = WhiteSpace.Normal;
                     cell.style.flexGrow                = 1;
-                    cell.style.flexBasis               = 0;
+                    cell.style.flexBasis               = StyleKeyword.Auto; // CORREÇÃO: flexBasis como Auto para evitar esmagamento do box layout
                     cell.style.paddingRight            = 10;
                     row.Add(cell);
                 }
@@ -670,3 +677,4 @@ namespace Wagenheimer.RateControl.Editor
         private static string C(string t) => $"<color=#7ec8e3>{t}</color>";
     }
 }
+
