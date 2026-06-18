@@ -16,6 +16,9 @@ namespace Wagenheimer.RateControl.Editor
         {
             var w = GetWindow<RateControlDocWindow>(true, "Rate Control — Setup Guide", true);
             w.minSize = new Vector2(720, 480);
+            // Always reposition to ensure on-screen visibility
+            // (saved positions from dockable mode can be off-screen)
+            w.position = new Rect(120, 120, 860, 580);
             w.Show();
             w.Focus();
         }
