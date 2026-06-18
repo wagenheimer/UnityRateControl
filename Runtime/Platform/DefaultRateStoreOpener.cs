@@ -42,22 +42,43 @@ namespace Wagenheimer.RateControl
             OpeniOS();
 
 #elif UNITY_STANDALONE_OSX
-            // Prefer Mac App Store when MacAppStoreId is set; fall back to Steam.
-            if (!string.IsNullOrEmpty(_config.MacAppStoreId))
-                Application.OpenURL($"macappstore://apps.apple.com/app/id{_config.MacAppStoreId}?action=write-review");
-            else if (!string.IsNullOrEmpty(_config.SteamAppId))
-                Application.OpenURL(_config.ResolvedSteamUrl);
-            else
-                Debug.LogWarning("[RateControl] macOS: set MacAppStoreId or SteamAppId in RateConfig.");
+            switch (_config.MacOs)
+            {
+                case MacOsChannel.MacAppStore:
+                    Application.OpenURL($"macappstore://apps.apple.com/app/id{_config.MacAppStoreId}?action=write-review");
+                    break;
+                case MacOsChannel.Steam:
+                    Application.OpenURL(_config.ResolvedSteamUrl);
+                    break;
+                default:
+                    Debug.Log("[RateControl] macOS channel is None — rate skipped.");
+                    break;
+            }
 
 #elif UNITY_WSA
             OpenWindowsStore();
 
 #elif UNITY_STANDALONE_WIN
-            if (!string.IsNullOrEmpty(_config.SteamAppId))
-                Application.OpenURL(_config.ResolvedSteamUrl);
-            else
-                Debug.LogWarning("[RateControl] Windows: set SteamAppId in RateConfig for the Steam review URL.");
+            switch (_config.Windows)
+            {
+                case StandaloneChannel.Steam:
+                    Application.OpenURL(_config.ResolvedSteamUrl);
+                    break;
+                default:
+                    Debug.Log("[RateControl] Windows channel is None — rate skipped.");
+                    break;
+            }
+
+#elif UNITY_STANDALONE_LINUX
+            switch (_config.Linux)
+            {
+                case StandaloneChannel.Steam:
+                    Application.OpenURL(_config.ResolvedSteamUrl);
+                    break;
+                default:
+                    Debug.Log("[RateControl] Linux channel is None — rate skipped.");
+                    break;
+            }
 
 #else
             Debug.LogWarning("[RateControl] Platform not supported by DefaultRateStoreOpener. Implement IRateStoreOpener.");
@@ -95,9 +116,19 @@ namespace Wagenheimer.RateControl
             return _config.MoreGamesUrl;
 
 #elif UNITY_STANDALONE_OSX
-            if (!string.IsNullOrEmpty(_config.MoreGamesAppleDeveloperId))
-                return $"https://apps.apple.com/mac/developer/id{_config.MoreGamesAppleDeveloperId}";
-            return _config.MoreGamesUrl;
+            switch (_config.MacOs)
+            {
+                case MacOsChannel.MacAppStore:
+                    return !string.IsNullOrEmpty(_config.MoreGamesAppleDeveloperId)
+                        ? $"https://apps.apple.com/mac/developer/id{_config.MoreGamesAppleDeveloperId}"
+                        : _config.MoreGamesUrl;
+                case MacOsChannel.Steam:
+                    return !string.IsNullOrEmpty(_config.MoreGamesSteamDeveloperSlug)
+                        ? $"https://store.steampowered.com/developer/{_config.MoreGamesSteamDeveloperSlug}"
+                        : _config.MoreGamesUrl;
+                default:
+                    return _config.MoreGamesUrl;
+            }
 
 #elif UNITY_WSA
             if (!string.IsNullOrEmpty(_config.MoreGamesWindowsPublisherName))
@@ -105,7 +136,12 @@ namespace Wagenheimer.RateControl
             return _config.MoreGamesUrl;
 
 #elif UNITY_STANDALONE_WIN
-            if (!string.IsNullOrEmpty(_config.MoreGamesSteamDeveloperSlug))
+            if (_config.Windows == StandaloneChannel.Steam && !string.IsNullOrEmpty(_config.MoreGamesSteamDeveloperSlug))
+                return $"https://store.steampowered.com/developer/{_config.MoreGamesSteamDeveloperSlug}";
+            return _config.MoreGamesUrl;
+
+#elif UNITY_STANDALONE_LINUX
+            if (_config.Linux == StandaloneChannel.Steam && !string.IsNullOrEmpty(_config.MoreGamesSteamDeveloperSlug))
                 return $"https://store.steampowered.com/developer/{_config.MoreGamesSteamDeveloperSlug}";
             return _config.MoreGamesUrl;
 

@@ -25,26 +25,100 @@ namespace Wagenheimer.RateControl.Editor
             var root = new VisualElement();
             root.style.paddingBottom = 8;
 
-            root.Add(Section("Store IDs", kCyan,   StoreIdsContent(so)));
-            root.Add(Section("More Games", kGreen, MoreGamesContent(so)));
-            root.Add(Section("Trigger Thresholds", kYellow, ThresholdsContent(so)));
-            root.Add(Section("Scene Filter", kRed,  SceneFilterContent(so)));
-            root.Add(Section("Storage",     kGray,  StorageContent(so)));
-            root.Add(Section("UI",          kGray,  UiContent(so)));
+            root.Add(Section("Distribution Channels", kOrange, DistributionContent(so)));
+            root.Add(Section("Store IDs",             kCyan,   StoreIdsContent(so)));
+            root.Add(Section("More Games",            kGreen,  MoreGamesContent(so)));
+            root.Add(Section("Trigger Thresholds",    kYellow, ThresholdsContent(so)));
+            root.Add(Section("Scene Filter",          kRed,    SceneFilterContent(so)));
+            root.Add(Section("Storage",               kGray,   StorageContent(so)));
+            root.Add(Section("UI",                    kGray,   UiContent(so)));
 
             return root;
         }
 
         // ── Section content builders ──────────────────────────────────────────────
 
+        private static VisualElement DistributionContent(SerializedObject so)
+        {
+            var c = new VisualElement();
+
+            var note = new HelpBox(
+                "Select the distribution channel for each desktop platform.\n" +
+                "Android and iOS are always active — no selection needed.\n" +
+                "None = rate and more-games disabled on that platform (e.g. itch.io / direct download).\n" +
+                "A warning will appear at build time if the channel is None for the active build target.",
+                HelpBoxMessageType.Info);
+            note.style.marginBottom = 6;
+            c.Add(note);
+
+            c.Add(ChannelRow("macOS",    so.FindProperty("MacOs"),   kSilver));
+            c.Add(ChannelRow("Windows",  so.FindProperty("Windows"), kBlue));
+            c.Add(ChannelRow("Linux",    so.FindProperty("Linux"),   kSteam));
+
+            return c;
+        }
+
+        private static VisualElement ChannelRow(string label, SerializedProperty prop, Color accent)
+        {
+            var row = new VisualElement();
+            row.style.flexDirection       = FlexDirection.Row;
+            row.style.alignItems          = Align.Center;
+            row.style.marginBottom        = 3;
+            row.style.paddingLeft         = 10;
+            row.style.paddingRight        = 8;
+            row.style.paddingTop          = 5;
+            row.style.paddingBottom       = 5;
+            row.style.backgroundColor     = new Color(0.21f, 0.21f, 0.21f);
+            row.style.borderLeftColor     = accent;
+            row.style.borderLeftWidth     = 3;
+            row.style.borderTopColor      = new Color(0.27f, 0.27f, 0.27f);
+            row.style.borderTopWidth      = 1;
+            row.style.borderBottomColor   = new Color(0.27f, 0.27f, 0.27f);
+            row.style.borderBottomWidth   = 1;
+            row.style.borderRightColor    = new Color(0.27f, 0.27f, 0.27f);
+            row.style.borderRightWidth    = 1;
+            row.style.borderTopLeftRadius = row.style.borderTopRightRadius =
+            row.style.borderBottomLeftRadius = row.style.borderBottomRightRadius = 3;
+
+            var lbl = new Label(label);
+            lbl.style.fontSize                = 11;
+            lbl.style.unityFontStyleAndWeight = FontStyle.Bold;
+            lbl.style.color                   = accent;
+            lbl.style.width                   = 70;
+            row.Add(lbl);
+
+            var field = new PropertyField(prop, "");
+            field.style.flexGrow = 1;
+            row.Add(field);
+
+            // Live warning dot when None
+            var dot = new Label("⚠ None");
+            dot.style.fontSize   = 9;
+            dot.style.color      = kOrange;
+            dot.style.marginLeft = 6;
+            dot.style.alignSelf  = Align.Center;
+            row.Add(dot);
+
+            row.schedule.Execute(() =>
+            {
+                prop.serializedObject.Update();
+                dot.style.display = prop.intValue == 0 ? DisplayStyle.Flex : DisplayStyle.None;
+                row.style.borderLeftColor = prop.intValue == 0
+                    ? kOrange
+                    : accent;
+            }).Every(300);
+
+            return row;
+        }
+
         private static VisualElement StoreIdsContent(SerializedObject so)
         {
             var c = new VisualElement();
 
             var note = new HelpBox(
-                "Platform auto-detected at runtime:\n" +
-                "Android → Application.installerName (Google Play / Amazon)\n" +
-                "iOS → compile-time · macOS → MacAppStoreId or SteamAppId · Windows → SteamAppId · WSA → Windows Store",
+                "Android auto-detected at runtime via Application.installerName (Google Play / Amazon).\n" +
+                "iOS uses SKStoreReviewManager (always active). WSA uses Windows Store URI (always active).\n" +
+                "macOS / Windows / Linux channels are set in Distribution Channels above.",
                 HelpBoxMessageType.Info);
             note.style.marginBottom = 6;
             c.Add(note);
@@ -91,8 +165,8 @@ namespace Wagenheimer.RateControl.Editor
                 v => $"https://www.microsoft.com/store/apps/windows?search={v}"));
 
             c.Add(CollapsiblePlatform(
-                "Steam", kSteam,
-                "Developer slug from your Steamworks page URL (part after /developer/).",
+                "Steam  (Win · macOS · Linux)", kSteam,
+                "Developer slug from your Steamworks page URL (part after /developer/).\nCovers Windows, macOS (Steam channel), and Linux builds.",
                 "store.steampowered.com/developer/YOUR_SLUG  →  copy slug from the URL",
                 "https://partner.steamgames.com",
                 so.FindProperty("MoreGamesSteamDeveloperSlug"),

@@ -3,9 +3,33 @@ using UnityEngine;
 
 namespace Wagenheimer.RateControl
 {
+    public enum MacOsChannel      { None, MacAppStore, Steam }
+    public enum StandaloneChannel { None, Steam }
+
     [CreateAssetMenu(menuName = "Rate Control/Rate Config", fileName = "RateConfig", order = 0)]
     public sealed class RateConfig : ScriptableObject
     {
+        // Distribution Channels
+
+        [Tooltip(
+            "Distribution channel for macOS standalone builds.\n" +
+            "None = rate disabled on macOS.\n" +
+            "MacAppStore = opens macappstore:// review URL (requires MacAppStoreId).\n" +
+            "Steam = opens Steam review page (requires SteamAppId).")]
+        public MacOsChannel MacOs = MacOsChannel.None;
+
+        [Tooltip(
+            "Distribution channel for Windows standalone builds.\n" +
+            "None = rate disabled on Windows.\n" +
+            "Steam = opens Steam review page (requires SteamAppId).")]
+        public StandaloneChannel Windows = StandaloneChannel.None;
+
+        [Tooltip(
+            "Distribution channel for Linux standalone builds.\n" +
+            "None = rate disabled on Linux.\n" +
+            "Steam = opens Steam review page (requires SteamAppId).")]
+        public StandaloneChannel Linux = StandaloneChannel.None;
+
         // Store IDs
 
         [Tooltip(
