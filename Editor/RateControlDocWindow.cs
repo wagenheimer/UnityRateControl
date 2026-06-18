@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -659,4 +658,3 @@ namespace Wagenheimer.RateControl.Editor
         private static string C(string t) => $"<color=#7ec8e3>{t}</color>";
     }
 }
-#endif

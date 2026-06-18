@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -30,17 +29,7 @@ namespace Wagenheimer.RateControl.Editor
             helpRow.style.flexDirection  = FlexDirection.RowReverse;
             helpRow.style.marginBottom   = 4;
             helpRow.style.paddingRight   = 2;
-            var helpBtn = new Button(() =>
-            {
-                foreach (var t in TypeCache.GetTypesDerivedFrom<EditorWindow>())
-                {
-                    if (t.FullName == "Wagenheimer.RateControl.Editor.RateControlDocWindow")
-                    {
-                        EditorWindow.GetWindow(t, false, "Rate Control — Setup Guide").Show();
-                        break;
-                    }
-                }
-            }) { text = "?  Setup Guide" };
+            var helpBtn = new Button(RateControlDocWindow.Open) { text = "?  Setup Guide" };
             helpBtn.style.fontSize        = 10;
             helpBtn.style.paddingLeft     = 10;
             helpBtn.style.paddingRight    = 10;
@@ -529,4 +518,3 @@ namespace Wagenheimer.RateControl.Editor
         }
     }
 }
-#endif
