@@ -116,9 +116,11 @@ namespace Wagenheimer.RateControl.Editor
             c.Add(BuildPlatformCard(
                 title:       "Apple App Store  /  Mac App Store",
                 accent:      kSilver,
-                description: "Numeric Developer ID — not the bundle ID. Example: 964191738",
-                howToFind:   "appstoreconnect.apple.com  →  click your name (top-right)  →  View My Profile",
-                consoleUrl:  "https://appstoreconnect.apple.com",
+                description: "Numeric Developer ID — not the bundle ID. Example: 964191738\n" +
+                             "FASTEST: apps.apple.com → search your app → click developer name → copy the number after /id in the URL.\n" +
+                             "ALTERNATIVE: App Store Connect → click your name (top-right) → View My Profile.",
+                howToFind:   "apps.apple.com  →  search your app  →  click developer name  →  copy ID from URL",
+                consoleUrl:  "https://apps.apple.com",
                 prop:        so.FindProperty("MoreGamesAppleDeveloperId"),
                 fieldLabel:  "Apple Developer ID",
                 previewUrl:  v => string.IsNullOrEmpty(v) ? null

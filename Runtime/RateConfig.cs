@@ -46,11 +46,11 @@ namespace Wagenheimer.RateControl
         public string MoreGamesGoogleDeveloperName = "";
 
         [Tooltip(
-            "Numeric Apple Developer ID (NOT the bundle ID).\n" +
-            "Example: 964191738\n" +
-            "Auto-builds iOS URL:  https://apps.apple.com/developer/id{AppleDeveloperId}\n" +
-            "Auto-builds Mac URL:  https://apps.apple.com/mac/developer/id{AppleDeveloperId}\n" +
-            "Where to find: appstoreconnect.apple.com → click your name (top-right) → View My Profile")]
+            "Numeric Apple Developer ID (NOT the bundle ID). Example: 964191738\n" +
+            "Auto-builds iOS URL:  https://apps.apple.com/developer/id{id}\n" +
+            "Auto-builds Mac URL:  https://apps.apple.com/mac/developer/id{id}\n\n" +
+            "FASTEST: apps.apple.com → search your app → click developer name → copy the number after /id in the URL.\n" +
+            "ALTERNATIVE: appstoreconnect.apple.com → click your name (top-right) → View My Profile → copy Developer ID.")]
         public string MoreGamesAppleDeveloperId = "";
 
         [Tooltip(
