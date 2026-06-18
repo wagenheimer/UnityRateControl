@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -49,7 +48,7 @@ namespace Wagenheimer.RateControl.Editor
             uxml.CloneTree(rootVisualElement);
 
             // Version subtitle
-            var pkg = PackageInfo.FindForAssembly(typeof(RateControlDocWindow).Assembly);
+            var pkg = UnityEditor.PackageManager.PackageInfo.FindForAssembly(typeof(RateControlDocWindow).Assembly);
             var sub = rootVisualElement.Q<Label>("subtitle-label");
             if (sub != null) sub.text = pkg != null ? $"v{pkg.version}  ·  Setup Guide" : "Setup Guide";
 
