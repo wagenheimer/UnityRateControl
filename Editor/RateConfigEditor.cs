@@ -504,23 +504,13 @@ namespace Wagenheimer.RateControl.Editor
 
         private static void OpenSetupGuide()
         {
-            Debug.Log("[RateControl] Setup Guide button clicked.");
-            var all = TypeCache.GetTypesDerivedFrom<EditorWindow>();
-            Debug.Log($"[RateControl] TypeCache found {all.Count} EditorWindow types.");
-            foreach (var t in all)
-                Debug.Log($"[RateControl]   type: {t.FullName}");
-
-            foreach (var t in all)
+            foreach (var t in TypeCache.GetTypesDerivedFrom<EditorWindow>())
             {
                 if (t.FullName != "Wagenheimer.RateControl.Editor.RateControlDocWindow") continue;
-                Debug.Log("[RateControl] Found RateControlDocWindow — invoking Open().");
                 var m = t.GetMethod("Open",
                     System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
                 if (m != null) { m.Invoke(null, null); return; }
-                Debug.LogWarning("[RateControl] Open() method not found via reflection.");
-                return;
             }
-            Debug.LogWarning("[RateControl] RateControlDocWindow not in TypeCache — opening GitHub.");
             Application.OpenURL("https://github.com/wagenheimer/UnityRateControl#readme");
         }
 

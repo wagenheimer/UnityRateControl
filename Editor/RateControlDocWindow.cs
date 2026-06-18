@@ -11,9 +11,10 @@ namespace Wagenheimer.RateControl.Editor
         [MenuItem("Help/Rate Control Setup Guide")]
         public static void Open()
         {
-            var w = GetWindow<RateControlDocWindow>(false, "Rate Control — Setup Guide");
+            var w = GetWindow<RateControlDocWindow>(true, "Rate Control — Setup Guide");
             w.minSize = new Vector2(720, 480);
             w.Show();
+            w.Focus();
         }
 
         // ── Colors ────────────────────────────────────────────────────────────────
