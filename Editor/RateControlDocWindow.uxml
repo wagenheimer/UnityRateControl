@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML xmlns="UnityEngine.UIElements" editor-extension-mode="True">
+    <Style src="RateControlDocWindow.uss" />
+    <VisualElement class="rc-root">
+        <ScrollView name="sidebar" class="rc-sidebar" mode="Vertical">
+            <Label class="rc-app-title" text="Rate Control" />
+            <Label name="subtitle-label" class="rc-app-subtitle" text="Setup Guide" />
+            <VisualElement class="rc-rule" />
+            <VisualElement name="toc" />
+            <VisualElement class="rc-rule" />
+            <Button name="github-btn" class="rc-github-btn" text="GitHub  ↗" />
+        </ScrollView>
+        <ScrollView name="content-scroll" class="rc-content-scroll" mode="Vertical">
+            <VisualElement name="content" class="rc-content" />
+        </ScrollView>
+    </VisualElement>
+</UXML>

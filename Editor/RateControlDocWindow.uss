@@ -1,0 +1,274 @@
+/* ── Window shell ─────────────────────────────────────────────────────────── */
+.rc-root {
+    flex-direction: row;
+    background-color: #292929;
+    flex-grow: 1;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────────────────── */
+.rc-sidebar {
+    width: 190px;
+    min-width: 190px;
+    max-width: 190px;
+    background-color: #212121;
+    border-right-color: #383838;
+    border-right-width: 1px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+.rc-app-title {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: #4D9ED1;
+    padding-left: 14px;
+    margin-bottom: 2px;
+}
+
+.rc-app-subtitle {
+    font-size: 9px;
+    color: #737375;
+    padding-left: 14px;
+    margin-bottom: 10px;
+}
+
+.rc-rule {
+    height: 1px;
+    background-color: #383838;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+/* ── TOC buttons ──────────────────────────────────────────────────────────── */
+.rc-toc-btn {
+    -unity-text-align: middle-left;
+    font-size: 11px;
+    padding-left: 14px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    color: #ADADB2;
+}
+
+.rc-toc-btn:hover {
+    background-color: #2E333D;
+    color: #ADADB2;
+}
+
+.rc-toc-btn--active {
+    background-color: #38618C;
+    color: white;
+    border-left-color: #4D9ED1;
+    border-left-width: 3px;
+    padding-left: 11px;
+}
+
+.rc-toc-btn--active:hover {
+    background-color: #38618C;
+    color: white;
+}
+
+/* ── GitHub link ──────────────────────────────────────────────────────────── */
+.rc-github-btn {
+    -unity-text-align: middle-left;
+    font-size: 10px;
+    color: #737375;
+    background-color: rgba(0, 0, 0, 0);
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    padding-left: 14px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.rc-github-btn:hover {
+    color: #9DCFF2;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+/* ── Content area ─────────────────────────────────────────────────────────── */
+.rc-content-scroll {
+    flex-grow: 1;
+    padding-left: 28px;
+    padding-right: 28px;
+    padding-top: 22px;
+    padding-bottom: 28px;
+}
+
+.rc-content {
+    max-width: 680px;
+}
+
+/* ── Page typography ──────────────────────────────────────────────────────── */
+.rc-h1 {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: #E0E0EB;
+    margin-bottom: 8px;
+    white-space: normal;
+}
+
+.rc-h1--accent { color: #4D9ED1; }
+.rc-h1--green  { color: #33AE52; }
+.rc-h1--orange { color: #F29419; }
+.rc-h1--silver { color: #A6A6AE; }
+.rc-h1--yellow { color: #D9AE33; }
+
+.rc-h2 {
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: #E0E0EB;
+    margin-top: 16px;
+    margin-bottom: 4px;
+    white-space: normal;
+}
+
+.rc-h2--accent { color: #4D9ED1; }
+.rc-h2--green  { color: #33AE52; }
+.rc-h2--orange { color: #F29419; }
+.rc-h2--silver { color: #A6A6AE; }
+.rc-h2--steam  { color: #3D85CC; }
+
+.rc-body {
+    font-size: 11px;
+    color: #ADADB2;
+    white-space: normal;
+    margin-bottom: 5px;
+}
+
+.rc-hint {
+    font-size: 10px;
+    color: #737375;
+    white-space: normal;
+    margin-bottom: 5px;
+    margin-left: 8px;
+}
+
+.rc-gap     { height: 10px; }
+.rc-gap--lg { height: 16px; }
+
+/* ── Code block ───────────────────────────────────────────────────────────── */
+.rc-code {
+    background-color: #1F1F2E;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    border-left-color: #4D9ED1;
+    border-left-width: 2px;
+}
+
+.rc-code__text {
+    font-size: 10px;
+    color: #C7E0FA;
+    white-space: normal;
+}
+
+/* ── Info box ─────────────────────────────────────────────────────────────── */
+.rc-info {
+    background-color: #23395C;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    border-left-color: #4D9ED1;
+    border-left-width: 3px;
+}
+
+.rc-info__text {
+    font-size: 11px;
+    color: #B8D9FA;
+    white-space: normal;
+}
+
+/* ── Bullet list ──────────────────────────────────────────────────────────── */
+.rc-bullets {
+    margin-left: 8px;
+    margin-bottom: 5px;
+}
+
+.rc-bullet {
+    font-size: 11px;
+    color: #ADADB2;
+    white-space: normal;
+    margin-bottom: 2px;
+}
+
+/* ── Table ────────────────────────────────────────────────────────────────── */
+.rc-table {
+    margin-top: 6px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.rc-table-row {
+    flex-direction: row;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #2B2B2B;
+}
+
+.rc-table-row--header {
+    background-color: #333D4D;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.rc-table-row--alt {
+    background-color: #303030;
+}
+
+.rc-table-cell {
+    font-size: 11px;
+    color: #ADADB2;
+    white-space: normal;
+    flex-grow: 1;
+    flex-basis: 0;
+    padding-right: 10px;
+}
+
+.rc-table-cell--header {
+    font-size: 10px;
+    -unity-font-style: bold;
+    color: #4D9ED1;
+}
