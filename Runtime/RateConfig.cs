@@ -8,7 +8,6 @@ namespace Wagenheimer.RateControl
     {
         // Store IDs
 
-        [Header("Store IDs")]
         [Tooltip(
             "Android package name for Google Play and Amazon links.\n" +
             "Example: com.mystudio.mygame\n\n" +
@@ -35,8 +34,6 @@ namespace Wagenheimer.RateControl
         public string SteamAppId = "";
 
         // More Games
-
-        [Header("More Games - opened by RateControl.ShowMoreGames()")]
 
         [Tooltip(
             "Your publisher/developer name exactly as it appears on Google Play.\n" +
@@ -75,7 +72,6 @@ namespace Wagenheimer.RateControl
 
         // Trigger Thresholds
 
-        [Header("Trigger Thresholds")]
         [Tooltip(
             "Calls to RateControl.LogEvent() needed to queue the rate prompt.\n\n" +
             "Call LogEvent() at meaningful moments: level completions, puzzle solves, match wins.\n" +
@@ -102,7 +98,6 @@ namespace Wagenheimer.RateControl
 
         // Scene Filter
 
-        [Header("Scene Filter")]
         [Tooltip(
             "Scene names where the prompt is always suppressed, regardless of thresholds.\n\n" +
             "Add loading screens, battle scenes, or cutscenes where an interruption breaks flow.\n" +
@@ -111,7 +106,6 @@ namespace Wagenheimer.RateControl
 
         // Storage
 
-        [Header("Storage")]
         [Tooltip(
             "Prefix for every PlayerPrefs key used by this package.\n\n" +
             "IMPORTANT: use a unique value per game. Two games sharing the same prefix on the\n" +
@@ -122,7 +116,6 @@ namespace Wagenheimer.RateControl
 
         // UI
 
-        [Header("UI")]
         [Tooltip(
             "Path inside any Resources/ folder where the rate dialog prefab lives,\n" +
             "WITHOUT the .prefab extension.\n\n" +
