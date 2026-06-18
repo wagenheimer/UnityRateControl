@@ -25,6 +25,28 @@ namespace Wagenheimer.RateControl.Editor
             var root = new VisualElement();
             root.style.paddingBottom = 8;
 
+            // Help button row
+            var helpRow = new VisualElement();
+            helpRow.style.flexDirection  = FlexDirection.RowReverse;
+            helpRow.style.marginBottom   = 4;
+            helpRow.style.paddingRight   = 2;
+            var helpBtn = new Button(RateControlDocWindow.Open) { text = "?  Setup Guide" };
+            helpBtn.style.fontSize        = 10;
+            helpBtn.style.paddingLeft     = 10;
+            helpBtn.style.paddingRight    = 10;
+            helpBtn.style.paddingTop      = 4;
+            helpBtn.style.paddingBottom   = 4;
+            helpBtn.style.color           = kCyan;
+            helpBtn.style.borderTopColor  = helpBtn.style.borderBottomColor =
+            helpBtn.style.borderLeftColor = helpBtn.style.borderRightColor = kCyan;
+            helpBtn.style.borderTopWidth  = helpBtn.style.borderBottomWidth =
+            helpBtn.style.borderLeftWidth = helpBtn.style.borderRightWidth = 1;
+            helpBtn.style.borderTopLeftRadius    = helpBtn.style.borderTopRightRadius =
+            helpBtn.style.borderBottomLeftRadius = helpBtn.style.borderBottomRightRadius = 3;
+            helpBtn.style.backgroundColor = new Color(0.14f, 0.22f, 0.32f);
+            helpRow.Add(helpBtn);
+            root.Add(helpRow);
+
             root.Add(Section("Distribution Channels", kOrange, DistributionContent(so)));
             root.Add(Section("Store IDs",             kCyan,   StoreIdsContent(so)));
             root.Add(Section("More Games",            kGreen,  MoreGamesContent(so)));
