@@ -87,7 +87,7 @@ public class GameBootstrap : MonoBehaviour
 
     private void Awake()
     {
-        RateControl.Initialize(_rateConfig, rateDialog: _rateDialog);
+        RateControl.Initialize(_rateConfig, dialog: _rateDialog);
     }
 }
 ```
@@ -154,32 +154,78 @@ Assign your prefab to `RateControl.Initialize(config, rateDialog: myDialogInstan
 
 ## Optional Interfaces
 
-### IRateBlocker
+These two interfaces are the extension points for the two most common customization needs. Both have sensible defaults, so you only implement them when the default isn't enough.
 
-Prevent the dialog from appearing at inconvenient times:
+---
+
+### IRateBlocker — suppress the prompt at bad moments
+
+**Problem:** The internal poll loop checks thresholds every second. As soon as the thresholds are met it tries to show the dialog — but your game might be mid-tutorial, showing a cutscene, or already displaying another modal. Showing a rate dialog on top of those would feel jarring.
+
+**Solution:** Implement `IRateBlocker` and return `false` whenever the prompt should wait. The poll loop will keep retrying every second until you return `true`.
 
 ```csharp
-public class MyRateBlocker : MonoBehaviour, IRateBlocker
+// Attach this to a persistent GameObject (the same one running your game state).
+public class MyGameBootstrap : MonoBehaviour, IRateBlocker
 {
-    public bool CanShowRate() =>
-        !_tutorialActive && !_modalOpen;
-}
+    private bool _tutorialActive;
+    private int  _openModals;
 
-// Pass to Initialize
-RateControl.Initialize(config, blocker: GetComponent<IRateBlocker>());
+    // The poll loop calls this every second. Return true = safe to show.
+    public bool CanShowRate() => !_tutorialActive && _openModals == 0;
+
+    private void Awake()
+    {
+        // Pass 'this' because this MonoBehaviour implements IRateBlocker.
+        RateControl.Initialize(_config, blocker: this);
+    }
+
+    // Call these from your game code to keep the state up to date.
+    public void StartTutorial()  => _tutorialActive = true;
+    public void FinishTutorial() => _tutorialActive = false;
+    public void OpenModal()      => _openModals++;
+    public void CloseModal()     => _openModals--;
+}
 ```
 
-### IRateVersionProvider
+If you omit `blocker`, the default implementation always returns `true` (never blocks).
 
-Override how the "new version" detection reads the game version:
+---
+
+### IRateVersionProvider — control when "new version" resets the prompt
+
+**Problem:** When a player taps "No Thanks" or "Rate Now", Rate Control sets a flag so it never bothers them again. That's correct — but if you ship a major update, you may want to ask again. The package handles this automatically: if the stored version doesn't match the current version, the "don't ask" flag is cleared.
+
+By default it reads `Application.version` (the value in **Project Settings → Player → Version**). That's fine for most games, but if your game uses a separate marketing version string that differs from the Unity build version, the comparison will fire at the wrong time.
+
+**Solution:** Implement `IRateVersionProvider` to return exactly the string you want to compare between sessions.
 
 ```csharp
+// Simple class — no MonoBehaviour needed.
 public class MarketingVersionProvider : IRateVersionProvider
 {
-    public string GetCurrentVersion() => MyGame.MarketingVersion;
+    // Return whatever version string your game considers a "meaningful upgrade".
+    public string GetCurrentVersion() => MyGame.MarketingVersion; // e.g. "2.0"
 }
 
-RateControl.Initialize(config, versionProvider: new MarketingVersionProvider());
+// Pass a new instance to Initialize.
+RateControl.Initialize(_config, version: new MarketingVersionProvider());
+```
+
+If you omit `version`, the default reads `Application.version`.
+
+---
+
+### Using both at once
+
+All parameters are independent and optional — combine freely:
+
+```csharp
+RateControl.Initialize(
+    _config,
+    blocker:  this,                          // IRateBlocker
+    version:  new MarketingVersionProvider() // IRateVersionProvider
+);
 ```
 
 ---

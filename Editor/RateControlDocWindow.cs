@@ -391,6 +391,26 @@ namespace Wagenheimer.RateControl.Editor
         {
             var box = new VisualElement();
             box.AddToClassList("rc-code");
+
+            var header = new VisualElement();
+            header.AddToClassList("rc-code__header");
+
+            var spacer = new VisualElement();
+            spacer.style.flexGrow = 1;
+            header.Add(spacer);
+
+            var copyBtn = new Button();
+            copyBtn.AddToClassList("rc-code__copy-btn");
+            copyBtn.text = "Copy";
+            copyBtn.clicked += () =>
+            {
+                GUIUtility.systemCopyBuffer = code;
+                copyBtn.text = "✓ Copied";
+                copyBtn.schedule.Execute(() => copyBtn.text = "Copy").StartingIn(1500);
+            };
+            header.Add(copyBtn);
+            box.Add(header);
+
             var l = new Label(code);
             l.AddToClassList("rc-code__text");
             box.Add(l);
