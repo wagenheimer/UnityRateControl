@@ -29,6 +29,11 @@ namespace Wagenheimer.RateControl
 
         public IEnumerator OpenRatePage()
         {
+#if UNITY_EDITOR
+            Debug.Log($"[RateControl] Editor — store page suppressed. " +
+                      $"(Would open for build target: {UnityEditor.EditorUserBuildSettings.activeBuildTarget})");
+            yield break;
+#endif
             Debug.Log($"[RateControl] Opening rate page (auto-detect). Installer={Application.installerName}");
 
 #if UNITY_ANDROID
