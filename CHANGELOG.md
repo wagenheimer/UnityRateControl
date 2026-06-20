@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.15] - 2026-06-20
+
+### Fixed
+
+- `RateControl` Editor F8 shortcut: now calls `ShowPrompt()` directly instead of setting `_pendingPrompt = true`, so it bypasses the blocker (`IRateBlocker.CanShowRate()`), blacklisted scene check, and threshold evaluation — the dialog appears immediately regardless of game state
+
 ## [1.2.14] - 2026-06-20
 
 ### Fixed

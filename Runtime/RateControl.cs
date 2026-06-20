@@ -384,8 +384,8 @@ namespace Wagenheimer.RateControl
         {
             if (Input.GetKeyDown(KeyCode.F8))
             {
-                Debug.Log("[RateControl] F8: forcing rate prompt.");
-                _pendingPrompt = true;
+                Debug.Log("[RateControl] F8: forcing rate prompt (bypasses blocker, blacklist, and thresholds).");
+                ShowPrompt();
             }
         }
 #endif
