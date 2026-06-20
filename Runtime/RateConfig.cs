@@ -141,12 +141,16 @@ namespace Wagenheimer.RateControl
         // UI
 
         [Tooltip(
-            "Path inside any Resources/ folder where the rate dialog prefab lives,\n" +
-            "WITHOUT the .prefab extension.\n\n" +
-            "The system calls Resources.Load<RateDialog>(DialogResourcePath) at runtime.\n" +
-            "The prefab must have a component that inherits from RateDialog.\n\n" +
-            "Example: prefab at Assets/UI/Resources/MyPopup.prefab -> set to MyPopup.\n\n" +
-            "Tip: pass the dialog instance directly to RateControl.Initialize() to skip this.")]
+            "Drag your RateDialog prefab here — no Resources/ folder needed.\n\n" +
+            "The prefab must have a component that inherits from RateDialog.\n" +
+            "Takes priority over Dialog Resource Path when set.\n\n" +
+            "Tip: pass a scene instance to RateControl.Initialize(dialog:) to skip both fields.")]
+        public RateDialog DialogPrefab;
+
+        [Tooltip(
+            "Fallback: path inside any Resources/ folder where the rate dialog prefab lives,\n" +
+            "WITHOUT the .prefab extension. Only used when Dialog Prefab above is not set.\n\n" +
+            "Example: prefab at Assets/UI/Resources/MyPopup.prefab -> set to MyPopup.")]
         public string DialogResourcePath = "RateDialog";
 
         // Internal helpers

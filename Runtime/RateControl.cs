@@ -127,9 +127,19 @@ namespace Wagenheimer.RateControl
             ResetDontAskIfNewVersion();
             RecordStart();
 
-            _dialog = dialog ?? LoadDialogFromResources();
+            _dialog = dialog ?? LoadDialogFromConfig() ?? LoadDialogFromResources();
 
             StartCoroutine(PollLoop());
+        }
+
+        private RateDialog LoadDialogFromConfig()
+        {
+            if (_config.DialogPrefab == null) return null;
+            var instance = Instantiate(_config.DialogPrefab);
+            DontDestroyOnLoad(instance.gameObject);
+            instance.gameObject.SetActive(false);
+            Debug.Log($"[RateControl] Dialog loaded from RateConfig.DialogPrefab.");
+            return instance;
         }
 
         private RateDialog LoadDialogFromResources()
