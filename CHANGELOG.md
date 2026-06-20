@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.21] - 2026-06-20
+
+### Changed
+
+- `DefaultRateDialog`: removed `[Header("Labels")]` section (`_titleLabel`, `_subtitleLabel`) and all `[Header("Default Text")]` string fields — text is now owned entirely by the prefab and/or localization system (e.g. I2 Localization). The script no longer overwrites any `TextMeshProUGUI` content on `Awake`
+
 ## [1.2.20] - 2026-06-20
 
 ### Changed

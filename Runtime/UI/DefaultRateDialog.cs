@@ -1,5 +1,4 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -7,13 +6,15 @@ using UnityEngine.UI;
 namespace Wagenheimer.RateControl
 {
     /// <summary>
-    /// Drop-in default rate dialog with animated card, star decoration, and three action buttons.
+    /// Drop-in default rate dialog with animated card and three action buttons.
     ///
     /// <b>Setup:</b> Run <c>Rate Control → Create Default Prefab</c> to generate the
-    /// prefab with all references pre-wired. Then assign it to <see cref="RateControlSetup"/>.
+    /// prefab with all references pre-wired. Then assign it to your <c>RateConfig</c> asset.
     ///
-    /// <b>Customization:</b> All colors, text, and timing values are Inspector-exposed.
-    /// Swap fonts, sprites, or override <c>Show</c>/<c>Hide</c> in a subclass for full control.
+    /// <b>Text / Localization:</b> Labels are <b>not</b> set by this script — edit the
+    /// <c>TextMeshProUGUI</c> components directly in the prefab, or attach your localization
+    /// component (e.g. I2 Localization's <c>Localize</c>) to each label. This script will
+    /// never overwrite what the prefab or localization system provides.
     ///
     /// <b>Animations:</b> Uses Unity Coroutines — no external animation library required.
     /// </summary>
@@ -33,13 +34,6 @@ namespace Wagenheimer.RateControl
         [FormerlySerializedAs("_cardGroup")]
         [SerializeField] private CanvasGroup _dialogGroup;
 
-        [Header("Labels")]
-        [Tooltip("TextMeshPro label for the dialog title (e.g. 'Enjoying the game?').")]
-        [SerializeField] private TextMeshProUGUI _titleLabel;
-
-        [Tooltip("TextMeshPro label for the dialog subtitle / call-to-action line.")]
-        [SerializeField] private TextMeshProUGUI _subtitleLabel;
-
         [Header("Buttons")]
         [Tooltip("Button the player taps to open the store review page immediately.")]
         [SerializeField] private Button _rateNowButton;
@@ -49,24 +43,6 @@ namespace Wagenheimer.RateControl
 
         [Tooltip("Button the player taps to permanently decline the prompt.")]
         [SerializeField] private Button _noThanksButton;
-
-        // ── Content ───────────────────────────────────────────────────────────────
-
-        [Header("Default Text")]
-        [Tooltip("Title shown at the top of the dialog card.")]
-        [SerializeField] private string _title = "Enjoying the game?";
-
-        [Tooltip("Subtitle shown below the title.")]
-        [SerializeField] private string _subtitle = "A quick review means the world to us!";
-
-        [Tooltip("Label text for the 'Rate Now' action button.")]
-        [SerializeField] private string _rateLabel = "Rate Now  ★";
-
-        [Tooltip("Label text for the 'Remind Me Later' button.")]
-        [SerializeField] private string _remindLabel = "Remind Me Later";
-
-        [Tooltip("Label text for the 'No Thanks' dismiss button.")]
-        [SerializeField] private string _noThanksLabel = "No Thanks";
 
         // ── Animation ─────────────────────────────────────────────────────────────
 
@@ -89,12 +65,6 @@ namespace Wagenheimer.RateControl
 
         private void Awake()
         {
-            ApplyText(_titleLabel,   _title);
-            ApplyText(_subtitleLabel, _subtitle);
-            ApplyButtonLabel(_rateNowButton,    _rateLabel);
-            ApplyButtonLabel(_remindLaterButton, _remindLabel);
-            ApplyButtonLabel(_noThanksButton,   _noThanksLabel);
-
             _rateNowButton?.onClick.AddListener(OnRateNow);
             _remindLaterButton?.onClick.AddListener(OnRemindLater);
             _noThanksButton?.onClick.AddListener(OnNoThanks);
@@ -152,19 +122,6 @@ namespace Wagenheimer.RateControl
             _anim = null;
         }
 
-        // ── Helpers ───────────────────────────────────────────────────────────────
-
-        private static void ApplyText(TextMeshProUGUI label, string text)
-        {
-            if (label != null) label.text = text;
-        }
-
-        private static void ApplyButtonLabel(Button button, string text)
-        {
-            if (button == null) return;
-            var tmp = button.GetComponentInChildren<TextMeshProUGUI>();
-            if (tmp != null) tmp.text = text;
-        }
     }
 }
 
