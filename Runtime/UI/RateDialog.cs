@@ -33,13 +33,25 @@ namespace Wagenheimer.RateControl
         // ── Button callbacks — wire these to your UI buttons ────────────────────
 
         /// <summary>Call from your "Rate Now" button. Triggers the store page and suppresses future prompts.</summary>
-        public void OnRateNow() => RateControl.UserActed(RateUserAction.RateNow);
+        public void OnRateNow()
+        {
+            Debug.Log("[RateControl] User tapped Rate Now → opening store page and suppressing all future prompts.");
+            RateControl.UserActed(RateUserAction.RateNow);
+        }
 
         /// <summary>Call from your "Remind Me Later" button. Re-queues after the cooldown period.</summary>
-        public void OnRemindLater() => RateControl.UserActed(RateUserAction.RemindLater);
+        public void OnRemindLater()
+        {
+            Debug.Log("[RateControl] User tapped Remind Me Later → prompt will re-appear after the configured cooldown (RemindLaterCooldownDays).");
+            RateControl.UserActed(RateUserAction.RemindLater);
+        }
 
         /// <summary>Call from your "No Thanks" button. Suppresses all future prompts.</summary>
-        public void OnNoThanks() => RateControl.UserActed(RateUserAction.Decline);
+        public void OnNoThanks()
+        {
+            Debug.Log("[RateControl] User tapped No Thanks → DontAsk=true, no further prompts for this version.");
+            RateControl.UserActed(RateUserAction.Decline);
+        }
     }
 }
 

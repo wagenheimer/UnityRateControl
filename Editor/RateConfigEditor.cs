@@ -233,33 +233,15 @@ namespace Wagenheimer.RateControl.Editor
             var c = new VisualElement();
 
             var prefabProp = so.FindProperty("DialogPrefab");
-            var pathProp   = so.FindProperty("DialogResourcePath");
 
             var warning = new HelpBox(
-                "No Dialog Prefab assigned. Drag your RateDialog prefab here.\n" +
-                "Without it, falling back to Dialog Resource Path (Resources/ folder). " +
-                "If neither is set, OnPromptRequested fires but no UI appears.",
+                "No Dialog Prefab assigned. Drag your RateDialog prefab here — " +
+                "without it, OnPromptRequested fires but no UI will appear.",
                 HelpBoxMessageType.Warning);
             warning.style.marginBottom = 6;
             c.Add(warning);
 
             c.Add(new PropertyField(prefabProp));
-
-            var divider = new VisualElement();
-            divider.style.height          = 1;
-            divider.style.backgroundColor = new Color(0.28f, 0.28f, 0.28f);
-            divider.style.marginTop       = 10;
-            divider.style.marginBottom    = 6;
-            c.Add(divider);
-
-            var legacyLabel = new Label("LEGACY — Resources/ path fallback (used only when Dialog Prefab is empty)");
-            legacyLabel.style.fontSize = 9;
-            legacyLabel.style.color    = new Color(0.45f, 0.45f, 0.45f);
-            legacyLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
-            legacyLabel.style.marginBottom = 4;
-            c.Add(legacyLabel);
-
-            c.Add(new PropertyField(pathProp));
 
             c.schedule.Execute(() =>
             {
