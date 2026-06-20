@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.19] - 2026-06-20
+
+### Fixed
+
+- `RateConfigEditor`: `Dialog Prefab` field was missing from the Inspector — the custom editor only rendered `Dialog Resource Path`. Now shows `Dialog Prefab` as the primary field with a live warning HelpBox when it is unassigned, and `Dialog Resource Path` below as a clearly labelled legacy fallback
+
 ## [1.2.18] - 2026-06-20
 
 ### Added
