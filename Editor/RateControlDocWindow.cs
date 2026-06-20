@@ -115,6 +115,9 @@ namespace Wagenheimer.RateControl.Editor
             p.Add(Body("Go to " + B("Tools → Rate Control → Create Default Dialog") + " — generates the prefab. " +
                        "Then drag it into the " + B("Dialog Prefab") + " field of your " +
                        C("RateConfig") + " asset in the Inspector. No " + C("Resources/") + " folder needed."));
+            p.Add(Body("Edit the " + C("TextMeshProUGUI") + " labels directly in the prefab, or attach a localization " +
+                       "component (e.g. I2 Localization's " + C("Localize") + "). " +
+                       "The dialog script never overwrites label text at runtime."));
             p.Add(H2("3 · Set Distribution Channels"));
             p.Add(Body("Open RateConfig → " + B("Distribution Channels") + ". Choose the store for each desktop platform:"));
             p.Add(Bullets(
@@ -303,25 +306,36 @@ namespace Wagenheimer.RateControl.Editor
             p.Add(Body("To replace the built-in dialog UI, create a prefab with a component that inherits from " + C("RateDialog") + "."));
             p.Add(Gap());
             p.Add(H2("1 · Inherit from RateDialog"));
+            p.Add(Body("Override " + C("Show()") + " and " + C("Hide()") + ". " +
+                       "The three button callbacks are already implemented in the base class — " +
+                       "just wire your Unity buttons to them:"));
             p.Add(Code(
-                "using Wagenheimer.RateControl;\n\n" +
                 "public class MyRateDialog : RateDialog\n{\n" +
-                "    public override void OnRateNow()     => StartCoroutine(Opener.OpenRatePage());\n" +
-                "    public override void OnRemindLater() => Controller.RemindLater();\n" +
-                "    public override void OnDecline()     => Controller.Decline();\n}"));
-            p.Add(H2("2 · Assign in RateConfig (recommended)"));
+                "    public override void Show() { /* animate in */ }\n" +
+                "    public override void Hide() { /* animate out */ }\n\n" +
+                "    // Wire buttons in the prefab:\n" +
+                "    //   Rate Now   → OnRateNow()\n" +
+                "    //   Remind Me  → OnRemindLater()\n" +
+                "    //   No Thanks  → OnNoThanks()\n}"));
+            p.Add(H2("2 · Assign in RateConfig"));
             p.Add(Body("Drag the prefab into the " + B("Dialog Prefab") + " field of your " +
-                       C("RateConfig") + " asset. No " + C("Resources/") + " folder needed — " +
-                       "the package instantiates it automatically."));
-            p.Add(H2("Alternative A · Pass a scene instance directly"));
+                       C("RateConfig") + " asset. The package instantiates it automatically — " +
+                       "no " + C("Resources/") + " folder needed."));
+            p.Add(H2("Alternative · Pass a scene instance directly"));
             p.Add(Body("Use this when the dialog must live inside your canvas for correct UI sorting:"));
             p.Add(Code(
                 "var dialog = Instantiate(rateConfig.DialogPrefab, myCanvas.transform, false);\n" +
                 "RateControl.Initialize(config, dialog: dialog);"));
-            p.Add(H2("Alternative B · Resources folder (legacy)"));
-            p.Add(Body("Put the prefab inside any " + C("Resources/") + " folder and set " +
-                       B("Dialog Resource Path") + " in RateConfig to the filename without extension. " +
-                       "Only needed if you cannot use the Dialog Prefab field."));
+            p.Add(Gap());
+            p.Add(H2("Text & Localization"));
+            p.Add(Body(B("DefaultRateDialog does not set any text at runtime.") + " " +
+                       "All labels are owned by the prefab, so any localization system works without extra configuration:"));
+            p.Add(Bullets(
+                "I2 Localization — attach a Localize component to each TextMeshProUGUI label in the prefab",
+                "Unity Localization — use a LocalizeStringEvent on each label",
+                "Manual — set text directly in the prefab; it will never be overwritten"));
+            p.Add(Info("The old \"Default Text\" Inspector fields were removed in v1.2.21 to avoid " +
+                       "overwriting localized strings on Awake."));
             return p;
         }
 

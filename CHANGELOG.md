@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.22] - 2026-06-20
+
+### Changed
+
+- README: fixed `RateDialog` code example (correct abstract API: `Show`/`Hide`; button methods are inherited, not overridden); added **Text & Localization** section explaining I2/Unity Localization compatibility
+- Setup Guide window: added localization note to Quick Start step 2; fixed Custom Dialog code example; added **Text & Localization** section to Custom Dialog page
+
 ## [1.2.21] - 2026-06-20
 
 ### Changed

@@ -134,7 +134,7 @@ Set `AppId` in the config to your store-specific identifier (e.g. Play package n
 
 ## Customizing the Dialog
 
-Subclass `RateDialog` and implement the three abstract methods:
+Subclass `RateDialog` and override the two abstract methods. The three button callbacks (`OnRateNow`, `OnRemindLater`, `OnNoThanks`) are already implemented in the base class — just wire your UI buttons to them:
 
 ```csharp
 using Wagenheimer.RateControl;
@@ -142,17 +142,27 @@ using UnityEngine;
 
 public class MyGameRateDialog : RateDialog
 {
-    protected override void OnShow() { /* animate in */ }
-    protected override void OnHide() { /* animate out */ }
-    protected override void OnUserAction(RateUserAction action)
-    {
-        // action is RateNow, RemindLater, or Decline
-        Respond(action); // must call this to report back to RateControl
-    }
+    public override void Show() { /* animate in, set active, etc. */ }
+    public override void Hide() { /* animate out */ }
+
+    // Wire your "Rate Now" button → OnRateNow()
+    // Wire your "Remind Later" button → OnRemindLater()
+    // Wire your "No Thanks" button → OnNoThanks()
+    // (all three are inherited from RateDialog — no override needed)
 }
 ```
 
-Assign your prefab to `RateControl.Initialize(config, rateDialog: myDialogInstance)`.
+Drag the prefab into the **Dialog Prefab** field of your `RateConfig` asset.
+
+### Text & Localization
+
+`DefaultRateDialog` (and any `RateDialog` subclass) **never sets text on `TextMeshProUGUI` components** — all labels are controlled entirely by the prefab. This means localization systems work without any extra configuration:
+
+- **I2 Localization**: attach a `Localize` component to each label in the prefab as normal.
+- **Unity Localization**: use a `LocalizeStringEvent` on each label.
+- **Manual**: set the text directly in the prefab; it will not be overwritten at runtime.
+
+> The old `[Header("Default Text")]` Inspector fields were removed in v1.2.21 precisely to avoid overwriting localized strings on `Awake`.
 
 ---
 
