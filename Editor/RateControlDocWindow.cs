@@ -112,9 +112,9 @@ namespace Wagenheimer.RateControl.Editor
             p.Add(Body("Go to " + B("Tools → Rate Control → Create Config") + " — this creates a " +
                        B("RateConfig.asset") + " in your project."));
             p.Add(H2("2 · Create the Rate Dialog prefab"));
-            p.Add(Body("Go to " + B("Tools → Rate Control → Create Default Dialog") + " — saves a prefab " +
-                       "inside a " + C("Resources/") + " folder. Default path is " + C("\"RateDialog\"") +
-                       ". Update " + B("Dialog Resource Path") + " in RateConfig if you move it."));
+            p.Add(Body("Go to " + B("Tools → Rate Control → Create Default Dialog") + " — generates the prefab. " +
+                       "Then drag it into the " + B("Dialog Prefab") + " field of your " +
+                       C("RateConfig") + " asset in the Inspector. No " + C("Resources/") + " folder needed."));
             p.Add(H2("3 · Set Distribution Channels"));
             p.Add(Body("Open RateConfig → " + B("Distribution Channels") + ". Choose the store for each desktop platform:"));
             p.Add(Bullets(
@@ -309,15 +309,19 @@ namespace Wagenheimer.RateControl.Editor
                 "    public override void OnRateNow()     => StartCoroutine(Opener.OpenRatePage());\n" +
                 "    public override void OnRemindLater() => Controller.RemindLater();\n" +
                 "    public override void OnDecline()     => Controller.Decline();\n}"));
-            p.Add(H2("2 · Place in a Resources folder"));
-            p.Add(Body("Put the prefab inside any " + C("Resources/") + " folder. The file name (without extension) is the resource path."));
-            p.Add(Hint("Assets/UI/Resources/MyDialog.prefab  →  Dialog Resource Path = \"MyDialog\""));
-            p.Add(H2("3 · Update Dialog Resource Path in RateConfig"));
-            p.Add(Body("Set " + B("Dialog Resource Path") + " in RateConfig to match your prefab name."));
-            p.Add(H2("Alternative: pass instance directly"));
+            p.Add(H2("2 · Assign in RateConfig (recommended)"));
+            p.Add(Body("Drag the prefab into the " + B("Dialog Prefab") + " field of your " +
+                       C("RateConfig") + " asset. No " + C("Resources/") + " folder needed — " +
+                       "the package instantiates it automatically."));
+            p.Add(H2("Alternative A · Pass a scene instance directly"));
+            p.Add(Body("Use this when the dialog must live inside your canvas for correct UI sorting:"));
             p.Add(Code(
-                "// If the dialog is already in your scene, skip Resources.Load entirely:\n" +
-                "RateControl.Initialize(config, dialog: myDialogInstance);"));
+                "var dialog = Instantiate(rateConfig.DialogPrefab, myCanvas.transform, false);\n" +
+                "RateControl.Initialize(config, dialog: dialog);"));
+            p.Add(H2("Alternative B · Resources folder (legacy)"));
+            p.Add(Body("Put the prefab inside any " + C("Resources/") + " folder and set " +
+                       B("Dialog Resource Path") + " in RateConfig to the filename without extension. " +
+                       "Only needed if you cannot use the Dialog Prefab field."));
             return p;
         }
 

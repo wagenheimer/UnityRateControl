@@ -68,7 +68,7 @@ Adjust thresholds in the Inspector (events, sessions, cooldown days, etc.).
 
 **Tools → Rate Control → Create Default Prefab**
 
-Save it inside any `Resources/` folder in your project. Set `DialogResourcePath` in the config to match the filename (without `.prefab`).
+Then drag the prefab into the **Dialog Prefab** field of your `RateConfig` asset in the Inspector. No `Resources/` folder required.
 
 ### 3. Set your storage prefix
 
@@ -83,19 +83,23 @@ using UnityEngine;
 public class GameBootstrap : MonoBehaviour
 {
     [SerializeField] private RateConfig _rateConfig;
-    [SerializeField] private MyRateDialog _rateDialog; // your prefab, optional
 
     private void Awake()
     {
-        RateControl.Initialize(_rateConfig, dialog: _rateDialog);
+        // Dialog is loaded from RateConfig.DialogPrefab automatically.
+        RateControl.Initialize(_rateConfig);
     }
 }
 ```
 
-Or let the package load the dialog from `Resources/` automatically — no argument needed:
+To use a prefab that lives inside your game's canvas (so UI sorting is correct), instantiate and parent it first:
 
 ```csharp
-RateControl.Initialize(_rateConfig);
+private void Awake()
+{
+    var dialog = Instantiate(_rateConfig.DialogPrefab, myCanvas.transform, false);
+    RateControl.Initialize(_rateConfig, dialog: dialog);
+}
 ```
 
 ### 5. Log player milestones
