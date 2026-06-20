@@ -136,9 +136,10 @@ namespace Wagenheimer.RateControl
         {
             if (_config.DialogPrefab == null) return null;
             var instance = Instantiate(_config.DialogPrefab);
+            EnsureCanvas(instance.gameObject);
             DontDestroyOnLoad(instance.gameObject);
             instance.gameObject.SetActive(false);
-            Debug.Log($"[RateControl] Dialog loaded from RateConfig.DialogPrefab.");
+            Debug.Log("[RateControl] Dialog loaded from RateConfig.DialogPrefab.");
             return instance;
         }
 
@@ -155,9 +156,22 @@ namespace Wagenheimer.RateControl
             }
 
             var instance = Instantiate(prefab);
+            EnsureCanvas(instance.gameObject);
             DontDestroyOnLoad(instance.gameObject);
             instance.gameObject.SetActive(false);
             return instance;
+        }
+
+        private static void EnsureCanvas(GameObject go)
+        {
+            if (go.GetComponent<Canvas>() != null) return;
+            var canvas = go.AddComponent<Canvas>();
+            canvas.renderMode  = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 100;
+            go.AddComponent<UnityEngine.UI.CanvasScaler>();
+            go.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+            Debug.Log("[RateControl] Dialog prefab has no Canvas — added ScreenSpaceOverlay automatically. " +
+                      "To control sorting or scaling, add a Canvas component to the prefab root.");
         }
 
         // ── Public static API ──────────────────────────────────────────────────────

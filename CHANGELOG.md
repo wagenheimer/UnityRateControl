@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.18] - 2026-06-20
+
+### Added
+
+- Auto-Canvas: when a dialog prefab has no `Canvas` component on its root, the package automatically adds a `ScreenSpaceOverlay` Canvas (sort order 100) so the dialog renders without any manual canvas parenting — `RateControl.Initialize(config)` now works out of the box for any prefab
+
 ## [1.2.17] - 2026-06-20
 
 ### Changed
