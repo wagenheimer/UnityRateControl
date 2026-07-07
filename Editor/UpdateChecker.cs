@@ -8,7 +8,9 @@ namespace Wagenheimer.RateControl.Editor
     [InitializeOnLoad]
     internal static class UpdateChecker
     {
+        internal const string GitUrl = "https://github.com/wagenheimer/UnityRateControl.git";
         const string PackageJsonUrl = "https://raw.githubusercontent.com/wagenheimer/UnityRateControl/master/package.json";
+        const string ChangelogUrl = "https://raw.githubusercontent.com/wagenheimer/UnityRateControl/master/CHANGELOG.md";
         const string RepoUrl = "https://github.com/wagenheimer/UnityRateControl";
         const string PrefLastCheckTicks = "Wagenheimer.RateControl.UpdateChecker.LastCheckTicks";
         const string PrefSkipVersion = "Wagenheimer.RateControl.UpdateChecker.SkipVersion";
@@ -30,7 +32,7 @@ namespace Wagenheimer.RateControl.Editor
             var request = UnityWebRequest.Get(PackageJsonUrl);
             request.timeout = 5;
             var op = request.SendWebRequest();
-            op.completed += _ => OnRequestComplete(request, force);
+            op.completed += _ => OnPackageJsonComplete(request, force);
         }
 
         static bool IntervalElapsed()
@@ -42,7 +44,7 @@ namespace Wagenheimer.RateControl.Editor
             return (DateTime.UtcNow - new DateTime(ticks, DateTimeKind.Utc)).TotalHours >= CheckIntervalHours;
         }
 
-        static void OnRequestComplete(UnityWebRequest request, bool force)
+        static void OnPackageJsonComplete(UnityWebRequest request, bool force)
         {
             EditorPrefs.SetString(PrefLastCheckTicks, DateTime.UtcNow.Ticks.ToString());
 
@@ -82,7 +84,39 @@ namespace Wagenheimer.RateControl.Editor
             }
 
             Debug.Log($"[RateControl] New version available: {remoteVersion} (installed: {localVersion}). See {RepoUrl}/releases/latest");
-            UpdateAvailableWindow.Show("Rate Control", localVersion, remoteVersion, RepoUrl, PrefSkipVersion);
+            FetchChangelogAndShow(localVersion, remoteVersion);
+        }
+
+        static void FetchChangelogAndShow(string localVersion, string remoteVersion)
+        {
+            var request = UnityWebRequest.Get(ChangelogUrl);
+            request.timeout = 5;
+            var op = request.SendWebRequest();
+            op.completed += _ =>
+            {
+                string notes = null;
+                if (request.result == UnityWebRequest.Result.Success)
+                    notes = ExtractVersionNotes(request.downloadHandler.text, remoteVersion);
+
+                request.Dispose();
+                UpdateAvailableWindow.Show("Rate Control", localVersion, remoteVersion, RepoUrl, GitUrl, notes, PrefSkipVersion);
+            };
+        }
+
+        static string ExtractVersionNotes(string changelog, string version)
+        {
+            var marker = $"## [{version}]";
+            var start = changelog.IndexOf(marker, StringComparison.Ordinal);
+            if (start < 0)
+                return null;
+
+            var bodyStart = changelog.IndexOf('\n', start);
+            if (bodyStart < 0)
+                return null;
+
+            var next = changelog.IndexOf("\n## [", bodyStart, StringComparison.Ordinal);
+            var end = next >= 0 ? next : changelog.Length;
+            return changelog.Substring(bodyStart, end - bodyStart).Trim();
         }
 
         static string GetLocalVersion()
