@@ -8,13 +8,13 @@ namespace Wagenheimer.RateControl.Editor
 {
     /// <summary>
     /// Editor utilities for the Rate Control package.
-    /// Accessible via <b>Tools → Rate Control</b> in the Unity menu bar.
+    /// Accessible via <b>Tools → Wagenheimer → Rate Control</b> in the Unity menu bar.
     /// </summary>
     internal static class RateEditorMenuItems
     {
         // ── Menu items ────────────────────────────────────────────────────────────
 
-        [MenuItem("Tools/Rate Control/Create Default Prefab", priority = 1)]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Create Default Prefab", priority = 21)]
         private static void CreateDefaultPrefab()
         {
             var path = EditorUtility.SaveFilePanelInProject(
@@ -43,7 +43,7 @@ namespace Wagenheimer.RateControl.Editor
             }
         }
 
-        [MenuItem("Tools/Rate Control/Create Rate Config Asset", priority = 2)]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Create Rate Config Asset", priority = 22)]
         private static void CreateRateConfigAsset()
         {
             var path = EditorUtility.SaveFilePanelInProject(
@@ -61,7 +61,7 @@ namespace Wagenheimer.RateControl.Editor
             Debug.Log($"[RateControl] RateConfig asset created at: {path}");
         }
 
-        [MenuItem("Tools/Rate Control/Reset Saved State (PlayerPrefs)", priority = 20)]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Reset Saved State (PlayerPrefs)", priority = 23)]
         private static void ResetSavedState()
         {
             if (Application.isPlaying)

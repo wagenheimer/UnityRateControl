@@ -10,7 +10,7 @@ namespace Wagenheimer.RateControl.Editor
         private const string kUxml =
             "Packages/com.wagenheimer.ratecontrol/Editor/RateControlDocWindow.uxml";
 
-        [MenuItem("Tools/Rate Control/Setup Guide", priority = 1)]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Setup Guide", priority = 1)]
         [MenuItem("Help/Rate Control Setup Guide")]
         public static void Open()
         {
@@ -109,10 +109,10 @@ namespace Wagenheimer.RateControl.Editor
             p.Add(Body("Get Rate Control running in your project in under 5 minutes."));
             p.Add(Gap());
             p.Add(H2("1 · Create a RateConfig asset"));
-            p.Add(Body("Go to " + B("Tools → Rate Control → Create Config") + " — this creates a " +
+            p.Add(Body("Go to " + B("Tools → Wagenheimer → Rate Control → Create Config") + " — this creates a " +
                        B("RateConfig.asset") + " in your project."));
             p.Add(H2("2 · Create the Rate Dialog prefab"));
-            p.Add(Body("Go to " + B("Tools → Rate Control → Create Default Dialog") + " — generates the prefab. " +
+            p.Add(Body("Go to " + B("Tools → Wagenheimer → Rate Control → Create Default Dialog") + " — generates the prefab. " +
                        "Then drag it into the " + B("Dialog Prefab") + " field of your " +
                        C("RateConfig") + " asset in the Inspector. No " + C("Resources/") + " folder needed."));
             p.Add(Body("Edit the " + C("TextMeshProUGUI") + " labels directly in the prefab, or attach a localization " +

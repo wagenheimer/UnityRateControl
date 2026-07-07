@@ -19,7 +19,7 @@ namespace Wagenheimer.RateControl.Editor
             EditorApplication.delayCall += () => CheckForUpdate(force: false);
         }
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Check for Updates")]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Check for Updates...", priority = 41)]
         static void CheckForUpdateMenuItem() => CheckForUpdate(force: true);
 
         static void CheckForUpdate(bool force)

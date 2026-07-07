@@ -60,13 +60,13 @@ https://github.com/wagenheimer/UnityRateControl.git#v1.0.0
 
 ### 1. Create a config asset
 
-**Tools → Rate Control → Create Rate Config Asset**
+**Tools → Wagenheimer → Rate Control → Create Rate Config Asset**
 
 Adjust thresholds in the Inspector (events, sessions, cooldown days, etc.).
 
 ### 2. Create the default dialog prefab
 
-**Tools → Rate Control → Create Default Prefab**
+**Tools → Wagenheimer → Rate Control → Create Default Prefab**
 
 Then drag the prefab into the **Dialog Prefab** field of your `RateConfig` asset in the Inspector. No `Resources/` folder required.
 
@@ -248,9 +248,9 @@ RateControl.Initialize(
 
 | Menu | Action |
 |---|---|
-| Tools → Rate Control → Create Default Prefab | Generate the default `RateDialog` prefab |
-| Tools → Rate Control → Create Rate Config Asset | Create a new `RateConfig` ScriptableObject |
-| Tools → Rate Control → Reset Saved State (PlayerPrefs) | Clear all PlayerPrefs keys for testing |
+| Tools → Wagenheimer → Rate Control → Create Default Prefab | Generate the default `RateDialog` prefab |
+| Tools → Wagenheimer → Rate Control → Create Rate Config Asset | Create a new `RateConfig` ScriptableObject |
+| Tools → Wagenheimer → Rate Control → Reset Saved State (PlayerPrefs) | Clear all PlayerPrefs keys for testing |
 
 ---
 
