@@ -48,6 +48,7 @@ namespace Wagenheimer.RateControl.Editor
 
             if (request.result != UnityWebRequest.Result.Success)
             {
+                Debug.Log($"[RateControl] Update check failed: {request.error}");
                 request.Dispose();
                 return;
             }
@@ -57,9 +58,9 @@ namespace Wagenheimer.RateControl.Editor
             {
                 remoteVersion = JsonUtility.FromJson<PackageJsonVersionOnly>(request.downloadHandler.text)?.version;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // Malformed response — skip silently, will retry on next interval.
+                Debug.Log($"[RateControl] Update check failed: could not parse remote package.json ({e.Message})");
             }
 
             request.Dispose();
@@ -69,11 +70,18 @@ namespace Wagenheimer.RateControl.Editor
                 return;
 
             if (!IsNewer(remoteVersion, localVersion))
+            {
+                Debug.Log($"[RateControl] Up to date (installed: {localVersion}).");
                 return;
+            }
 
             if (!force && EditorPrefs.GetString(PrefSkipVersion, "") == remoteVersion)
+            {
+                Debug.Log($"[RateControl] Version {remoteVersion} available (installed: {localVersion}) but ignored by user preference.");
                 return;
+            }
 
+            Debug.Log($"[RateControl] New version available: {remoteVersion} (installed: {localVersion}). See {RepoUrl}/releases/latest");
             UpdateAvailableWindow.Show("Rate Control", localVersion, remoteVersion, RepoUrl, PrefSkipVersion);
         }
 
