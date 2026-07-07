@@ -1,6 +1,6 @@
 {
   "name": "com.wagenheimer.ratecontrol",
-  "version": "1.2.22",
+  "version": "1.3.0",
   "displayName": "Rate Control",
   "description": "Cross-platform rate/review prompt system for Unity games. Supports Google Play In-App Review, Apple SKStoreReviewManager, Steam, Mac App Store, and Amazon. Drop-in default UI with full customization support.",
   "unity": "2021.3",
@@ -8,7 +8,15 @@
     "name": "Cezar Wagenheimer",
     "url": "https://github.com/wagenheimer"
   },
-  "keywords": ["rate", "review", "store", "android", "ios", "steam", "in-app-review"],
+  "keywords": [
+    "rate",
+    "review",
+    "store",
+    "android",
+    "ios",
+    "steam",
+    "in-app-review"
+  ],
   "category": "Tools",
   "dependencies": {}
 }
