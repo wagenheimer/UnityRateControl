@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-07-07
+
+### Added
+- add self-update checker and CI version auto-bump workflow — Editor checker compara a versão instalada com a do branch `master` e avisa quando há uma nova; GitHub Actions agora faz bump automático de versão, tag e release a cada push
+
 ## [1.2.22] - 2026-06-20
 
 ### Changed
