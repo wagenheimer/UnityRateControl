@@ -8,6 +8,7 @@ namespace Wagenheimer.RateControl.Editor
     [InitializeOnLoad]
     internal static class UpdateChecker
     {
+        const string PackageDisplayName = "Rate Control";
         internal const string GitUrl = "https://github.com/wagenheimer/UnityRateControl.git";
         const string PackageJsonUrl = "https://raw.githubusercontent.com/wagenheimer/UnityRateControl/master/package.json";
         const string ChangelogUrl = "https://raw.githubusercontent.com/wagenheimer/UnityRateControl/master/CHANGELOG.md";
@@ -51,6 +52,8 @@ namespace Wagenheimer.RateControl.Editor
             if (request.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log($"[RateControl] Update check failed: {request.error}");
+                if (force)
+                    EditorUtility.DisplayDialog(PackageDisplayName, $"Falha ao verificar atualizações:\n{request.error}", "OK");
                 request.Dispose();
                 return;
             }
@@ -68,12 +71,28 @@ namespace Wagenheimer.RateControl.Editor
             request.Dispose();
 
             var localVersion = GetLocalVersion();
-            if (string.IsNullOrEmpty(remoteVersion) || string.IsNullOrEmpty(localVersion))
+            if (string.IsNullOrEmpty(remoteVersion))
+            {
+                Debug.Log("[RateControl] Update check failed: remote package.json has no version field.");
+                if (force)
+                    EditorUtility.DisplayDialog(PackageDisplayName, "Falha ao verificar atualizações: o package.json remoto não tem campo de versão.", "OK");
                 return;
+            }
+
+            if (string.IsNullOrEmpty(localVersion))
+            {
+                Debug.Log("[RateControl] Update check failed: could not resolve the installed package version " +
+                    "(PackageInfo.FindForAssembly returned null for this assembly).");
+                if (force)
+                    EditorUtility.DisplayDialog(PackageDisplayName, "Falha ao verificar atualizações: não foi possível identificar a versão instalada deste pacote.", "OK");
+                return;
+            }
 
             if (!IsNewer(remoteVersion, localVersion))
             {
                 Debug.Log($"[RateControl] Up to date (installed: {localVersion}).");
+                if (force)
+                    EditorUtility.DisplayDialog(PackageDisplayName, $"Você já está usando a versão mais recente ({localVersion}).", "OK");
                 return;
             }
 
