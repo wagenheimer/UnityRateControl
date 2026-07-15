@@ -68,7 +68,6 @@ namespace Wagenheimer.RateControl
         private IRateStoreOpener _storeOpener;
         private RateDialog _dialog;
 
-        private bool _returningFromEvent;
         private bool _pendingPrompt;
 
         // ── Initialize ────────────────────────────────────────────────────────────
@@ -180,20 +179,12 @@ namespace Wagenheimer.RateControl
         /// Records a meaningful game event (e.g. completing a level).
         /// When the cumulative count reaches a multiple of <see cref="RateConfig.EventsPerPrompt"/>,
         /// the prompt is queued.
-        ///
-        /// <b>Scene-gated variant:</b> call <see cref="SetReturningFromLevel"/> when leaving a level,
-        /// then <c>LogEvent()</c> when the hub/map scene loads — the count only increments in the hub.
         /// </summary>
         public static void LogEvent()
         {
             if (Instance == null) return;
-
-            if (Instance._returningFromEvent && SceneManager.GetActiveScene().name == "map")
-            {
-                Instance._eventCount++;
-                Instance._returningFromEvent = false;
-                Instance.EvaluateAndSave();
-            }
+            Instance._eventCount++;
+            Instance.EvaluateAndSave();
         }
 
         /// <summary>
@@ -203,21 +194,6 @@ namespace Wagenheimer.RateControl
         public static void LogStart()
         {
             if (Instance != null) Instance.RecordStart();
-        }
-
-        /// <summary>
-        /// Marks that the player just left a level and is returning to the hub.
-        /// Pair with <see cref="LogEvent"/> called from the hub scene.
-        /// </summary>
-        public static void SetReturningFromLevel() => LogLevelCompleted();
-
-        /// <summary>
-        /// Signals that a significant gameplay unit (level, round, session) just ended.
-        /// The event counter increments on the next <see cref="LogEvent"/> call.
-        /// </summary>
-        public static void LogLevelCompleted()
-        {
-            if (Instance != null) Instance._returningFromEvent = true;
         }
 
         /// <summary>
