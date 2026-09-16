@@ -220,7 +220,7 @@ namespace Wagenheimer.RateControl.Editor
             tmp.fontStyle        = style;
             tmp.color            = color;
             tmp.alignment        = TextAlignmentOptions.Center;
-            tmp.enableWordWrapping = true;
+            tmp.textWrappingMode = TextWrappingModes.Normal;
             return tmp;
         }
 
