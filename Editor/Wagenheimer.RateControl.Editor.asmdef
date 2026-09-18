@@ -1,7 +1,7 @@
 {
   "name": "Wagenheimer.RateControl.Editor",
   "rootNamespace": "Wagenheimer.RateControl.Editor",
-  "references": ["Wagenheimer.RateControl", "Unity.TextMeshPro", "UnityEngine.UI"],
+  "references": ["Wagenheimer.RateControl", "Unity.TextMeshPro", "UnityEngine.UI", "Wagenheimer.PackageHub.Editor"],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
