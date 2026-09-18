@@ -244,10 +244,38 @@ RateControl.Initialize(
 
 ---
 
+## In-Game Debug & QA Overlay
+
+`RateControl` includes a full in-game runtime debug overlay (`RateDebugOverlay`) to inspect live state and test prompting logic in Play Mode and Development Builds.
+
+### Features
+- **Diagnostics & Status**: Inspects current eligibility (`Eligible`, `Suppressed`, `Blocked`), active scene blacklist status, `IRateBlocker` evaluation, `DontAsk` state, and remaining cooldown time for "Remind Me Later".
+- **Counters & Thresholds**: Live progress of `EventCount` vs `EventsPerPrompt`, `StartCount` vs threshold, and `ShowCount`.
+- **Simulation Actions**:
+  - `Log Event (+1)`: Simulates game progress events.
+  - `Log Start (+1)`: Simulates application launches.
+  - `Force Show Prompt`: Immediately displays the dialog, bypassing blockers, scene blacklist, and thresholds.
+  - `Clear Remind Cooldown`: Resets the countdown so the prompt can trigger again right away.
+  - `Simulate Actions`: Test "Rate Now", "Remind Later", and "No Thanks" flows without leaving the editor.
+  - `Reset All State`: Wipes PlayerPrefs keys for clean-slate testing.
+- **Store & Platform Info**: Inspects detected runtime platform, installer name, package identifiers, and includes test buttons for `RateNow()` and `ShowMoreGames()`.
+- **Live Event Log**: Displays an ongoing log of fired events (`OnPromptRequested`, `OnUserRated`, etc.).
+
+### How to use
+- **Hotkey**: Press **`F9`** in Play Mode to toggle the panel.
+- **On-Screen Button**: Tap the floating **`RATE DBG`** button on the bottom-right corner.
+- **Add to Scene**:
+  - Via menu: **Tools → Wagenheimer → Rate Control → Add Debug Overlay to Scene**
+  - Or via `RateControl` Inspector: click **Attach Rate Debug Overlay to Scene**
+  - Or in code: `RateDebugOverlay.CreateOverlay();`
+
+---
+
 ## Editor Utilities
 
 | Menu | Action |
 |---|---|
+| Tools → Wagenheimer → Rate Control → Add Debug Overlay to Scene | Add runtime debug & QA overlay to active scene |
 | Tools → Wagenheimer → Rate Control → Create Default Prefab | Generate the default `RateDialog` prefab |
 | Tools → Wagenheimer → Rate Control → Create Rate Config Asset | Create a new `RateConfig` ScriptableObject |
 | Tools → Wagenheimer → Rate Control → Reset Saved State (PlayerPrefs) | Clear all PlayerPrefs keys for testing |

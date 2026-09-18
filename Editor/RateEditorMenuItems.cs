@@ -94,6 +94,25 @@ namespace Wagenheimer.RateControl.Editor
                 $"Saved state cleared.\nKey prefix used: \"{prefix}\"", "OK");
         }
 
+        [MenuItem("Tools/Wagenheimer/Rate Control/Add Debug Overlay to Scene", priority = 24)]
+        private static void AddDebugOverlayToScene()
+        {
+            var existing = Object.FindObjectOfType<Wagenheimer.RateControl.UI.RateDebugOverlay>();
+            if (existing != null)
+            {
+                Selection.activeGameObject = existing.gameObject;
+                EditorGUIUtility.PingObject(existing.gameObject);
+                Debug.Log("[RateControl] RateDebugOverlay already exists in scene.");
+                return;
+            }
+
+            var go = new GameObject("RateDebugOverlay", typeof(Wagenheimer.RateControl.UI.RateDebugOverlay));
+            Undo.RegisterCreatedObjectUndo(go, "Create Rate Debug Overlay");
+            Selection.activeGameObject = go;
+            EditorGUIUtility.PingObject(go);
+            Debug.Log("[RateControl] Created RateDebugOverlay in scene.");
+        }
+
         // ── Prefab builder ────────────────────────────────────────────────────────
 
         /// <summary>

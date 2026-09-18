@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-09-17
+
+### Added
+- In-Game `RateDebugOverlay` IMGUI component (`Wagenheimer.RateControl.UI.RateDebugOverlay`):
+  - Hotkey toggle via `F9` key and unobtrusive floating on-screen button ("RATE DBG").
+  - Real-time diagnostic cards inspecting `DontAsk` state, `LastVersionRated`, scene blacklist status, `IRateBlocker` status, and exact remaining cooldown time for "Remind Me Later".
+  - Counters and thresholds inspection: Events vs `EventsPerPrompt`, Starts vs threshold, and `ShowCount`.
+  - Comprehensive QA simulation triggers: `Log Event (+1)`, `Log Start (+1)`, `Force Show Prompt`, `Clear Remind Cooldown`, `Toggle DontAsk`, and button simulations (`Rate Now`, `Remind Later`, `No Thanks`).
+  - Store & Platform diagnostics displaying detected platform, installer, package identifiers, and test buttons for `RateNow()` and `ShowMoreGames()`.
+  - Real-time event history logging (`OnPromptRequested`, `OnUserRated`, `OnUserRemindedLater`, `OnUserDeclined`).
+  - Factory helper `RateDebugOverlay.CreateOverlay()` for programmatic instantiation.
+- Exposed public diagnostic properties on `RateControl`: `EventCount`, `StartCount`, `ShowCount`, `RemindLaterUntil`, `IsPendingPrompt`, `Config`, `Blocker`, `VersionProvider`, `StoreOpener`, `Dialog`, `InRemindCooldown`, `IsSceneBlacklisted`, and `BlockerAllowsPrompt`.
+- Added public QA helper methods on `RateControl`: `ForceShowPrompt()`, `ClearRemindCooldown()`, and `SetPendingPrompt()`.
+- Added Editor menu item: `Tools → Wagenheimer → Rate Control → Add Debug Overlay to Scene`.
+- Enhanced `RateControlEditor` custom Inspector with "Attach Rate Debug Overlay to Scene" and runtime QA actions.
+
 ## [1.6.0] - 2026-07-09
 
 ### Added

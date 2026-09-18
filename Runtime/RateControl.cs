@@ -60,6 +60,49 @@ namespace Wagenheimer.RateControl
         public bool DontAsk        { get => _dontAsk;          set => _dontAsk = value; }
         public string LastVersionRated { get => _lastVersionRated; set => _lastVersionRated = value; }
 
+        // ── Diagnostics & State Inspection (Debug / QA) ───────────────────────────
+
+        /// <summary>Current cumulative event counter.</summary>
+        public int EventCount => _eventCount;
+
+        /// <summary>Current session/start counter.</summary>
+        public int StartCount => _startCount;
+
+        /// <summary>Total number of times the rate prompt has been displayed.</summary>
+        public int ShowCount => _showCount;
+
+        /// <summary>ISO 8601 timestamp string until which prompts are suppressed after "Remind Me Later".</summary>
+        public string RemindLaterUntil => _remindLaterUntil;
+
+        /// <summary>True if a prompt is queued waiting for scene and blocker clearance.</summary>
+        public bool IsPendingPrompt => _pendingPrompt;
+
+        /// <summary>Active configuration asset.</summary>
+        public RateConfig Config => _config;
+
+        /// <summary>Active rate blocker instance.</summary>
+        public IRateBlocker Blocker => _blocker;
+
+        /// <summary>Active version provider instance.</summary>
+        public IRateVersionProvider VersionProvider => _versionProvider;
+
+        /// <summary>Active store opener instance.</summary>
+        public IRateStoreOpener StoreOpener => _storeOpener;
+
+        /// <summary>Active rate dialog UI instance.</summary>
+        public RateDialog Dialog => _dialog;
+
+        /// <summary>True if currently within the "Remind Me Later" cooldown period.</summary>
+        public bool InRemindCooldown => IsInRemindCooldown();
+
+        /// <summary>True if the currently active scene is blacklisted in <see cref="RateConfig.BlacklistedScenes"/>.</summary>
+        public bool IsSceneBlacklisted =>
+            _config != null && _config.BlacklistedScenes != null &&
+            _config.BlacklistedScenes.Contains(SceneManager.GetActiveScene().name);
+
+        /// <summary>True if the active blocker allows displaying the prompt.</summary>
+        public bool BlockerAllowsPrompt => _blocker != null && _blocker.CanShowRate();
+
         // ── Dependencies ──────────────────────────────────────────────────────────
 
         private RateConfig _config;
@@ -243,6 +286,35 @@ namespace Wagenheimer.RateControl
                 Instance.LoadState();
             }
             Debug.Log("[RateControl] All saved state cleared.");
+        }
+
+        /// <summary>
+        /// Forces the rate prompt to display immediately, bypassing thresholds,
+        /// blockers, and blacklisted scene checks.
+        /// </summary>
+        public void ForceShowPrompt()
+        {
+            Debug.Log("[RateControl] Forcing rate prompt (bypassing blockers, scene blacklist, and thresholds).");
+            ShowPrompt();
+        }
+
+        /// <summary>
+        /// Clears any active "Remind Me Later" cooldown, allowing prompt re-evaluation.
+        /// </summary>
+        public void ClearRemindCooldown()
+        {
+            _remindLaterUntil = "";
+            SaveState();
+            Debug.Log("[RateControl] RemindLater cooldown cleared.");
+        }
+
+        /// <summary>
+        /// Sets or unsets the pending prompt flag for testing the polling loop.
+        /// </summary>
+        public void SetPendingPrompt(bool pending)
+        {
+            _pendingPrompt = pending;
+            Debug.Log($"[RateControl] PendingPrompt set to: {pending}");
         }
 
         /// <summary>Persists current state to PlayerPrefs.</summary>
