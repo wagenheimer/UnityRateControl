@@ -5,7 +5,7 @@ namespace Wagenheimer.RateControl.Editor
 {
     public static class UpdateChecker
     {
-        [MenuItem("Tools/Wagenheimer/Rate Control/Check for Updates...", priority = 100)]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Check for Updates...", priority = 139)]
         public static void CheckForUpdateMenu() => CheckForUpdate(true);
 
         public static void CheckForUpdate(bool force = false)

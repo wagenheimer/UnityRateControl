@@ -10,7 +10,7 @@ namespace Wagenheimer.RateControl.Editor
         private const string kUxml =
             "Packages/com.wagenheimer.ratecontrol/Editor/RateControlDocWindow.uxml";
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Setup Guide", priority = 1)]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Setup Guide", priority = 130)]
         [MenuItem("Help/Rate Control Setup Guide")]
         public static void Open()
         {
