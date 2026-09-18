@@ -18,21 +18,12 @@ namespace Wagenheimer.RateControl.Editor
             EditorGUILayout.Space(10);
             EditorGUILayout.LabelField("Debug & QA Tools", EditorStyles.boldLabel);
 
-            if (GUILayout.Button("Attach Rate Debug Overlay to Scene"))
+            // Overlay is auto-attached via RateConfig.EnableDebugOverlay — no manual step needed.
+            bool overlayActive = Object.FindObjectOfType<Wagenheimer.RateControl.UI.RateDebugOverlay>() != null;
+            using (new EditorGUI.DisabledScope(true))
             {
-                var existing = Object.FindObjectOfType<Wagenheimer.RateControl.UI.RateDebugOverlay>();
-                if (existing != null)
-                {
-                    Selection.activeGameObject = existing.gameObject;
-                    EditorGUIUtility.PingObject(existing.gameObject);
-                }
-                else
-                {
-                    var go = new GameObject("RateDebugOverlay", typeof(Wagenheimer.RateControl.UI.RateDebugOverlay));
-                    Undo.RegisterCreatedObjectUndo(go, "Create Rate Debug Overlay");
-                    Selection.activeGameObject = go;
-                    EditorGUIUtility.PingObject(go);
-                }
+                string label = overlayActive ? " Rate Debug Overlay: ON" : " Rate Debug Overlay: OFF (auto-attaches on Initialize)";
+                EditorGUILayout.LabelField(label, EditorStyles.helpBox);
             }
 
             if (!Application.isPlaying)

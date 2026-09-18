@@ -171,7 +171,25 @@ namespace Wagenheimer.RateControl
 
             _dialog = dialog ?? LoadDialogFromConfig() ?? LoadDialogFromResources();
 
+            if (_config.EnableDebugOverlay && (Application.isEditor || Debug.isDebugBuild))
+            {
+                EnsureDebugOverlay();
+            }
+
             StartCoroutine(PollLoop());
+        }
+
+        /// <summary>
+        /// Attaches a <see cref="UI.RateDebugOverlay"/> to the Rate Control GameObject if one does not
+        /// already exist anywhere in the scene. Called automatically from <see cref="Boot"/> when
+        /// <see cref="RateConfig.EnableDebugOverlay"/> is true in Editor or Development Builds.
+        /// </summary>
+        private void EnsureDebugOverlay()
+        {
+            if (GetComponent<UI.RateDebugOverlay>() == null && FindObjectOfType<UI.RateDebugOverlay>() == null)
+            {
+                gameObject.AddComponent<UI.RateDebugOverlay>();
+            }
         }
 
         private RateDialog LoadDialogFromConfig()

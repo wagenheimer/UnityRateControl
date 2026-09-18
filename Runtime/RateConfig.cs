@@ -153,6 +153,15 @@ namespace Wagenheimer.RateControl
             "Example: prefab at Assets/UI/Resources/MyPopup.prefab -> set to MyPopup.")]
         public string DialogResourcePath = "RateDialog";
 
+        // Debug & QA
+
+        [Header("Debug & QA")]
+        [Tooltip(
+            "Automatically attaches the in-game RateDebugOverlay in the Unity Editor and Development Builds.\n" +
+            "No scene setup or code required — disable only for production-optimized builds where you never\n" +
+            "want the overlay to appear even in debug builds.")]
+        public bool EnableDebugOverlay = true;
+
         // Internal helpers
 
         internal string ResolvedAndroidId =>

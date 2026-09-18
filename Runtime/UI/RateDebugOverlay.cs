@@ -389,3 +389,4 @@ namespace Wagenheimer.RateControl.UI
 public class RateDebugOverlay : Wagenheimer.RateControl.UI.RateDebugOverlay
 {
 }
+
