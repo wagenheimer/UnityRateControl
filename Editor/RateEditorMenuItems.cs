@@ -14,8 +14,26 @@ namespace Wagenheimer.RateControl.Editor
     {
         // ── Menu items ────────────────────────────────────────────────────────────
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Create Default Prefab", priority = 131)]
-        private static void CreateDefaultPrefab()
+        [MenuItem("Tools/Wagenheimer/Rate Control/Create Rate Config Asset", priority = 133)]
+        internal static void CreateRateConfigAsset()
+        {
+            var path = EditorUtility.SaveFilePanelInProject(
+                "Save Rate Config",
+                "RateConfig",
+                "asset",
+                "Choose where to save the RateConfig asset.");
+
+            if (string.IsNullOrEmpty(path)) return;
+
+            var asset = ScriptableObject.CreateInstance<RateConfig>();
+            AssetDatabase.CreateAsset(asset, path);
+            AssetDatabase.SaveAssets();
+            EditorGUIUtility.PingObject(asset);
+            Debug.Log($"[RateControl] RateConfig asset created at: {path}");
+        }
+
+        [MenuItem("Tools/Wagenheimer/Rate Control/Create Default Prefab", priority = 134)]
+        internal static void CreateDefaultPrefab()
         {
             var path = EditorUtility.SaveFilePanelInProject(
                 "Save Rate Dialog Prefab",
@@ -43,26 +61,8 @@ namespace Wagenheimer.RateControl.Editor
             }
         }
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Create Rate Config Asset", priority = 132)]
-        private static void CreateRateConfigAsset()
-        {
-            var path = EditorUtility.SaveFilePanelInProject(
-                "Save Rate Config",
-                "RateConfig",
-                "asset",
-                "Choose where to save the RateConfig asset.");
-
-            if (string.IsNullOrEmpty(path)) return;
-
-            var asset = ScriptableObject.CreateInstance<RateConfig>();
-            AssetDatabase.CreateAsset(asset, path);
-            AssetDatabase.SaveAssets();
-            EditorGUIUtility.PingObject(asset);
-            Debug.Log($"[RateControl] RateConfig asset created at: {path}");
-        }
-
-        [MenuItem("Tools/Wagenheimer/Rate Control/Reset Saved State (PlayerPrefs)", priority = 134)]
-        private static void ResetSavedState()
+        [MenuItem("Tools/Wagenheimer/Rate Control/Reset Saved State (PlayerPrefs)", priority = 137)]
+        internal static void ResetSavedState()
         {
             if (Application.isPlaying)
             {
@@ -94,8 +94,8 @@ namespace Wagenheimer.RateControl.Editor
                 $"Saved state cleared.\nKey prefix used: \"{prefix}\"", "OK");
         }
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Add Debug Overlay to Scene", priority = 133)]
-        private static void AddDebugOverlayToScene()
+        [MenuItem("Tools/Wagenheimer/Rate Control/Add Debug Overlay to Scene", priority = 135)]
+        internal static void AddDebugOverlayToScene()
         {
             var existing = Object.FindObjectOfType<Wagenheimer.RateControl.UI.RateDebugOverlay>();
             if (existing != null)

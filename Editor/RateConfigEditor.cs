@@ -24,11 +24,30 @@ namespace Wagenheimer.RateControl.Editor
             var root = new VisualElement();
             root.style.paddingBottom = 8;
 
-            // Help button row
+            // Action buttons row
             var helpRow = new VisualElement();
-            helpRow.style.flexDirection  = FlexDirection.RowReverse;
-            helpRow.style.marginBottom   = 4;
+            helpRow.style.flexDirection  = FlexDirection.Row;
+            helpRow.style.justifyContent = Justify.FlexEnd;
+            helpRow.style.marginBottom   = 6;
             helpRow.style.paddingRight   = 2;
+
+            var checklistBtn = new Button(OpenChecklistWindow) { text = "📋  Setup & Checklist" };
+            checklistBtn.style.fontSize        = 10;
+            checklistBtn.style.paddingLeft     = 10;
+            checklistBtn.style.paddingRight    = 10;
+            checklistBtn.style.paddingTop      = 4;
+            checklistBtn.style.paddingBottom   = 4;
+            checklistBtn.style.color           = kGreen;
+            checklistBtn.style.borderTopColor  = checklistBtn.style.borderBottomColor =
+            checklistBtn.style.borderLeftColor = checklistBtn.style.borderRightColor = kGreen;
+            checklistBtn.style.borderTopWidth  = checklistBtn.style.borderBottomWidth =
+            checklistBtn.style.borderLeftWidth = checklistBtn.style.borderRightWidth = 1;
+            checklistBtn.style.borderTopLeftRadius    = checklistBtn.style.borderTopRightRadius =
+            checklistBtn.style.borderBottomLeftRadius = checklistBtn.style.borderBottomRightRadius = 3;
+            checklistBtn.style.backgroundColor = new Color(0.12f, 0.24f, 0.16f);
+            checklistBtn.style.marginRight     = 6;
+            helpRow.Add(checklistBtn);
+
             var helpBtn = new Button(OpenSetupGuide) { text = "?  Setup Guide" };
             helpBtn.style.fontSize        = 10;
             helpBtn.style.paddingLeft     = 10;
@@ -519,6 +538,11 @@ namespace Wagenheimer.RateControl.Editor
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────────
+
+        private static void OpenChecklistWindow()
+        {
+            SetupChecklistWindow.Open();
+        }
 
         private static void OpenSetupGuide()
         {

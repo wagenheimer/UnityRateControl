@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-09-20
+
+### Added
+- **Setup & Checklist Window** (`SetupChecklistWindow`): Comprehensive diagnostic and QA tool built in UI Toolkit, accessible via `Tools > Wagenheimer > Rate Control > Setup & Checklist...` and `Window > Wagenheimer > Rate Control > Setup & Checklist`.
+  - **Automated Readiness Audit**: Scans project assets, scene setup, platform store IDs, and project C# code with clear Pass/Warning/Fail indicators.
+  - **Asset & Threshold Validator**: Detects `RateConfig`, verifies unique `StorageKeyPrefix` namespace to avoid multi-game PlayerPrefs collisions, and validates trigger thresholds.
+  - **Dialog Prefab Inspector**: Validates `RateDialog` and `DefaultRateDialog` setup, component wiring, button events, and Resources path fallback.
+  - **Store IDs & URL Verification**: Real-time validation of active build target (Google Play In-App Review, iOS App Store, Steam, Mac App Store) with "Test Store URL" and "Test More Games URL" buttons opening directly in browser.
+  - **Project Code Scanner**: Automatically audits project codebase for `RateControl.Initialize()`, `RateControl.LogEvent()`, `IRateBlocker`, and `IRateVersionProvider` implementations with direct "Open Script" navigation.
+  - **Live Testing & Simulation Suite**: Inspects live PlayerPrefs values, simulates milestone events, simulates app launches, resets saved state, and provides "Force Show Prompt" in Play Mode.
+  - **AI Prompt Generators ("Copy Prompt")**: Generates context-aware, ready-to-paste prompts for AI coding assistants for every failing or warning check.
+- Added direct `📋 Setup & Checklist` button to the `RateConfig` Custom Inspector header alongside `Setup Guide`.
+
+### Changed
+- Reorganized Editor menu hierarchy under `Tools > Wagenheimer > Rate Control` and `Window > Wagenheimer > Rate Control` with ordered priorities and logical separators.
+
 ## [1.7.8] - 2026-09-19
 
 ### Changed

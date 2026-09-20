@@ -112,6 +112,17 @@ RateControl.LogEvent();
 RateControl.LogStart();
 ```
 
+### 6. Verify with Setup & Checklist Window
+
+Open **Tools → Wagenheimer → Rate Control → Setup & Checklist...** (or **Window → Wagenheimer → Rate Control → Setup & Checklist**).
+
+The checklist automatically audits:
+- **RateConfig & Storage**: Verifies asset presence, unique `StorageKeyPrefix`, and threshold balance.
+- **Dialog & UI Setup**: Validates prefab assignment, `RateDialog` component, and button wiring.
+- **Store IDs & URLs**: Checks active platform review links (Google Play In-App Review, iOS App Store, Steam, Mac App Store) with browser test buttons.
+- **Project Code Scanner**: Automatically finds calls to `RateControl.Initialize()`, `RateControl.LogEvent()`, and `IRateBlocker` implementations across your scripts.
+- **Live Testing & Simulation**: Real-time PlayerPrefs state inspector, event simulation, force show prompt, and reset buttons.
+
 The package automatically evaluates thresholds and shows the dialog when conditions are met.
 
 ---
