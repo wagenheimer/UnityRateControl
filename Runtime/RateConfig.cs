@@ -162,12 +162,12 @@ namespace Wagenheimer.RateControl
             "want the overlay to appear even in debug builds.")]
         public bool EnableDebugOverlay = true;
 
-        // Internal helpers
-
-        internal string ResolvedAndroidId =>
+        // Helpers
+ 
+        public string ResolvedAndroidId =>
             string.IsNullOrEmpty(AndroidPackageId) ? Application.identifier : AndroidPackageId;
 
-        internal string ResolvedSteamUrl =>
+        public string ResolvedSteamUrl =>
             $"https://store.steampowered.com/app/{SteamAppId}/reviews/";
 
         private static string FirstNonEmpty(string a, string b) =>

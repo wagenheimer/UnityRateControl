@@ -826,7 +826,7 @@ namespace Wagenheimer.RateControl.Editor
 
             if (prefabGo != null)
             {
-                var dialogComponent = prefabGo.GetComponent<UI.RateDialog>();
+                var dialogComponent = prefabGo.GetComponent<RateDialog>();
                 var assetPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(prefabGo);
                 if (string.IsNullOrEmpty(assetPath)) assetPath = AssetDatabase.GetAssetPath(prefabGo);
 
