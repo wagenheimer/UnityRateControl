@@ -20,7 +20,7 @@ namespace Wagenheimer.RateControl.Editor
     /// Open via <b>Tools > Wagenheimer > Rate Control > Setup & Checklist...</b>
     /// or <b>Window > Wagenheimer > Rate Control > Setup & Checklist...</b>
     /// </summary>
-    internal sealed class SetupChecklistWindow : EditorWindow
+    public sealed class SetupChecklistWindow : EditorWindow
     {
         // ── Model ─────────────────────────────────────────────────────────────────
 
@@ -119,10 +119,19 @@ namespace Wagenheimer.RateControl.Editor
         [MenuItem("Window/Wagenheimer/Rate Control/Setup & Checklist", priority = 210)]
         public static void Open()
         {
-            var window = GetWindow<SetupChecklistWindow>();
-            window.titleContent = new GUIContent("Rate Control Checklist");
+            var window = GetWindow<SetupChecklistWindow>(false, "Rate Control Checklist", true);
             window.minSize = new Vector2(650, 540);
+
+            var main = EditorGUIUtility.GetMainWindowPosition();
+            var pos = window.position;
+            float w = Mathf.Max(pos.width, 740);
+            float h = Mathf.Max(pos.height, 600);
+            float x = main.x + (main.width - w) * 0.5f;
+            float y = main.y + (main.height - h) * 0.5f;
+            window.position = new Rect(x, y, w, h);
+
             window.Show();
+            window.Focus();
             window.RunChecks();
         }
 
