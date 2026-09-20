@@ -132,7 +132,6 @@ namespace Wagenheimer.RateControl.Editor
 
             window.Show();
             window.Focus();
-            window.RunChecks();
         }
 
         private void OnEnable()
@@ -642,18 +641,15 @@ namespace Wagenheimer.RateControl.Editor
             _versionProviderLocations.Clear();
             _moreGamesLocations.Clear();
 
-            var scriptGuids = AssetDatabase.FindAssets("t:MonoScript");
+            var scriptGuids = AssetDatabase.FindAssets("t:MonoScript", new[] { "Assets" });
             foreach (var guid in scriptGuids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 if (string.IsNullOrEmpty(path)) continue;
 
-                // Skip package itself and test folders
-                if (path.StartsWith("Packages/com.wagenheimer.ratecontrol/") ||
-                    path.Contains("/Tests/") || path.EndsWith("Test.cs"))
-                    continue;
-
                 if (!path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)) continue;
+                if (path.Contains("/Tests/") || path.EndsWith("Test.cs", StringComparison.OrdinalIgnoreCase))
+                    continue;
 
                 try
                 {
