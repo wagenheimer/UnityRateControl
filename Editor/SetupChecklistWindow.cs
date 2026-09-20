@@ -226,6 +226,12 @@ namespace Wagenheimer.RateControl.Editor
             int fails     = _sections.SelectMany(s => s.Items).Count(i => i.Status == CheckStatus.Fail);
             int warns     = _sections.SelectMany(s => s.Items).Count(i => i.Status == CheckStatus.Warning);
 
+            var legacy = RateLegacyMigrator.Detect();
+            if (legacy.IsLegacyDetected)
+            {
+                _bodyHost.Add(LegacyMigrationCard(legacy));
+            }
+
             _bodyHost.Add(SummaryCard(autoPass, autoTotal, warns, fails));
 
             foreach (var section in _sections)
@@ -239,6 +245,62 @@ namespace Wagenheimer.RateControl.Editor
                 var target = EditorUserBuildSettings.activeBuildTarget.ToString();
                 sub.text = $"v{_packageVersion}  |  Active Build Target: {target}  |  Checked {_lastRun:HH:mm:ss}";
             }
+        }
+
+        private VisualElement LegacyMigrationCard(RateLegacyMigrator.DetectionResult legacy)
+        {
+            var card = Card(ColWarn);
+            card.style.marginBottom = 10;
+            card.style.backgroundColor = new Color(0.24f, 0.17f, 0.08f);
+
+            var titleRow = new VisualElement();
+            titleRow.style.flexDirection = FlexDirection.Row;
+            titleRow.style.alignItems = Align.Center;
+            titleRow.style.marginBottom = 5;
+            card.Add(titleRow);
+
+            var title = new Label("⚡ LEGACY RATECONTROL DETECTED");
+            title.style.fontSize = 13;
+            title.style.unityFontStyleAndWeight = FontStyle.Bold;
+            title.style.color = ColWarn;
+            title.style.flexGrow = 1;
+            titleRow.Add(title);
+
+            var migrateBtn = new Button(() =>
+            {
+                if (RateLegacyMigrator.Migrate(true))
+                {
+                    RunChecks();
+                }
+            }) { text = "⚡ Run 1-Click Migration & Cleanup" };
+            migrateBtn.style.fontSize = 11;
+            migrateBtn.style.unityFontStyleAndWeight = FontStyle.Bold;
+            migrateBtn.style.color = Color.white;
+            migrateBtn.style.backgroundColor = new Color(0.85f, 0.45f, 0.10f);
+            migrateBtn.style.paddingLeft = migrateBtn.style.paddingRight = 12;
+            migrateBtn.style.paddingTop = migrateBtn.style.paddingBottom = 5;
+            titleRow.Add(migrateBtn);
+
+            var desc = new Label(
+                "This project contains legacy RateControl files or an unmigrated formRate script. " +
+                "Clicking Migration will upgrade formRate.cs to inherit from RateDialog, relocate RateConfig to Resources/, " +
+                "wire DialogPrefab, and delete obsolete scripts.");
+            desc.style.fontSize = 10.5f;
+            desc.style.color = ColTextDim;
+            desc.style.whiteSpace = WhiteSpace.Normal;
+            desc.style.marginBottom = 6;
+            card.Add(desc);
+
+            foreach (var item in legacy.Details)
+            {
+                var bullet = new Label($"• {item}");
+                bullet.style.fontSize = 10;
+                bullet.style.color = new Color(0.95f, 0.80f, 0.50f);
+                bullet.style.marginLeft = 4;
+                card.Add(bullet);
+            }
+
+            return card;
         }
 
         private VisualElement SummaryCard(int pass, int total, int warnings, int failures)
@@ -856,6 +918,12 @@ namespace Wagenheimer.RateControl.Editor
                 {
                     check.Status = CheckStatus.Fail;
                     check.Detail = "Prefab exists but does NOT have a component inheriting from RateDialog!";
+                    check.ActionLabel = "Upgrade to RateDialog";
+                    check.Action = () =>
+                    {
+                        if (RateLegacyMigrator.Migrate(true))
+                            RunChecks();
+                    };
                     check.Prompt = $"Add a DefaultRateDialog (or custom RateDialog subclass) component to {prefabGo.name} and wire the Rate Now, Remind Later, and No Thanks buttons.";
                 }
 
@@ -863,17 +931,32 @@ namespace Wagenheimer.RateControl.Editor
             }
             else
             {
+                var legacyGuids = AssetDatabase.FindAssets("formRate t:Prefab", new[] { "Assets" });
+                var hasLegacyPrefab = legacyGuids.Length > 0;
+
                 sec.Items.Add(new CheckResult
                 {
                     Title = "Dialog prefab not found",
                     Status = CheckStatus.Fail,
-                    Detail = "Neither DialogPrefab nor a valid Resources/ path is set in RateConfig.",
-                    ActionLabel = "Create Default Prefab",
+                    Detail = hasLegacyPrefab
+                        ? "formRate.prefab was found in project, but is not configured in RateConfig.DialogPrefab."
+                        : "Neither DialogPrefab nor a valid Resources/ path is set in RateConfig.",
+                    ActionLabel = hasLegacyPrefab ? "Migrate & Assign" : "Create Default Prefab",
                     Action = () =>
                     {
-                        EditorApplication.ExecuteMenuItem("Tools/Wagenheimer/Rate Control/Create Default Prefab");
+                        if (hasLegacyPrefab)
+                        {
+                            if (RateLegacyMigrator.Migrate(true))
+                                RunChecks();
+                        }
+                        else
+                        {
+                            EditorApplication.ExecuteMenuItem("Tools/Wagenheimer/Rate Control/Create Default Prefab");
+                        }
                     },
-                    Prompt = "Generate the default dialog prefab via Tools > Wagenheimer > Rate Control > Create Default Prefab and assign it to RateConfig.DialogPrefab."
+                    Prompt = hasLegacyPrefab
+                        ? "Run RateControl Migration to upgrade formRate.cs to RateDialog and wire it automatically."
+                        : "Generate the default dialog prefab via Tools > Wagenheimer > Rate Control > Create Default Prefab and assign it to RateConfig.DialogPrefab."
                 });
             }
 

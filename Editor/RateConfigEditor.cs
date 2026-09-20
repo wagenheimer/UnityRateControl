@@ -420,6 +420,15 @@ namespace Wagenheimer.RateControl.Editor
             note.style.marginBottom = 6;
             c.Add(note);
 
+            var migrateBtn = new Button(() =>
+            {
+                RateLegacyMigrator.Migrate(true);
+            }) { text = "🔄 Migrate Legacy RateControl Setup..." };
+            migrateBtn.style.fontSize = 10;
+            migrateBtn.style.paddingTop = migrateBtn.style.paddingBottom = 4;
+            migrateBtn.style.marginTop = 4;
+            c.Add(migrateBtn);
+
             return c;
         }
 

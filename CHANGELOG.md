@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0] - 2026-09-20
+
+### Added
+- **Automated Legacy RateControl Migrator (`RateLegacyMigrator`)**:
+  - Automatically detects projects with legacy RateControl setups (in-house `RateControl.cs` MonoBehaviour, obsolete `RateControlBootstrap.cs`, unmigrated `formRate.cs`, missing components on `Main.prefab`).
+  - **1-Click Migration**:
+    - Automatically upgrades `formRate.cs` to inherit from `RateDialog`, preserving custom button animations (DOTween) and localized texts (I2 Loc), while wiring button callbacks to modern `RateDialog` events.
+    - Relocates or creates `RateConfig.asset` in a `Resources/` folder and links `formRate.prefab` to `RateConfig.DialogPrefab`.
+    - Automatically synchronizes all store IDs and distribution channels from `GameConfig` via `RateBuildPreprocessor`.
+    - Safely removes obsolete legacy scripts (`RateControl.cs`, `RateControlBootstrap.cs`) and cleans missing MonoBehaviour components from `Main.prefab`.
+  - **Checklist & Inspector Integration**:
+    - Renders an attention banner with `⚡ Run 1-Click Migration & Cleanup` at the top of `SetupChecklistWindow`.
+    - Contextual "Upgrade to RateDialog" action on the Dialog Prefab checklist card.
+    - Added `Tools > Wagenheimer > Rate Control > Migrate Legacy RateControl...` menu entry and a button in `RateConfigEditor`.
+
 ## [1.12.3] - 2026-09-20
 
 ### Changed
