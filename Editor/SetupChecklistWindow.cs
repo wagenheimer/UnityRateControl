@@ -1033,15 +1033,47 @@ namespace Wagenheimer.RateControl.Editor
                 check.Action = () => OpenFirstScript(_initLocations);
                 sec.Items.Add(check);
             }
-            else
+            else if (_activeConfig != null && _activeConfig.AutoInitialize)
             {
                 sec.Items.Add(new CheckResult
                 {
+                    Title = "Auto-Initialize on Boot enabled in RateConfig",
+                    Status = CheckStatus.Pass,
+                    Detail = "RateControl will automatically initialize itself on game boot (AfterSceneLoad) using Resources/RateConfig."
+                }.WithFacts("AutoInitialize = true", "Resources.Load<RateConfig>(\"RateConfig\")"));
+            }
+            else
+            {
+                var check = new CheckResult
+                {
                     Title = "RateControl.Initialize() not found in scripts",
                     Status = CheckStatus.Fail,
-                    Detail = "RateControl must be initialized from your game bootstrap MonoBehaviour.Awake().",
-                    Prompt = "Call RateControl.Initialize(myRateConfig, blocker: this, version: this) in your game startup bootstrap MonoBehaviour.Awake()."
-                });
+                    Detail = "RateControl must be initialized from your game startup (e.g. Main.cs or GameManager.cs), or enable AutoInitialize in RateConfig.",
+                    Prompt = "In your Main.cs or GameManager.cs Awake(), add: RateControl.Initialize(blocker: this); RateControl.LogStart();",
+                    ActionLabel = "Copy Main.cs Snippet",
+                    Action = () =>
+                    {
+                        EditorGUIUtility.systemCopyBuffer =
+                            "// Add to your Main.cs or GameManager.cs:\n" +
+                            "using UnityEngine;\n" +
+                            "using Wagenheimer.RateControl;\n\n" +
+                            "public class Main : MonoBehaviour, IRateBlocker\n" +
+                            "{\n" +
+                            "    private void Awake()\n" +
+                            "    {\n" +
+                            "        // Initializes RateControl automatically using Resources/RateConfig\n" +
+                            "        RateControl.Initialize(blocker: this);\n" +
+                            "        RateControl.LogStart();\n" +
+                            "    }\n\n" +
+                            "    public bool CanShowRate() => true; // Add condition (e.g. !isModalOpen)\n" +
+                            "}\n";
+                        EditorUtility.DisplayDialog("Snippet Copied", "Main.cs integration snippet copied to clipboard! Paste it into your bootstrap or main manager script.", "OK");
+                    }
+                };
+                check.WithFacts(
+                    "Option A: Add RateControl.Initialize(blocker: this) to Main.cs Awake()",
+                    "Option B: Enable 'AutoInitialize' in RateConfig for zero-code boot");
+                sec.Items.Add(check);
             }
 
             // LogEvent check

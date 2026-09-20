@@ -132,7 +132,7 @@ namespace Wagenheimer.RateControl
         /// to implement a fully custom show flow.
         /// </param>
         public static void Initialize(
-            RateConfig config,
+            RateConfig config = null,
             IRateBlocker blocker = null,
             IRateVersionProvider version = null,
             IRateStoreOpener opener = null,
@@ -146,8 +146,12 @@ namespace Wagenheimer.RateControl
 
             if (config == null)
             {
-                Debug.LogError("[RateControl] Initialize() requires a RateConfig asset. Rate system disabled.");
-                return;
+                config = Resources.Load<RateConfig>("RateConfig");
+                if (config == null)
+                {
+                    Debug.LogError("[RateControl] Initialize() requires a RateConfig asset (passed as parameter or placed in Resources/RateConfig). Rate system disabled.");
+                    return;
+                }
             }
 
             var go = new GameObject("Rate Control");
@@ -156,6 +160,18 @@ namespace Wagenheimer.RateControl
             Instance.Boot(config, blocker, version, opener, dialog);
 
             Debug.Log($"[RateControl] Initialized. EventsPerPrompt={config.EventsPerPrompt} KeyPrefix={config.StorageKeyPrefix}");
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void AutoInit()
+        {
+            if (Instance != null) return;
+            var cfg = Resources.Load<RateConfig>("RateConfig");
+            if (cfg != null && cfg.AutoInitialize)
+            {
+                Debug.Log("[RateControl] Auto-initializing via RateConfig.AutoInitialize...");
+                Initialize(cfg);
+            }
         }
 
         private void Boot(RateConfig config, IRateBlocker blocker, IRateVersionProvider version, IRateStoreOpener opener, RateDialog dialog)

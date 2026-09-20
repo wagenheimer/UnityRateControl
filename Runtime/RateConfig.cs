@@ -155,6 +155,12 @@ namespace Wagenheimer.RateControl
 
         // Debug & QA
 
+        [Header("Bootstrap & Lifecycle")]
+        [Tooltip(
+            "When true, RateControl automatically initializes itself on game startup (AfterSceneLoad)\n" +
+            "using this asset from Resources, requiring zero code in Main or GameManager.")]
+        public bool AutoInitialize = false;
+
         [Header("Debug & QA")]
         [Tooltip(
             "Automatically attaches the in-game RateDebugOverlay in the Unity Editor and Development Builds.\n" +
