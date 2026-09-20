@@ -169,16 +169,6 @@ namespace Wagenheimer.RateControl.Editor
                 if (mPath.StartsWith("Assets/") && mPath.EndsWith("Main.prefab", StringComparison.OrdinalIgnoreCase))
                 {
                     res.MainPrefabPath = mPath;
-                    try
-                    {
-                        var text = File.ReadAllText(mPath);
-                        if (text.Contains(LegacyRateControlGuid))
-                        {
-                            res.HasLegacyMainComponent = true;
-                            res.Details.Add($"'Main.prefab' contains legacy RateControl component reference");
-                        }
-                    }
-                    catch { }
                     break;
                 }
             }
@@ -504,3 +494,4 @@ public class formRate : RateDialog
         }
     }
 }
+
