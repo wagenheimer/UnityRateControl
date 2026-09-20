@@ -55,6 +55,9 @@ namespace Wagenheimer.RateControl
                 case MacOsChannel.Steam:
                     Application.OpenURL(_config.ResolvedSteamUrl);
                     break;
+                case MacOsChannel.MacGameStore:
+                    Application.OpenURL(_config.ResolvedMacGameStoreUrl);
+                    break;
                 default:
                     Debug.Log("[RateControl] macOS channel is None — rate skipped.");
                     break;
@@ -130,6 +133,10 @@ namespace Wagenheimer.RateControl
                 case MacOsChannel.Steam:
                     return !string.IsNullOrEmpty(_config.MoreGamesSteamDeveloperSlug)
                         ? $"https://store.steampowered.com/developer/{_config.MoreGamesSteamDeveloperSlug}"
+                        : _config.MoreGamesUrl;
+                case MacOsChannel.MacGameStore:
+                    return !string.IsNullOrEmpty(_config.MoreGamesMacGameStoreUrl)
+                        ? _config.MoreGamesMacGameStoreUrl
                         : _config.MoreGamesUrl;
                 default:
                     return _config.MoreGamesUrl;

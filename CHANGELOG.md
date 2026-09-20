@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-09-20
+
+### Added
+- **BuildPipeline & CLI Preprocessor (`RateBuildPreprocessor`)**:
+  - Automatically synchronizes `RateConfig` before any build (CLI, BuildPipeline, or Editor).
+  - Automatically detects and links with `UnityBuildPipeline`'s `GameConfig`: reads `MacAppStoreID`, `iOSAppIDFree/Full`, `AndroidFree/Full`, and dynamically switches active distribution channel (`MacAppStore`, `MacGameStore`, `Steam`).
+  - Fallback automatic synchronization from `PlayerSettings`.
+- **MacGameStore Support**:
+  - Added `MacOsChannel.MacGameStore` distribution channel.
+  - Added direct product review link (`MacGameStoreUrl`) and developer catalog link (`MoreGamesMacGameStoreUrl`).
+  - Added store verification and "Test MGS URL" to `SetupChecklistWindow`.
+- **RateConfig Custom Inspector Enhancements**:
+  - Added `⚡ BuildPipeline & Store Auto-Sync` header card with live GameConfig status, one-click manual sync, and quick presets (Mac App Store, MacGameStore, Steam).
+  - Real-time active build target detection and highlight badges (`[ACTIVE TARGET]`).
+  - Conditional field display for MacGameStore URLs when channel is selected.
+  - Added `Bootstrap & Automation` lifecycle section.
+
 ## [1.10.0] - 2026-09-20
 
 ### Added

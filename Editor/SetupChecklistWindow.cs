@@ -968,6 +968,7 @@ namespace Wagenheimer.RateControl.Editor
             var macStatus = macChannel == MacOsChannel.None ? CheckStatus.Info
                           : macChannel == MacOsChannel.MacAppStore && string.IsNullOrEmpty(_activeConfig.MacAppStoreId) ? (isMacActive ? CheckStatus.Fail : CheckStatus.Warning)
                           : macChannel == MacOsChannel.Steam && string.IsNullOrEmpty(_activeConfig.SteamAppId) ? (isMacActive ? CheckStatus.Fail : CheckStatus.Warning)
+                          : macChannel == MacOsChannel.MacGameStore && string.IsNullOrEmpty(_activeConfig.MacGameStoreUrl) ? (isMacActive ? CheckStatus.Fail : CheckStatus.Warning)
                           : CheckStatus.Pass;
 
             var macCheck = new CheckResult
@@ -978,15 +979,32 @@ namespace Wagenheimer.RateControl.Editor
                 {
                     MacOsChannel.MacAppStore => $"Mac App Store (ID: {_activeConfig.MacAppStoreId})",
                     MacOsChannel.Steam => $"Steam (App ID: {_activeConfig.SteamAppId})",
+                    MacOsChannel.MacGameStore => $"MacGameStore (URL: {_activeConfig.ResolvedMacGameStoreUrl})",
                     _ => "Channel is None (Rating disabled on macOS)"
+                },
+                ActionLabel = macChannel switch
+                {
+                    MacOsChannel.MacAppStore when !string.IsNullOrEmpty(_activeConfig.MacAppStoreId) => "Test MAS URL",
+                    MacOsChannel.Steam when !string.IsNullOrEmpty(_activeConfig.SteamAppId) => "Test Steam URL",
+                    MacOsChannel.MacGameStore when !string.IsNullOrEmpty(_activeConfig.MacGameStoreUrl) => "Test MGS URL",
+                    _ => null
+                },
+                Action = () =>
+                {
+                    if (macChannel == MacOsChannel.MacAppStore) Application.OpenURL($"macappstore://apps.apple.com/app/id{_activeConfig.MacAppStoreId}?action=write-review");
+                    else if (macChannel == MacOsChannel.Steam) Application.OpenURL(_activeConfig.ResolvedSteamUrl);
+                    else if (macChannel == MacOsChannel.MacGameStore) Application.OpenURL(_activeConfig.ResolvedMacGameStoreUrl);
                 }
             };
+            if (macChannel == MacOsChannel.MacGameStore)
+                macCheck.WithFacts($"MacGameStore URL: {_activeConfig.ResolvedMacGameStoreUrl}");
             sec.Items.Add(macCheck);
 
             // More Games
             var hasMoreGames = !string.IsNullOrEmpty(_activeConfig.MoreGamesGoogleDeveloperName) ||
                                !string.IsNullOrEmpty(_activeConfig.MoreGamesAppleDeveloperId) ||
                                !string.IsNullOrEmpty(_activeConfig.MoreGamesSteamDeveloperSlug) ||
+                               !string.IsNullOrEmpty(_activeConfig.MoreGamesMacGameStoreUrl) ||
                                !string.IsNullOrEmpty(_activeConfig.MoreGamesUrl);
 
             var moreGamesCheck = new CheckResult
@@ -1003,6 +1021,8 @@ namespace Wagenheimer.RateControl.Editor
                 moreGamesCheck.WithFacts($"Apple Dev ID: {_activeConfig.MoreGamesAppleDeveloperId}");
             if (!string.IsNullOrEmpty(_activeConfig.MoreGamesSteamDeveloperSlug))
                 moreGamesCheck.WithFacts($"Steam Dev Slug: {_activeConfig.MoreGamesSteamDeveloperSlug}");
+            if (!string.IsNullOrEmpty(_activeConfig.MoreGamesMacGameStoreUrl))
+                moreGamesCheck.WithFacts($"MacGameStore URL: {_activeConfig.MoreGamesMacGameStoreUrl}");
 
             sec.Items.Add(moreGamesCheck);
 

@@ -65,6 +65,8 @@ namespace Wagenheimer.RateControl.Editor
             helpRow.Add(helpBtn);
             root.Add(helpRow);
 
+            root.Add(BuildQuickSyncCard(so));
+
             root.Add(Section("Distribution Channels", kOrange, DistributionContent(so)));
             root.Add(Section("Store IDs",             kCyan,   StoreIdsContent(so)));
             root.Add(Section("More Games",            kGreen,  MoreGamesContent(so)));
@@ -72,11 +74,112 @@ namespace Wagenheimer.RateControl.Editor
             root.Add(Section("Scene Filter",          kRed,    SceneFilterContent(so)));
             root.Add(Section("Storage",               kGray,   StorageContent(so)));
             root.Add(Section("UI",                    kGray,   UiContent(so)));
+            root.Add(Section("Bootstrap & Automation", kCyan,  LifecycleContent(so)));
 
             return root;
         }
 
         // ── Section content builders ──────────────────────────────────────────────
+
+        private VisualElement BuildQuickSyncCard(SerializedObject so)
+        {
+            var card = new VisualElement();
+            card.style.backgroundColor = new Color(0.14f, 0.18f, 0.24f);
+            card.style.borderLeftColor = kCyan;
+            card.style.borderLeftWidth = 3;
+            card.style.borderTopColor = card.style.borderBottomColor = card.style.borderRightColor = new Color(0.24f, 0.30f, 0.38f);
+            card.style.borderTopWidth = card.style.borderBottomWidth = card.style.borderRightWidth = 1;
+            card.style.borderTopLeftRadius = card.style.borderTopRightRadius =
+            card.style.borderBottomLeftRadius = card.style.borderBottomRightRadius = 4;
+            card.style.paddingLeft = card.style.paddingRight = 10;
+            card.style.paddingTop = card.style.paddingBottom = 8;
+            card.style.marginBottom = 8;
+
+            var titleRow = new VisualElement();
+            titleRow.style.flexDirection = FlexDirection.Row;
+            titleRow.style.alignItems = Align.Center;
+            titleRow.style.marginBottom = 4;
+
+            var titleLbl = new Label("⚡ BUILDPIPELINE & STORE AUTO-SYNC");
+            titleLbl.style.unityFontStyleAndWeight = FontStyle.Bold;
+            titleLbl.style.fontSize = 11;
+            titleLbl.style.color = kCyan;
+            titleLbl.style.flexGrow = 1;
+            titleRow.Add(titleLbl);
+
+            var gameConfig = RateBuildPreprocessor.FindGameConfig();
+            var statusBadge = new Label(gameConfig != null ? "● GameConfig Linked" : "○ PlayerSettings Fallback");
+            statusBadge.style.fontSize = 10;
+            statusBadge.style.color = gameConfig != null ? kGreen : kSilver;
+            titleRow.Add(statusBadge);
+            card.Add(titleRow);
+
+            var descLbl = new Label(
+                gameConfig != null
+                    ? $"Linked with GameConfig '{gameConfig.name}'. Auto-Sync reads IDs and switches channels automatically when building with BuildPipeline or CLI."
+                    : "Auto-sync reads bundle IDs and store parameters from Project PlayerSettings and BuildPipeline.");
+            descLbl.style.fontSize = 10;
+            descLbl.style.color = new Color(0.72f, 0.72f, 0.72f);
+            descLbl.style.whiteSpace = WhiteSpace.Normal;
+            descLbl.style.marginBottom = 8;
+            card.Add(descLbl);
+
+            var btnRow = new VisualElement();
+            btnRow.style.flexDirection = FlexDirection.Row;
+            btnRow.style.flexWrap = Wrap.Wrap;
+
+            var syncBtn = new Button(() =>
+            {
+                var targetConfig = (RateConfig)target;
+                bool changed = RateBuildPreprocessor.SyncConfig(targetConfig, EditorUserBuildSettings.activeBuildTarget);
+                so.Update();
+                EditorUtility.DisplayDialog(
+                    "Auto-Sync Completed",
+                    changed
+                        ? "RateConfig was successfully synchronized from project settings and GameConfig!"
+                        : "RateConfig is already up to date with project settings and GameConfig.",
+                    "OK");
+            }) { text = "⚡ Sync from Project & GameConfig" };
+            syncBtn.style.fontSize = 10;
+            syncBtn.style.unityFontStyleAndWeight = FontStyle.Bold;
+            syncBtn.style.color = Color.white;
+            syncBtn.style.backgroundColor = new Color(0.18f, 0.40f, 0.62f);
+            syncBtn.style.marginRight = 6;
+            syncBtn.style.marginBottom = 4;
+            syncBtn.style.paddingLeft = syncBtn.style.paddingRight = 10;
+            syncBtn.style.paddingTop = syncBtn.style.paddingBottom = 4;
+            btnRow.Add(syncBtn);
+
+            var pMac = new Button(() => ApplyPreset(so, MacOsChannel.MacAppStore, StandaloneChannel.None)) { text = "🍎 Mac App Store" };
+            pMac.style.fontSize = 9;
+            pMac.style.marginRight = 4;
+            pMac.style.marginBottom = 4;
+            btnRow.Add(pMac);
+
+            var pMgs = new Button(() => ApplyPreset(so, MacOsChannel.MacGameStore, StandaloneChannel.None)) { text = "🎮 MacGameStore" };
+            pMgs.style.fontSize = 9;
+            pMgs.style.marginRight = 4;
+            pMgs.style.marginBottom = 4;
+            btnRow.Add(pMgs);
+
+            var pSteam = new Button(() => ApplyPreset(so, MacOsChannel.Steam, StandaloneChannel.Steam)) { text = "♨️ Steam" };
+            pSteam.style.fontSize = 9;
+            pSteam.style.marginRight = 4;
+            pSteam.style.marginBottom = 4;
+            btnRow.Add(pSteam);
+
+            card.Add(btnRow);
+            return card;
+        }
+
+        private static void ApplyPreset(SerializedObject so, MacOsChannel mac, StandaloneChannel pc)
+        {
+            so.Update();
+            so.FindProperty("MacOs").enumValueIndex = (int)mac;
+            so.FindProperty("Windows").enumValueIndex = (int)pc;
+            so.FindProperty("Linux").enumValueIndex = (int)pc;
+            so.ApplyModifiedProperties();
+        }
 
         private static VisualElement DistributionContent(SerializedObject so)
         {
@@ -91,14 +194,32 @@ namespace Wagenheimer.RateControl.Editor
             note.style.marginBottom = 6;
             c.Add(note);
 
-            c.Add(ChannelRow("macOS",    so.FindProperty("MacOs"),   kSilver));
-            c.Add(ChannelRow("Windows",  so.FindProperty("Windows"), kBlue));
-            c.Add(ChannelRow("Linux",    so.FindProperty("Linux"),   kSteam));
+            var activeTarget = EditorUserBuildSettings.activeBuildTarget;
+            bool isMac = activeTarget == BuildTarget.StandaloneOSX;
+            bool isWin = activeTarget == BuildTarget.StandaloneWindows || activeTarget == BuildTarget.StandaloneWindows64;
+            bool isLin = activeTarget == BuildTarget.StandaloneLinux64;
+
+            c.Add(ChannelRow("macOS", so.FindProperty("MacOs"), kSilver, isMac));
+
+            var mgsField = new PropertyField(so.FindProperty("MacGameStoreUrl"), "MacGameStore URL");
+            mgsField.style.marginLeft = 74;
+            mgsField.style.marginBottom = 6;
+            mgsField.schedule.Execute(() =>
+            {
+                var p = so.FindProperty("MacOs");
+                mgsField.style.display = p != null && p.enumValueIndex == (int)MacOsChannel.MacGameStore
+                    ? DisplayStyle.Flex
+                    : DisplayStyle.None;
+            }).Every(300);
+            c.Add(mgsField);
+
+            c.Add(ChannelRow("Windows", so.FindProperty("Windows"), kBlue, isWin));
+            c.Add(ChannelRow("Linux",   so.FindProperty("Linux"),   kSteam, isLin));
 
             return c;
         }
 
-        private static VisualElement ChannelRow(string label, SerializedProperty prop, Color accent)
+        private static VisualElement ChannelRow(string label, SerializedProperty prop, Color accent, bool isActive = false)
         {
             var row = new VisualElement();
             row.style.flexDirection       = FlexDirection.Row;
@@ -120,11 +241,11 @@ namespace Wagenheimer.RateControl.Editor
             row.style.borderTopLeftRadius = row.style.borderTopRightRadius =
             row.style.borderBottomLeftRadius = row.style.borderBottomRightRadius = 3;
 
-            var lbl = new Label(label);
+            var lbl = new Label(isActive ? $"{label} [ACTIVE]" : label);
             lbl.style.fontSize                = 11;
             lbl.style.unityFontStyleAndWeight = FontStyle.Bold;
-            lbl.style.color                   = accent;
-            lbl.style.width                   = 70;
+            lbl.style.color                   = isActive ? kYellow : accent;
+            lbl.style.width                   = isActive ? 120 : 70;
             row.Add(lbl);
 
             var field = new PropertyField(prop, "");
@@ -132,7 +253,7 @@ namespace Wagenheimer.RateControl.Editor
             row.Add(field);
 
             // Live warning dot when None
-            var dot = new Label("⚠ None");
+            var dot = new Label(isActive ? "⚠ None (Active Target)" : "⚠ None");
             dot.style.fontSize   = 9;
             dot.style.color      = kOrange;
             dot.style.marginLeft = 6;
@@ -194,6 +315,14 @@ namespace Wagenheimer.RateControl.Editor
                 so.FindProperty("MoreGamesAppleDeveloperId"),
                 v => $"https://apps.apple.com/developer/id{v}",
                 v => $"https://apps.apple.com/developer/id{v}"));
+
+            c.Add(CollapsiblePlatform(
+                "MacGameStore", kOrange,
+                "MacGameStore developer / catalog page URL.\nUsed when macOS channel is set to MacGameStore.",
+                "macgamestore.com  →  publisher page URL",
+                "https://www.macgamestore.com",
+                so.FindProperty("MoreGamesMacGameStoreUrl"),
+                v => v, v => v));
 
             c.Add(CollapsiblePlatform(
                 "Windows Store", kBlue,
@@ -268,6 +397,28 @@ namespace Wagenheimer.RateControl.Editor
                 warning.style.display = prefabProp.objectReferenceValue == null
                     ? DisplayStyle.Flex : DisplayStyle.None;
             }).Every(300);
+
+            return c;
+        }
+
+        private static VisualElement LifecycleContent(SerializedObject so)
+        {
+            var c = new VisualElement();
+
+            var autoSyncProp = so.FindProperty("AutoSyncOnBuild");
+            if (autoSyncProp != null)
+            {
+                c.Add(new PropertyField(autoSyncProp, "Auto-Sync on Build"));
+            }
+
+            var note = new HelpBox(
+                "RateControl is fully automated!\n\n" +
+                "• Automatic Lifecycle: RateControl runs automatically via [RuntimeInitializeOnLoadMethod] — no RateControlBootstrap or scene components needed.\n" +
+                "• BuildPipeline & CLI: RateBuildPreprocessor automatically syncs store IDs and switches channels based on target and GameConfig before building.\n" +
+                "• Auto-Sync on Build: When checked, automatically synchronizes RateConfig from GameConfig and PlayerSettings on every build.",
+                HelpBoxMessageType.Info);
+            note.style.marginBottom = 6;
+            c.Add(note);
 
             return c;
         }

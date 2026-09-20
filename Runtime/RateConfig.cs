@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Wagenheimer.RateControl
 {
-    public enum MacOsChannel      { None, MacAppStore, Steam }
+    public enum MacOsChannel      { None, MacAppStore, Steam, MacGameStore }
     public enum StandaloneChannel { None, Steam }
 
     [CreateAssetMenu(menuName = "Rate Control/Rate Config", fileName = "RateConfig", order = 0)]
@@ -15,8 +15,15 @@ namespace Wagenheimer.RateControl
             "Distribution channel for macOS standalone builds.\n" +
             "None = rate disabled on macOS.\n" +
             "MacAppStore = opens macappstore:// review URL (requires MacAppStoreId).\n" +
-            "Steam = opens Steam review page (requires SteamAppId).")]
+            "Steam = opens Steam review page (requires SteamAppId).\n" +
+            "MacGameStore = opens direct product review page (requires MacGameStoreUrl).")]
         public MacOsChannel MacOs = MacOsChannel.None;
+
+        [Tooltip(
+            "Direct product review or store URL on MacGameStore.\n" +
+            "Example: https://www.macgamestore.com/product/4567/Forgotten-Tales-Day-of-the-Dead/\n" +
+            "Used when macOS channel is set to MacGameStore.")]
+        public string MacGameStoreUrl = "";
 
         [Tooltip(
             "Distribution channel for Windows standalone builds.\n" +
@@ -86,6 +93,11 @@ namespace Wagenheimer.RateControl
             "Auto-builds: https://store.steampowered.com/developer/{slug}\n" +
             "Where to find: open your Steamworks developer page and copy the slug from the URL.")]
         public string MoreGamesSteamDeveloperSlug = "";
+
+        [Tooltip(
+            "Developer/publisher catalog URL on MacGameStore for the 'More Games' action.\n" +
+            "Example: https://www.macgamestore.com/developer/Green-Sauce-Games/")]
+        public string MoreGamesMacGameStoreUrl = "";
 
         [Tooltip(
             "Fallback URL when no platform-specific field is configured above.\n" +
@@ -161,6 +173,12 @@ namespace Wagenheimer.RateControl
             "using this asset from Resources, requiring zero code in Main or GameManager.")]
         public bool AutoInitialize = false;
 
+        [Tooltip(
+            "When true, before every build (via BuildPipeline, CLI, or Editor Build),\n" +
+            "RateControl automatically synchronizes store IDs, package names, and distribution\n" +
+            "channels from GameConfig or PlayerSettings.")]
+        public bool AutoSyncOnBuild = true;
+
         [Header("Debug & QA")]
         [Tooltip(
             "Automatically attaches the in-game RateDebugOverlay in the Unity Editor and Development Builds.\n" +
@@ -175,6 +193,9 @@ namespace Wagenheimer.RateControl
 
         public string ResolvedSteamUrl =>
             $"https://store.steampowered.com/app/{SteamAppId}/reviews/";
+
+        public string ResolvedMacGameStoreUrl =>
+            string.IsNullOrEmpty(MacGameStoreUrl) ? "https://www.macgamestore.com/" : MacGameStoreUrl;
 
         private static string FirstNonEmpty(string a, string b) =>
             !string.IsNullOrEmpty(a) ? a : b;
