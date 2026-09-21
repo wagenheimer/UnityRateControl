@@ -75,6 +75,7 @@ namespace Wagenheimer.RateControl.Editor
             root.Add(Section("Storage",               kGray,   StorageContent(so)));
             root.Add(Section("UI",                    kGray,   UiContent(so)));
             root.Add(Section("Bootstrap & Automation", kCyan,  LifecycleContent(so)));
+            root.Add(Section("Debug & QA",             kRed,   DebugContent(so)));
 
             return root;
         }
@@ -405,6 +406,12 @@ namespace Wagenheimer.RateControl.Editor
         {
             var c = new VisualElement();
 
+            var autoInitProp = so.FindProperty("AutoInitialize");
+            if (autoInitProp != null)
+            {
+                c.Add(new PropertyField(autoInitProp, "Auto-Initialize on Startup"));
+            }
+
             var autoSyncProp = so.FindProperty("AutoSyncOnBuild");
             if (autoSyncProp != null)
             {
@@ -428,6 +435,23 @@ namespace Wagenheimer.RateControl.Editor
             migrateBtn.style.paddingTop = migrateBtn.style.paddingBottom = 4;
             migrateBtn.style.marginTop = 4;
             c.Add(migrateBtn);
+
+            return c;
+        }
+
+        private static VisualElement DebugContent(SerializedObject so)
+        {
+            var c = new VisualElement();
+
+            c.Add(new PropertyField(so.FindProperty("EnableDebugOverlay"), "Enable Debug Overlay"));
+
+            var note = new HelpBox(
+                "The overlay attaches automatically in the Unity Editor and Development Builds — it never appears in release builds.\n" +
+                "Press F9 (or tap 'RATE DBG' in-game) to open it. Default: enabled.\n" +
+                "You can also toggle this from Tools → Wagenheimer → Rate Control → Debug Overlay Enabled.",
+                HelpBoxMessageType.Info);
+            note.style.marginTop = 4;
+            c.Add(note);
 
             return c;
         }

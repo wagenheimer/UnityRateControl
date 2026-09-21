@@ -275,9 +275,8 @@ RateControl.Initialize(
 ### How to use
 - **Hotkey**: Press **`F9`** in Play Mode to toggle the panel.
 - **On-Screen Button**: Tap the floating **`RATE DBG`** button on the bottom-right corner.
-- **Add to Scene**:
-  - Via menu: **Tools → Wagenheimer → Rate Control → Add Debug Overlay to Scene**
-  - Or via `RateControl` Inspector: click **Attach Rate Debug Overlay to Scene**
+- **Auto-attach**: The overlay is controlled by **`EnableDebugOverlay`** in `RateConfig` (default: **on**) and only attaches in the Unity Editor and Development Builds — never in release builds.
+  - Toggle via the `RateConfig` inspector (**Debug & QA** section) or the menu **Tools → Wagenheimer → Rate Control → Debug Overlay Enabled** (checkmark = on).
   - Or in code: `RateDebugOverlay.CreateOverlay();`
 
 ---
@@ -286,7 +285,7 @@ RateControl.Initialize(
 
 | Menu | Action |
 |---|---|
-| Tools → Wagenheimer → Rate Control → Add Debug Overlay to Scene | Add runtime debug & QA overlay to active scene |
+| Tools → Wagenheimer → Rate Control → Debug Overlay Enabled | Toggle `RateConfig.EnableDebugOverlay` (Editor & Development Builds only) |
 | Tools → Wagenheimer → Rate Control → Create Default Prefab | Generate the default `RateDialog` prefab |
 | Tools → Wagenheimer → Rate Control → Create Rate Config Asset | Create a new `RateConfig` ScriptableObject |
 | Tools → Wagenheimer → Rate Control → Reset Saved State (PlayerPrefs) | Clear all PlayerPrefs keys for testing |

@@ -94,23 +94,44 @@ namespace Wagenheimer.RateControl.Editor
                 $"Saved state cleared.\nKey prefix used: \"{prefix}\"", "OK");
         }
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Add Debug Overlay to Scene", priority = 135)]
-        internal static void AddDebugOverlayToScene()
+        private const string DebugOverlayMenuPath = "Tools/Wagenheimer/Rate Control/Debug Overlay Enabled";
+
+        [MenuItem(DebugOverlayMenuPath, priority = 135)]
+        internal static void ToggleDebugOverlay()
         {
-            var existing = Object.FindObjectOfType<Wagenheimer.RateControl.UI.RateDebugOverlay>();
-            if (existing != null)
+            var cfg = FindRateConfig();
+            if (cfg == null)
             {
-                Selection.activeGameObject = existing.gameObject;
-                EditorGUIUtility.PingObject(existing.gameObject);
-                Debug.Log("[RateControl] RateDebugOverlay already exists in scene.");
+                EditorUtility.DisplayDialog(
+                    "Rate Control",
+                    "No RateConfig asset found in the project.\n\n" +
+                    "Create one via Tools → Wagenheimer → Rate Control → Create Rate Config Asset.",
+                    "OK");
                 return;
             }
 
-            var go = new GameObject("RateDebugOverlay", typeof(Wagenheimer.RateControl.UI.RateDebugOverlay));
-            Undo.RegisterCreatedObjectUndo(go, "Create Rate Debug Overlay");
-            Selection.activeGameObject = go;
-            EditorGUIUtility.PingObject(go);
-            Debug.Log("[RateControl] Created RateDebugOverlay in scene.");
+            Undo.RecordObject(cfg, "Toggle Rate Debug Overlay");
+            cfg.EnableDebugOverlay = !cfg.EnableDebugOverlay;
+            EditorUtility.SetDirty(cfg);
+            AssetDatabase.SaveAssets();
+
+            Debug.Log($"[RateControl] Debug overlay {(cfg.EnableDebugOverlay ? "ENABLED" : "DISABLED")} " +
+                      $"in RateConfig '{cfg.name}'. It only appears in the Unity Editor and Development Builds.");
+        }
+
+        [MenuItem(DebugOverlayMenuPath, true)]
+        internal static bool ToggleDebugOverlayValidate()
+        {
+            var cfg = FindRateConfig();
+            Menu.SetChecked(DebugOverlayMenuPath, cfg != null && cfg.EnableDebugOverlay);
+            return true;
+        }
+
+        private static RateConfig FindRateConfig()
+        {
+            var guids = AssetDatabase.FindAssets("t:RateConfig");
+            if (guids.Length == 0) return null;
+            return AssetDatabase.LoadAssetAtPath<RateConfig>(AssetDatabase.GUIDToAssetPath(guids[0]));
         }
 
         // ── Prefab builder ────────────────────────────────────────────────────────
