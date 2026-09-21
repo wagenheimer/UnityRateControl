@@ -102,15 +102,40 @@ private void Awake()
 }
 ```
 
+> **Session starts are recorded automatically.** `Initialize()` calls `RecordStart()` internally
+> (via `Boot`), so `StartCount` is incremented once on every app launch. **Do not** call
+> `RateControl.LogStart()` immediately after `Initialize()` — that would count the same launch
+> twice and make `StartsBeforeFirstPrompt` / `StartsBeforeSubsequentPrompts` trigger one launch
+> early. `Initialize()` is the only start call you need at boot.
+
 ### 5. Log player milestones
 
 ```csharp
 // Call after completing a level, puzzle, or meaningful game event
 RateControl.LogEvent();
+```
 
-// Call when the game session starts (app launch, level load)
+`RateControl.LogStart()` exists for counting **extra** session starts beyond the one already
+recorded by `Initialize()` — for example, if your game keeps a single long-lived process and you
+want each level/mode load to advance the start counter. Call it only when you deliberately want
+an additional tick; it is **not** needed at boot.
+
+```csharp
+// Optional — only to add an extra "start" tick on top of the automatic one at Initialize().
 RateControl.LogStart();
 ```
+
+**Counter cheat-sheet**
+
+| Call | Effect | When |
+|---|---|---|
+| `Initialize()` | `StartCount +1` (automatic) | Once, in your bootstrap `Awake()` |
+| `LogStart()` | `StartCount +1` (manual) | Only for extra session starts — never paired with `Initialize()` |
+| `LogEvent()` | `EventCount +1` (manual) | At milestones: level complete, match won, chapter finished |
+
+The prompt is queued when `EventCount` reaches a multiple of `EventsPerPrompt`, or when
+`StartCount` reaches `StartsBeforeFirstPrompt` (first prompt) / `StartsBeforeSubsequentPrompts`
+(later prompts).
 
 ### 6. Verify with Setup & Checklist Window
 
