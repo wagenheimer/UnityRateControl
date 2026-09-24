@@ -22,6 +22,7 @@ namespace Wagenheimer.RateControl.Editor
         {
             var so   = serializedObject;
             var root = new VisualElement();
+            RateControlUIStyle.Apply(root);
             root.style.paddingBottom = 8;
 
             // Action buttons row

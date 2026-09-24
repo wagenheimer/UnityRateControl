@@ -1,80 +1,83 @@
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Wagenheimer.RateControl.UI;
 
 namespace Wagenheimer.RateControl.Editor
 {
     /// <summary>
-    /// Custom Inspector for <see cref="RateControl"/> that adds test buttons,
-    /// debug overlay spawner, and a live state summary during Play Mode.
+    /// Custom UI Toolkit Inspector for <see cref="RateControl"/> with interactive test buttons,
+    /// debug overlay spawner, and live state summary during Play Mode.
     /// </summary>
     [CustomEditor(typeof(RateControl))]
     internal sealed class RateControlEditor : UnityEditor.Editor
     {
-        public override void OnInspectorGUI()
+        public override VisualElement CreateInspectorGUI()
         {
-            DrawDefaultInspector();
+            var root = new VisualElement();
+            RateControlUIStyle.Apply(root);
 
-            EditorGUILayout.Space(10);
-            EditorGUILayout.LabelField("Debug & QA Tools", EditorStyles.boldLabel);
+            var defaultCard = RateControlUIStyle.CreateCard("⭐ Rate Control Component", "Manages automated user review prompts, session counters, and platform store redirection.");
+            InspectorElement.FillDefaultInspector(defaultCard, serializedObject, this);
+            root.Add(defaultCard);
 
-            // Overlay is auto-attached via RateConfig.EnableDebugOverlay — no manual step needed.
-            bool overlayActive = Object.FindObjectOfType<Wagenheimer.RateControl.UI.RateDebugOverlay>() != null;
-            using (new EditorGUI.DisabledScope(true))
-            {
-                string label = overlayActive ? " Rate Debug Overlay: ON" : " Rate Debug Overlay: OFF (auto-attaches on Initialize)";
-                EditorGUILayout.LabelField(label, EditorStyles.helpBox);
-            }
+            // Debug & QA Tools Card
+            var qaCard = RateControlUIStyle.CreateCard("🛠️ Debug & QA Tools");
+            bool overlayActive = UnityEngine.Object.FindObjectOfType<RateDebugOverlay>() != null;
+            qaCard.Add(RateControlUIStyle.CreateBadge(
+                overlayActive ? "Rate Debug Overlay: ON" : "Rate Debug Overlay: OFF (auto-attaches on Initialize)",
+                overlayActive ? "pass" : "info"));
 
             if (!Application.isPlaying)
             {
-                EditorGUILayout.HelpBox("Enter Play Mode to test rate prompt thresholds, simulate user actions, or open the in-game debug overlay.", MessageType.None);
-                return;
+                qaCard.Add(RateControlUIStyle.CreateCallout(
+                    "Enter Play Mode to test rate prompt thresholds, simulate user actions, or open the in-game debug overlay.",
+                    "info"));
             }
-
-            var rc = target as RateControl;
-
-            EditorGUILayout.Space(6);
-            EditorGUILayout.LabelField("Runtime Testing Actions", EditorStyles.boldLabel);
-
-            using (new EditorGUILayout.HorizontalScope())
+            else
             {
-                if (GUILayout.Button("Force Show Prompt"))
-                {
-                    if (rc != null)
-                        rc.ForceShowPrompt();
-                }
+                var rc = target as RateControl;
+                qaCard.Add(new Label("Runtime Testing Actions") { style = { unityFontStyleAndWeight = FontStyle.Bold, marginTop = 6, marginBottom = 4 } });
 
-                if (GUILayout.Button("Clear Remind Cooldown"))
-                {
-                    if (rc != null)
-                        rc.ClearRemindCooldown();
-                }
+                var btnRow1 = new VisualElement { style = { flexDirection = FlexDirection.Row, flexWrap = Wrap.Wrap, marginBottom = 4 } };
+
+                var forceBtn = new Button(() => { if (rc != null) rc.ForceShowPrompt(); }) { text = "⚡ Force Show Prompt" };
+                forceBtn.AddToClassList("rc-btn");
+                forceBtn.AddToClassList("rc-btn-primary");
+                btnRow1.Add(forceBtn);
+
+                var clearCooldownBtn = new Button(() => { if (rc != null) rc.ClearRemindCooldown(); }) { text = "⏳ Clear Remind Cooldown" };
+                clearCooldownBtn.AddToClassList("rc-btn");
+                btnRow1.Add(clearCooldownBtn);
+
+                qaCard.Add(btnRow1);
+
+                var btnRow2 = new VisualElement { style = { flexDirection = FlexDirection.Row, flexWrap = Wrap.Wrap, marginBottom = 4 } };
+
+                var logEventBtn = new Button(RateControl.LogEvent) { text = "📈 Log Event (+1)" };
+                logEventBtn.AddToClassList("rc-btn");
+                btnRow2.Add(logEventBtn);
+
+                var logStartBtn = new Button(RateControl.LogStart) { text = "🚀 Log Start (+1)" };
+                logStartBtn.AddToClassList("rc-btn");
+                btnRow2.Add(logStartBtn);
+
+                var resetBtn = new Button(RateControl.ResetAll) { text = "↺ Reset All State" };
+                resetBtn.AddToClassList("rc-btn");
+                btnRow2.Add(resetBtn);
+
+                qaCard.Add(btnRow2);
+
+                qaCard.Add(RateControlUIStyle.CreateCallout(
+                    "Shortcuts: Press F8 to force the prompt immediately. Press F9 or click 'RATE DBG' on screen to open the in-game debug overlay.",
+                    "info"));
             }
 
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Log Event (+1)"))
-                {
-                    RateControl.LogEvent();
-                }
-
-                if (GUILayout.Button("Log Start (+1)"))
-                {
-                    RateControl.LogStart();
-                }
-
-                if (GUILayout.Button("Reset All State"))
-                {
-                    RateControl.ResetAll();
-                }
-            }
-
-            EditorGUILayout.HelpBox(
-                "Shortcuts: Press F8 to force the prompt immediately. Press F9 or click 'RATE DBG' on screen to open the in-game debug overlay.",
-                MessageType.Info);
+            root.Add(qaCard);
+            return root;
         }
     }
 }
 #endif
-

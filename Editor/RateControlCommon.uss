@@ -1,0 +1,205 @@
+/* =========================================================================
+   UnityRateControl - Modern UI Toolkit Stylesheet
+   ========================================================================= */
+
+:root {
+    --rc-accent: #2e8b57;
+    --rc-accent-light: #4cd964;
+    --rc-cyan: #4da3d4;
+    --rc-bg: #222226;
+    --rc-card-bg: #2a2a2e;
+    --rc-card-header: #323236;
+    --rc-border: #3c3c42;
+    --rc-text: #e6e6e6;
+    --rc-text-dim: #999999;
+    --rc-pass: #3ec972;
+    --rc-warn: #f5a623;
+    --rc-fail: #e84c4c;
+    --rc-info: #33bbf5;
+}
+
+/* Base Root Container */
+.rc-root {
+    flex-grow: 1;
+    background-color: var(--rc-bg);
+    color: var(--rc-text);
+    padding: 10px 14px;
+    font-size: 12px;
+}
+
+/* Header Banner */
+.rc-header {
+    background-color: var(--rc-card-bg);
+    border-bottom-width: 2px;
+    border-bottom-color: var(--rc-accent);
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.rc-header-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rc-header-left {
+    flex-direction: row;
+    align-items: center;
+}
+
+.rc-header-title {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: #ffffff;
+    margin-right: 8px;
+}
+
+.rc-header-version {
+    background-color: rgba(46, 139, 87, 0.2);
+    border-color: var(--rc-accent);
+    border-width: 1px;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 10px;
+    -unity-font-style: bold;
+    color: var(--rc-accent-light);
+}
+
+.rc-header-subtitle {
+    font-size: 11px;
+    color: var(--rc-text-dim);
+    margin-top: 4px;
+}
+
+/* Toolbar Buttons */
+.rc-toolbar-actions {
+    flex-direction: row;
+    align-items: center;
+}
+
+.rc-toolbar-btn {
+    height: 26px;
+    font-size: 11px;
+    margin-left: 6px;
+    padding: 0 10px;
+    border-radius: 4px;
+}
+
+/* Card Container */
+.rc-card {
+    background-color: var(--rc-card-bg);
+    border-width: 1px;
+    border-color: var(--rc-border);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+}
+
+.rc-card-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--rc-border);
+}
+
+.rc-card-title {
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: #ffffff;
+}
+
+.rc-card-subtitle {
+    font-size: 11px;
+    color: var(--rc-text-dim);
+    margin-top: 2px;
+}
+
+/* Status Badges */
+.rc-badge {
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 10px;
+    -unity-font-style: bold;
+    align-self: center;
+}
+
+.rc-badge-pass {
+    background-color: rgba(62, 201, 114, 0.18);
+    border-width: 1px;
+    border-color: var(--rc-pass);
+    color: var(--rc-pass);
+}
+
+.rc-badge-warn {
+    background-color: rgba(245, 166, 35, 0.18);
+    border-width: 1px;
+    border-color: var(--rc-warn);
+    color: var(--rc-warn);
+}
+
+.rc-badge-fail {
+    background-color: rgba(232, 76, 76, 0.18);
+    border-width: 1px;
+    border-color: var(--rc-fail);
+    color: var(--rc-fail);
+}
+
+.rc-badge-info {
+    background-color: rgba(51, 187, 245, 0.18);
+    border-width: 1px;
+    border-color: var(--rc-info);
+    color: var(--rc-info);
+}
+
+/* Callout Box */
+.rc-callout {
+    padding: 8px 10px;
+    border-radius: 4px;
+    margin-top: 6px;
+    margin-bottom: 8px;
+    border-left-width: 4px;
+    font-size: 11px;
+}
+
+.rc-callout-info {
+    background-color: rgba(51, 187, 245, 0.12);
+    border-left-color: var(--rc-info);
+    color: #e0eeff;
+}
+
+.rc-callout-warn {
+    background-color: rgba(245, 166, 35, 0.12);
+    border-left-color: var(--rc-warn);
+    color: #fff2d6;
+}
+
+.rc-callout-pass {
+    background-color: rgba(62, 201, 114, 0.12);
+    border-left-color: var(--rc-pass);
+    color: #dffff0;
+}
+
+/* Action Button */
+.rc-btn {
+    height: 28px;
+    font-size: 11px;
+    border-radius: 4px;
+    padding: 0 10px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+.rc-btn-primary {
+    background-color: #235c3c;
+    color: #ffffff;
+    -unity-font-style: bold;
+}
+
+.rc-btn-primary:hover {
+    background-color: #2e7a4f;
+}

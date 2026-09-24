@@ -17,6 +17,7 @@ A lightweight, platform-agnostic Unity package for prompting players to rate you
 - **Custom UI** via abstract `RateDialog` — one default prefab included, override per game
 - **Collision-safe PlayerPrefs** — each game sets its own `StorageKeyPrefix`
 - **Dependency injection** — plug in `IRateBlocker` to suppress prompts during tutorials, `IRateVersionProvider` for custom versioning
+- **UI Toolkit Custom Inspectors & Dashboard** — modern UI Toolkit inspectors for `RateControl` and `RateConfig`, complete with Play Mode test runners, debug overlay state tracking, and a comprehensive 6-category `Setup & Checklist` window (`Tools > Wagenheimer > Rate Control > Setup & Checklist...`)
 
 ---
 
