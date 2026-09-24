@@ -14,7 +14,7 @@ namespace Wagenheimer.RateControl.Editor
     {
         // ── Menu items ────────────────────────────────────────────────────────────
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Create Rate Config Asset", priority = 133)]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Quick Actions/Create Rate Config Asset", priority = 140)]
         internal static void CreateRateConfigAsset()
         {
             var path = EditorUtility.SaveFilePanelInProject(
@@ -32,7 +32,7 @@ namespace Wagenheimer.RateControl.Editor
             Debug.Log($"[RateControl] RateConfig asset created at: {path}");
         }
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Create Default Prefab", priority = 134)]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Quick Actions/Create Default Dialog Prefab", priority = 141)]
         internal static void CreateDefaultPrefab()
         {
             var path = EditorUtility.SaveFilePanelInProject(
@@ -61,7 +61,7 @@ namespace Wagenheimer.RateControl.Editor
             }
         }
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Reset Saved State (PlayerPrefs)", priority = 137)]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Quick Actions/Reset Saved State (PlayerPrefs)", priority = 142)]
         internal static void ResetSavedState()
         {
             if (Application.isPlaying)
@@ -92,39 +92,6 @@ namespace Wagenheimer.RateControl.Editor
             Debug.Log($"[RateControl] Saved state cleared (prefix: {prefix}).");
             EditorUtility.DisplayDialog("Rate Control",
                 $"Saved state cleared.\nKey prefix used: \"{prefix}\"", "OK");
-        }
-
-        private const string DebugOverlayMenuPath = "Tools/Wagenheimer/Rate Control/Debug Overlay Enabled";
-
-        [MenuItem(DebugOverlayMenuPath, priority = 135)]
-        internal static void ToggleDebugOverlay()
-        {
-            var cfg = FindRateConfig();
-            if (cfg == null)
-            {
-                EditorUtility.DisplayDialog(
-                    "Rate Control",
-                    "No RateConfig asset found in the project.\n\n" +
-                    "Create one via Tools → Wagenheimer → Rate Control → Create Rate Config Asset.",
-                    "OK");
-                return;
-            }
-
-            Undo.RecordObject(cfg, "Toggle Rate Debug Overlay");
-            cfg.EnableDebugOverlay = !cfg.EnableDebugOverlay;
-            EditorUtility.SetDirty(cfg);
-            AssetDatabase.SaveAssets();
-
-            Debug.Log($"[RateControl] Debug overlay {(cfg.EnableDebugOverlay ? "ENABLED" : "DISABLED")} " +
-                      $"in RateConfig '{cfg.name}'. It only appears in the Unity Editor and Development Builds.");
-        }
-
-        [MenuItem(DebugOverlayMenuPath, true)]
-        internal static bool ToggleDebugOverlayValidate()
-        {
-            var cfg = FindRateConfig();
-            Menu.SetChecked(DebugOverlayMenuPath, cfg != null && cfg.EnableDebugOverlay);
-            return true;
         }
 
         private static RateConfig FindRateConfig()

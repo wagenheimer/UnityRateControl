@@ -54,7 +54,7 @@ namespace Wagenheimer.RateControl.Editor
             public List<string> Details = new();
         }
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Migrate Legacy RateControl...", priority = 135)]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Quick Actions/Migrate Legacy RateControl...", priority = 143)]
         public static void MenuMigrate()
         {
             var det = Detect();

@@ -103,5 +103,65 @@ namespace Wagenheimer.RateControl.Editor
             box.Add(lbl);
             return box;
         }
+
+        public static VisualElement CreateHeader(string title, string subtitle, string version)
+        {
+            var header = new VisualElement();
+            header.AddToClassList("rc-header");
+
+            var row = new VisualElement();
+            row.AddToClassList("rc-header-row");
+
+            var left = new VisualElement();
+            left.AddToClassList("rc-header-left");
+
+            var titleLbl = new Label(title);
+            titleLbl.AddToClassList("rc-header-title");
+
+            var versionLbl = new Label($"v{version}");
+            versionLbl.AddToClassList("rc-header-version");
+
+            left.Add(titleLbl);
+            left.Add(versionLbl);
+            row.Add(left);
+            header.Add(row);
+
+            if (!string.IsNullOrEmpty(subtitle))
+            {
+                var subLbl = new Label(subtitle);
+                subLbl.AddToClassList("rc-header-subtitle");
+                header.Add(subLbl);
+            }
+
+            return header;
+        }
+
+        public static VisualElement CreateMetricCard(string label, string initialValue, out Label valueLabel)
+        {
+            var card = new VisualElement();
+            card.AddToClassList("rc-metric-card");
+
+            valueLabel = new Label(initialValue);
+            valueLabel.AddToClassList("rc-metric-val");
+
+            var lbl = new Label(label);
+            lbl.AddToClassList("rc-metric-lbl");
+
+            card.Add(valueLabel);
+            card.Add(lbl);
+
+            return card;
+        }
+
+        public static Button CreateButton(string text, string styleClass, Action onClick)
+        {
+            var btn = new Button(onClick) { text = text };
+            btn.AddToClassList("rc-btn");
+            if (!string.IsNullOrEmpty(styleClass))
+            {
+                btn.AddToClassList(styleClass);
+            }
+            return btn;
+        }
     }
 }

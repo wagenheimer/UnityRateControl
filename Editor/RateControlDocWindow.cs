@@ -10,18 +10,10 @@ namespace Wagenheimer.RateControl.Editor
         private const string kUxml =
             "Packages/com.wagenheimer.ratecontrol/Editor/RateControlDocWindow.uxml";
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Documentation & Setup Guide", priority = 131)]
-        [MenuItem("Window/Wagenheimer/Rate Control/Documentation & Setup Guide", priority = 211)]
-        [MenuItem("Help/Rate Control Setup Guide")]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Documentation & Guide", priority = 123)]
         public static void Open()
         {
-            var w = GetWindow<RateControlDocWindow>(false, "Rate Control — Setup Guide");
-            w.minSize = new Vector2(720, 480);
-            var p = w.position;
-            if (p.width < 50 || p.x < -2000 || p.y < -2000)
-                w.position = new Rect(120, 120, 860, 580);
-            w.Show();
-            w.Focus();
+            RateControlHubWindow.Open(RateControlHubWindow.Tab.Guide);
         }
 
         private static readonly (string label, System.Func<VisualElement> build)[] Pages =

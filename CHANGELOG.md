@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.16.0] - 2026-09-24
+## [1.17.0] - 2026-09-24
+
+### Added
+- **Centralized UI Toolkit Dashboard (`RateControlHubWindow`)**: Unified multi-tab dashboard (`Tools > Wagenheimer > Rate Control > Dashboard...`) aggregating Setup & Diagnostics, Live QA & Testing, Configuration overview, Documentation guide, and Package updates.
+- **Enhanced Setup & Diagnostic Checker**: Deep verification for active build targets, `RateConfig` resource location, dialog prefab UI bindings, code scanner for `RateControl.Initialize`/`LogEvent`/`IRateBlocker`, and release readiness quality gates with one-click quick fixes.
+- **Interactive Live QA & Tester**: Real-time PlayerPrefs inspector with visual progress bars for app starts and milestone events, trigger readiness status, simulation controls, and debug overlay toggle.
+- **Clean Menu Architecture**: Reorganized menu items with standardized priorities (100–200) and structured `Quick Actions` submenu, eliminating redundant and obsolete menu clutter.
 
 ## [1.15.0] - 2026-09-23
 

@@ -302,19 +302,40 @@ RateControl.Initialize(
 - **Hotkey**: Press **`F9`** in Play Mode to toggle the panel.
 - **On-Screen Button**: Tap the floating **`RATE DBG`** button on the bottom-right corner.
 - **Auto-attach**: The overlay is controlled by **`EnableDebugOverlay`** in `RateConfig` (default: **on**) and only attaches in the Unity Editor and Development Builds — never in release builds.
-  - Toggle via the `RateConfig` inspector (**Debug & QA** section) or the menu **Tools → Wagenheimer → Rate Control → Debug Overlay Enabled** (checkmark = on).
+  - Toggle via the `RateConfig` inspector (**Debug & QA** section) or the **Live QA & Tester** tab in the Dashboard.
   - Or in code: `RateDebugOverlay.CreateOverlay();`
 
 ---
 
-## Editor Utilities
+## Central Dashboard & Diagnostic Suite
 
-| Menu | Action |
-|---|---|
-| Tools → Wagenheimer → Rate Control → Debug Overlay Enabled | Toggle `RateConfig.EnableDebugOverlay` (Editor & Development Builds only) |
-| Tools → Wagenheimer → Rate Control → Create Default Prefab | Generate the default `RateDialog` prefab |
-| Tools → Wagenheimer → Rate Control → Create Rate Config Asset | Create a new `RateConfig` ScriptableObject |
-| Tools → Wagenheimer → Rate Control → Reset Saved State (PlayerPrefs) | Clear all PlayerPrefs keys for testing |
+Open the central UI Toolkit dashboard via **`Tools > Wagenheimer > Rate Control > Dashboard...`**.
+
+The dashboard includes 5 integrated workspaces:
+- **Setup & Diagnostics**: Comprehensive quality gates inspecting active platform store IDs, `RateConfig` resource location, dialog prefab bindings, code integration scans, and release readiness.
+- **Live QA & Tester**: Live PlayerPrefs inspector, readiness progress bars, interactive simulation actions (`Force Show Prompt`, `+1 Event`, `+1 Start`, `Clear Cooldown`), and debug overlay toggle.
+- **Configuration**: Active `RateConfig` summary, thresholds, and cross-platform distribution channels.
+- **Documentation**: Embedded setup guide with one-click copyable API snippets.
+- **About & Updates**: Package metadata and direct update checks via `PackageHub`.
+
+---
+
+## Editor Menu Reference
+
+All commands are grouped under **`Tools > Wagenheimer > Rate Control`**:
+
+| Menu Item | Priority | Description |
+|---|---|---|
+| **Dashboard...** | Priority 100 | Opens the unified UI Toolkit dashboard. |
+| **Setup & Diagnostics...** | Priority 120 | Opens the Dashboard directly to the Diagnostics tab. |
+| **Live QA & Testing...** | Priority 121 | Opens the Dashboard directly to the QA & Testing tab. |
+| **Configuration...** | Priority 122 | Opens the Dashboard directly to the Configuration tab. |
+| **Documentation & Guide** | Priority 123 | Opens the Dashboard directly to the Documentation tab. |
+| **Quick Actions > Create Rate Config Asset** | Priority 140 | Creates a new `RateConfig` ScriptableObject asset. |
+| **Quick Actions > Create Default Dialog Prefab** | Priority 141 | Generates the default Canvas `RateDialog` prefab. |
+| **Quick Actions > Reset Saved State (PlayerPrefs)** | Priority 142 | Clears all PlayerPrefs keys for testing. |
+| **Quick Actions > Migrate Legacy RateControl...** | Priority 143 | Upgrades legacy in-house scripts and prefabs to the modern package. |
+| **Check for Updates...** | Priority 200 | Opens PackageHub to check for new releases. |
 
 ---
 

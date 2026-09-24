@@ -115,23 +115,10 @@ namespace Wagenheimer.RateControl.Editor
 
         // ── Entry Points ──────────────────────────────────────────────────────────
 
-        [MenuItem("Tools/Wagenheimer/Rate Control/Setup & Checklist...", priority = 130)]
-        [MenuItem("Window/Wagenheimer/Rate Control/Setup & Checklist", priority = 210)]
+        [MenuItem("Tools/Wagenheimer/Rate Control/Setup & Diagnostics...", priority = 120)]
         public static void Open()
         {
-            var window = GetWindow<SetupChecklistWindow>(false, "Rate Control Checklist", true);
-            window.minSize = new Vector2(650, 540);
-
-            var main = EditorGUIUtility.GetMainWindowPosition();
-            var pos = window.position;
-            float w = Mathf.Max(pos.width, 740);
-            float h = Mathf.Max(pos.height, 600);
-            float x = main.x + (main.width - w) * 0.5f;
-            float y = main.y + (main.height - h) * 0.5f;
-            window.position = new Rect(x, y, w, h);
-
-            window.Show();
-            window.Focus();
+            RateControlHubWindow.Open(RateControlHubWindow.Tab.Diagnostics);
         }
 
         private void OnEnable()

@@ -203,3 +203,183 @@
 .rc-btn-primary:hover {
     background-color: #2e7a4f;
 }
+
+.rc-btn-secondary {
+    background-color: #2e2e34;
+    border-color: var(--rc-border);
+    border-width: 1px;
+    color: var(--rc-text);
+}
+
+.rc-btn-secondary:hover {
+    background-color: #383840;
+}
+
+.rc-btn-danger {
+    background-color: rgba(232, 76, 76, 0.2);
+    border-color: var(--rc-fail);
+    border-width: 1px;
+    color: #ff9999;
+}
+
+.rc-btn-danger:hover {
+    background-color: rgba(232, 76, 76, 0.35);
+}
+
+.rc-btn-success {
+    background-color: rgba(62, 201, 114, 0.2);
+    border-color: var(--rc-pass);
+    border-width: 1px;
+    color: #a3ffc7;
+}
+
+.rc-btn-success:hover {
+    background-color: rgba(62, 201, 114, 0.35);
+}
+
+/* ---------------- TABS TOOLBAR ---------------- */
+.rc-tab-toolbar {
+    flex-direction: row;
+    background-color: #1e1e22;
+    border-color: var(--rc-border);
+    border-width: 1px;
+    border-radius: 6px;
+    padding: 3px;
+    margin-bottom: 10px;
+}
+
+.rc-tab-btn {
+    flex-grow: 1;
+    border-width: 0;
+    border-radius: 4px;
+    background-color: transparent;
+    color: var(--rc-text-dim);
+    font-size: 11.5px;
+    -unity-font-style: bold;
+    padding: 6px 10px;
+    margin-left: 2px;
+    margin-right: 2px;
+    transition-duration: 0.15s;
+}
+
+.rc-tab-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.rc-tab-btn-active {
+    background-color: var(--rc-accent);
+    color: #ffffff;
+}
+
+.rc-tab-btn-active:hover {
+    background-color: #2e7a4f;
+    color: #ffffff;
+}
+
+/* ---------------- METRICS ROW ---------------- */
+.rc-metrics-row {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.rc-metric-card {
+    flex-grow: 1;
+    background-color: var(--rc-card-bg);
+    border-color: var(--rc-border);
+    border-width: 1px;
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-left: 3px;
+    margin-right: 3px;
+    align-items: center;
+}
+
+.rc-metric-val {
+    font-size: 19px;
+    -unity-font-style: bold;
+    color: #ffffff;
+}
+
+.rc-metric-lbl {
+    font-size: 10px;
+    color: var(--rc-text-dim);
+    margin-top: 2px;
+}
+
+/* ---------------- DIAGNOSTIC ROWS ---------------- */
+.rc-check-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.04);
+}
+
+.rc-check-row:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.rc-check-info {
+    flex-direction: column;
+    flex-grow: 1;
+    margin-right: 12px;
+}
+
+.rc-check-title {
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: var(--rc-text);
+}
+
+.rc-check-desc {
+    font-size: 11px;
+    color: var(--rc-text-dim);
+    margin-top: 2px;
+    white-space: normal;
+}
+
+.rc-check-actions {
+    flex-direction: row;
+    align-items: center;
+}
+
+/* ---------------- PROGRESS BAR ---------------- */
+.rc-progress-container {
+    flex-direction: column;
+    margin-top: 6px;
+    margin-bottom: 8px;
+}
+
+.rc-progress-label-row {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 3px;
+}
+
+.rc-progress-bar {
+    height: 14px;
+    background-color: #1a1a1e;
+    border-color: var(--rc-border);
+    border-width: 1px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.rc-progress-fill {
+    height: 100%;
+    background-color: var(--rc-accent-light);
+    border-radius: 3px;
+}
+
+.rc-code-box {
+    background-color: #1b1b20;
+    border-color: #383842;
+    border-width: 1px;
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
