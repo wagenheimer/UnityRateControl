@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.18.0] - 2026-09-24
 
+### Added
+- **UI Toolkit In-Game Overlay (`RateDebugOverlay`)**: Fully migrated the in-game debug HUD from legacy IMGUI (`OnGUI()`) to native UI Toolkit (`UIDocument`).
+  - Sleek dark-slate design system with draggable floating window and minimize controls.
+  - Interactive floating launcher badge (`⭐ RATE DBG`) with live status indicator.
+  - Real-time visual progress bars for milestone events and session starts towards trigger thresholds.
+  - Live gate evaluation banner (`ELIGIBLE`, `COOLDOWN`, `SCENE BLACKLISTED`, `BLOCKER REJECTED`).
+  - Interactive simulation buttons (`Force Show Prompt`, `+1 Event`, `+5 Events`, `+1 Start`, `Clear Cooldown`, `Toggle DontAsk`, simulated dialog actions).
+  - Copyable full diagnostic markdown report for QA bug reports.
+  - Live event history log with timestamped chips.
 ## [1.17.0] - 2026-09-24
 
 ### Added
