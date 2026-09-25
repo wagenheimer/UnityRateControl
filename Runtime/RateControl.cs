@@ -211,9 +211,7 @@ namespace Wagenheimer.RateControl
         private RateDialog LoadDialogFromConfig()
         {
             if (_config.DialogPrefab == null) return null;
-            var instance = Instantiate(_config.DialogPrefab);
-            EnsureCanvas(instance.gameObject);
-            DontDestroyOnLoad(instance.gameObject);
+            var instance = InstantiateDialog(_config.DialogPrefab);
             instance.gameObject.SetActive(false);
             Debug.Log("[RateControl] Dialog loaded from RateConfig.DialogPrefab.");
             return instance;
@@ -231,10 +229,30 @@ namespace Wagenheimer.RateControl
                 return null;
             }
 
+            var instance = InstantiateDialog(prefab);
+            instance.gameObject.SetActive(false);
+            return instance;
+        }
+
+        /// <summary>
+        /// Instantiates the dialog under the game's canvas when the blocker implements
+        /// <see cref="IRateCanvasProvider"/> and returns a parent (e.g. a front canvas that already
+        /// handles scaling, sorting and scene persistence). Otherwise falls back to a standalone
+        /// root object with its own overlay canvas.
+        /// </summary>
+        private RateDialog InstantiateDialog(RateDialog prefab)
+        {
+            var parent = (_blocker as IRateCanvasProvider)?.GetDialogParent();
+            if (parent != null)
+            {
+                var child = Instantiate(prefab, parent, false);
+                child.transform.SetAsLastSibling();
+                return child;
+            }
+
             var instance = Instantiate(prefab);
             EnsureCanvas(instance.gameObject);
             DontDestroyOnLoad(instance.gameObject);
-            instance.gameObject.SetActive(false);
             return instance;
         }
 
