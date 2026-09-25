@@ -155,7 +155,11 @@ namespace Wagenheimer.RateControl.UI
                 return;
             }
 
-            var loaded = Resources.Load<PanelSettings>("Wagenheimer/DebugPanelSettings");
+            // Project-wide override first, then the PanelSettings+theme shipped with this package.
+            // The shipped asset is required: in player builds no ThemeStyleSheet is loaded, so a
+            // runtime-created PanelSettings would render nothing.
+            var loaded = Resources.Load<PanelSettings>("Wagenheimer/DebugPanelSettings")
+                         ?? Resources.Load<PanelSettings>("Wagenheimer/RateDebugPanelSettings");
             if (loaded != null)
             {
                 _uiDocument.panelSettings = loaded;
