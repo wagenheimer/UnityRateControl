@@ -31,12 +31,31 @@ namespace Wagenheimer.RateControl.UI
         [Tooltip("Optional custom PanelSettings. If null, a high-priority runtime PanelSettings is created automatically.")]
         public PanelSettings customPanelSettings;
 
+        [Header("Scale (mobile-friendly)")]
+        [Tooltip("Initial UI zoom on touch platforms. Adjustable in-game with the A-/A+ header buttons (saved per device).")]
+        [Range(1f, 3f)]
+        public float mobileDefaultScale = 1.75f;
+
+        [Tooltip("Initial UI zoom on desktop/Editor.")]
+        [Range(0.75f, 3f)]
+        public float desktopDefaultScale = 1f;
+
         #endregion
 
         #region Private Fields
 
         private UIDocument _uiDocument;
         private VisualElement _root;
+
+        private const float ZoomMin = 0.75f;
+        private const float ZoomMax = 3f;
+        private const float ZoomStep = 0.25f;
+        private const string ZoomPrefsKey = "RateDebugOverlay.Zoom";
+        private static readonly Vector2Int BaseReferenceResolution = new Vector2Int(1920, 1080);
+        private float _zoom = 1f;
+        private bool _isMaximized;
+        private Label _zoomLabel;
+        private StyleLength _restoreLeft, _restoreRight, _restoreTop, _restoreWidth, _restoreHeight, _restoreMaxHeight;
         private VisualElement _floatingBtn;
         private VisualElement _window;
         private ScrollView _scrollView;
@@ -134,6 +153,11 @@ namespace Wagenheimer.RateControl.UI
 
             EnsurePanelSettings();
 
+            // Runtime clone: zoom must never modify the shared PanelSettings asset.
+            _uiDocument.panelSettings = Instantiate(_uiDocument.panelSettings);
+            _zoom = LoadZoom();
+            ApplyZoom();
+
             _root = _uiDocument.rootVisualElement;
             _root.Clear();
             _root.pickingMode = PickingMode.Ignore;
@@ -143,6 +167,51 @@ namespace Wagenheimer.RateControl.UI
 
             SetOpen(false);
             RefreshData();
+        }
+
+        private float LoadZoom()
+        {
+            var fallback = Application.isMobilePlatform ? mobileDefaultScale : desktopDefaultScale;
+            return Mathf.Clamp(PlayerPrefs.GetFloat(ZoomPrefsKey, fallback), ZoomMin, ZoomMax);
+        }
+
+        private void SetZoom(float value)
+        {
+            _zoom = Mathf.Clamp(Mathf.Round(value / ZoomStep) * ZoomStep, ZoomMin, ZoomMax);
+            PlayerPrefs.SetFloat(ZoomPrefsKey, _zoom);
+            PlayerPrefs.Save();
+            ApplyZoom();
+        }
+
+        /// <summary>Zoom works by shrinking the panel reference resolution (ScaleWithScreenSize).</summary>
+        private void ApplyZoom()
+        {
+            _uiDocument.panelSettings.referenceResolution = new Vector2Int(
+                Mathf.RoundToInt(BaseReferenceResolution.x / _zoom),
+                Mathf.RoundToInt(BaseReferenceResolution.y / _zoom));
+
+            if (_zoomLabel != null) _zoomLabel.text = $"{_zoom:0.##}x";
+        }
+
+        private void ToggleMaximize()
+        {
+            _isMaximized = !_isMaximized;
+            var st = _window.style;
+
+            if (_isMaximized)
+            {
+                _restoreLeft = st.left; _restoreRight = st.right; _restoreTop = st.top;
+                _restoreWidth = st.width; _restoreHeight = st.height; _restoreMaxHeight = st.maxHeight;
+
+                st.left = 0; st.right = 0; st.top = 0;
+                st.width = new StyleLength(new Length(100, LengthUnit.Percent));
+                st.height = new StyleLength(new Length(100, LengthUnit.Percent));
+                st.maxHeight = new StyleLength(new Length(100, LengthUnit.Percent));
+                return;
+            }
+
+            st.left = _restoreLeft; st.right = _restoreRight; st.top = _restoreTop;
+            st.width = _restoreWidth; st.height = _restoreHeight; st.maxHeight = _restoreMaxHeight;
         }
 
         private void EnsurePanelSettings()
@@ -234,7 +303,7 @@ namespace Wagenheimer.RateControl.UI
             // Drag / Click handling
             _floatingBtn.RegisterCallback<PointerDownEvent>(evt =>
             {
-                if (evt.button != 0) return;
+                if (evt.button != 0 || _isMaximized) return;
                 _isFloatingDragging = true;
                 _hasDraggedFloating = false;
                 _floatingDragStartPointer = evt.position;
@@ -288,6 +357,7 @@ namespace Wagenheimer.RateControl.UI
             _window.style.right = 24;
             _window.style.top = 30;
             _window.style.width = 460;
+            _window.style.maxWidth = new StyleLength(new Length(96, LengthUnit.Percent));
             _window.style.maxHeight = new StyleLength(new Length(86, LengthUnit.Percent));
             _window.style.backgroundColor = new StyleColor(new Color(0.09f, 0.09f, 0.11f, 0.96f));
             _window.style.borderTopWidth = 1;
@@ -358,6 +428,25 @@ namespace Wagenheimer.RateControl.UI
             var actions = new VisualElement();
             actions.style.flexDirection = FlexDirection.Row;
             actions.style.alignItems = Align.Center;
+
+            var zoomOutBtn = CreateSmallButton("A-", () => SetZoom(_zoom - ZoomStep));
+            actions.Add(zoomOutBtn);
+
+            _zoomLabel = new Label($"{_zoom:0.##}x");
+            _zoomLabel.style.minWidth = 34;
+            _zoomLabel.style.fontSize = 10;
+            _zoomLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+            _zoomLabel.style.color = new StyleColor(new Color(0.65f, 0.68f, 0.75f));
+            actions.Add(_zoomLabel);
+
+            var zoomInBtn = CreateSmallButton("A+", () => SetZoom(_zoom + ZoomStep));
+            zoomInBtn.style.marginRight = 6;
+            actions.Add(zoomInBtn);
+
+            var maxBtn = CreateSmallButton("[ ]", ToggleMaximize);
+            maxBtn.style.fontSize = 9;
+            maxBtn.style.marginRight = 4;
+            actions.Add(maxBtn);
 
             var minBtn = CreateSmallButton("—", () => SetOpen(false));
             minBtn.style.marginRight = 4;

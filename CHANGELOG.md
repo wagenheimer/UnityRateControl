@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.21.0] - 2026-09-25
 
+### Added
+- Debug overlay zoom for phones: A-/A+ header buttons (0.75x-3x, saved in PlayerPrefs), a maximize button, and a mobile default zoom (`mobileDefaultScale`, now actually applied). Zoom uses a runtime clone of the PanelSettings.
+
+## [1.21.0] - 2026-09-25
+
 ## [1.20.0] - 2026-09-24
 
 ### Added
