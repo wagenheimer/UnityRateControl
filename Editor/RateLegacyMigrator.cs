@@ -241,6 +241,14 @@ namespace Wagenheimer.RateControl.Editor
                 // 5. Clean up Main.prefab
                 CleanMainPrefab(det.MainPrefabPath);
 
+                // 6. Check and migrate Google Dependencies to clean Git (removes Scoped Registries warnings)
+                var googleDiag = GoogleDependencyManager.Detect();
+                if (googleDiag.NeedsMigration)
+                {
+                    GoogleDependencyManager.MigrateToRecommended(true);
+                    Debug.Log("[RateControl Migrator] Automatically migrated Google & EDM4U dependencies to recommended Git setup.");
+                }
+
                 return true;
             }
             catch (Exception ex)

@@ -992,6 +992,44 @@ namespace Wagenheimer.RateControl.Editor
                 $"In-App Review API: {(Type.GetType("Google.Play.Review.ReviewManager, Google.Play.Review") != null ? "Supported (package found)" : "Standard market:// fallback")}");
             sec.Items.Add(androidCheck);
 
+            // Google Dependencies (EDM4U, Play Common, Play Core, Play Review)
+            var googleDiag = GoogleDependencyManager.Detect();
+            var googleStatus = googleDiag.IsFullyCompliant ? CheckStatus.Pass : (googleDiag.NeedsMigration ? CheckStatus.Warning : CheckStatus.Pass);
+            var googleCheck = new CheckResult
+            {
+                Title = $"Google Play Review & EDM4U Packages {(isAndroidActive ? "[Active Target]" : "")}",
+                Status = googleStatus,
+                Detail = googleDiag.Summary,
+                ActionLabel = googleDiag.NeedsMigration ? "Migrate to Clean Git" : "Check for Updates",
+                Action = () =>
+                {
+                    if (googleDiag.NeedsMigration)
+                    {
+                        if (EditorUtility.DisplayDialog("Migrate Google Dependencies",
+                            "Migrate Google packages to official clean Git repositories without Scoped Registries to remove Unity security warnings?",
+                            "Migrate Now", "Cancel"))
+                        {
+                            GoogleDependencyManager.MigrateToRecommended(true, (success, msg) =>
+                            {
+                                EditorUtility.DisplayDialog("Migration Result", msg, "OK");
+                                RunChecks();
+                            });
+                        }
+                    }
+                    else
+                    {
+                        GoogleDependencyManager.ForceUpdateGooglePackages((success, msg) =>
+                        {
+                            EditorUtility.DisplayDialog("Update Status", msg, "OK");
+                            RunChecks();
+                        });
+                    }
+                }
+            };
+            if (googleDiag.Issues != null && googleDiag.Issues.Count > 0)
+                googleCheck.WithFacts(googleDiag.Issues.ToArray());
+            sec.Items.Add(googleCheck);
+
             // iOS
             var isIosActive = target == BuildTarget.iOS;
             var iosId = _activeConfig.iOSAppId;
