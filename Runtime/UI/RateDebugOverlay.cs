@@ -294,7 +294,7 @@ namespace Wagenheimer.RateControl.UI
             dot.style.marginRight = 6;
             _floatingBtn.Add(dot);
 
-            var label = new Label("⭐ RATE DBG");
+            var label = new Label("RATE DBG");
             label.style.color = new StyleColor(Color.white);
             label.style.fontSize = 11.5f;
             label.style.unityFontStyleAndWeight = FontStyle.Bold;
@@ -413,7 +413,7 @@ namespace Wagenheimer.RateControl.UI
             titleRow.style.flexDirection = FlexDirection.Row;
             titleRow.style.alignItems = Align.Center;
 
-            var titleLbl = new Label("⭐ Rate Control Debug");
+            var titleLbl = new Label("Rate Control Debug");
             titleLbl.style.fontSize = 13;
             titleLbl.style.color = new StyleColor(Color.white);
             titleLbl.style.unityFontStyleAndWeight = FontStyle.Bold;
@@ -448,11 +448,11 @@ namespace Wagenheimer.RateControl.UI
             maxBtn.style.marginRight = 4;
             actions.Add(maxBtn);
 
-            var minBtn = CreateSmallButton("—", () => SetOpen(false));
+            var minBtn = CreateSmallButton("-", () => SetOpen(false));
             minBtn.style.marginRight = 4;
             actions.Add(minBtn);
 
-            var closeBtn = CreateSmallButton("✕", () => SetOpen(false));
+            var closeBtn = CreateSmallButton("X", () => SetOpen(false));
             actions.Add(closeBtn);
 
             header.Add(actions);
@@ -575,7 +575,7 @@ namespace Wagenheimer.RateControl.UI
             var card = CreateCard("Simulation & QA Controls");
 
             // Primary: Force Prompt
-            var forceBtn = CreateButton("⚡ Force Show Prompt (Bypass Gates)", new Color(0.18f, 0.52f, 0.32f), Color.white, () =>
+            var forceBtn = CreateButton("Force Show Prompt (Bypass Gates)", new Color(0.18f, 0.52f, 0.32f), Color.white, () =>
             {
                 var rc = RateControl.Instance;
                 if (rc != null) rc.ForceShowPrompt();
@@ -590,7 +590,7 @@ namespace Wagenheimer.RateControl.UI
             counterRow.style.flexDirection = FlexDirection.Row;
             counterRow.style.marginBottom = 6;
 
-            var logEventBtn = CreateButton("📈 +1 Event", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
+            var logEventBtn = CreateButton("+1 Event", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
             {
                 RateControl.LogEvent();
                 RefreshData();
@@ -599,7 +599,7 @@ namespace Wagenheimer.RateControl.UI
             logEventBtn.style.marginRight = 4;
             counterRow.Add(logEventBtn);
 
-            var log5EventsBtn = CreateButton("🔥 +5 Events", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
+            var log5EventsBtn = CreateButton("+5 Events", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
             {
                 for (int i = 0; i < 5; i++) RateControl.LogEvent();
                 RefreshData();
@@ -608,7 +608,7 @@ namespace Wagenheimer.RateControl.UI
             log5EventsBtn.style.marginRight = 4;
             counterRow.Add(log5EventsBtn);
 
-            var logStartBtn = CreateButton("🚀 +1 Start", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
+            var logStartBtn = CreateButton("+1 Start", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
             {
                 RateControl.LogStart();
                 RefreshData();
@@ -623,7 +623,7 @@ namespace Wagenheimer.RateControl.UI
             modRow.style.flexDirection = FlexDirection.Row;
             modRow.style.marginBottom = 6;
 
-            var clearCooldownBtn = CreateButton("⏳ Clear Cooldown", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
+            var clearCooldownBtn = CreateButton("Clear Cooldown", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
             {
                 var rc = RateControl.Instance;
                 if (rc != null) rc.ClearRemindCooldown();
@@ -633,7 +633,7 @@ namespace Wagenheimer.RateControl.UI
             clearCooldownBtn.style.marginRight = 4;
             modRow.Add(clearCooldownBtn);
 
-            var toggleDontAskBtn = CreateButton("🚫 Toggle DontAsk", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
+            var toggleDontAskBtn = CreateButton("Toggle DontAsk", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
             {
                 var rc = RateControl.Instance;
                 if (rc != null)
@@ -647,7 +647,7 @@ namespace Wagenheimer.RateControl.UI
             toggleDontAskBtn.style.marginRight = 4;
             modRow.Add(toggleDontAskBtn);
 
-            var togglePendingBtn = CreateButton("🔄 Toggle Pending", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
+            var togglePendingBtn = CreateButton("Toggle Pending", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
             {
                 var rc = RateControl.Instance;
                 if (rc != null) rc.SetPendingPrompt(!rc.IsPendingPrompt);
@@ -692,7 +692,7 @@ namespace Wagenheimer.RateControl.UI
             card.Add(simActionsRow);
 
             // Danger Reset button
-            var resetBtn = CreateButton("🗑️ Reset All Saved State (PlayerPrefs)", new Color(0.55f, 0.18f, 0.20f), Color.white, () =>
+            var resetBtn = CreateButton("Reset All Saved State (PlayerPrefs)", new Color(0.55f, 0.18f, 0.20f), Color.white, () =>
             {
                 RateControl.ResetAll();
                 RefreshData();
@@ -740,7 +740,7 @@ namespace Wagenheimer.RateControl.UI
             testMoreGamesBtn.style.marginRight = 4;
             linksRow.Add(testMoreGamesBtn);
 
-            var copyReportBtn = CreateButton("📋 Copy Report", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
+            var copyReportBtn = CreateButton("Copy Report", new Color(0.22f, 0.23f, 0.28f), Color.white, () =>
             {
                 string report = GenerateDiagnosticReport();
                 GUIUtility.systemCopyBuffer = report;
