@@ -412,12 +412,12 @@ namespace Wagenheimer.RateControl.Editor
 
             var copyBtn = new Button();
             copyBtn.AddToClassList("rc-code__copy-btn");
-            copyBtn.text = "Copy";
+            RateControlUIStyle.ApplyIconText(copyBtn, "Copy");
             copyBtn.clicked += () =>
             {
                 GUIUtility.systemCopyBuffer = code;
-                copyBtn.text = "✓ Copied";
-                copyBtn.schedule.Execute(() => copyBtn.text = "Copy").StartingIn(1500);
+                RateControlUIStyle.ApplyIconText(copyBtn, "✓ Copied");
+                copyBtn.schedule.Execute(() => RateControlUIStyle.ApplyIconText(copyBtn, "Copy")).StartingIn(1500);
             };
             header.Add(copyBtn);
             box.Add(header);

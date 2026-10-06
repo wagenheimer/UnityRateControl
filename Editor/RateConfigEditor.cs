@@ -32,7 +32,8 @@ namespace Wagenheimer.RateControl.Editor
             helpRow.style.marginBottom   = 6;
             helpRow.style.paddingRight   = 2;
 
-            var checklistBtn = new Button(OpenChecklistWindow) { text = "📋  Setup & Checklist" };
+            var checklistBtn = new Button(OpenChecklistWindow);
+            RateControlUIStyle.ApplyIconText(checklistBtn, "📋  Setup & Checklist");
             checklistBtn.style.fontSize        = 10;
             checklistBtn.style.paddingLeft     = 10;
             checklistBtn.style.paddingRight    = 10;
@@ -141,7 +142,8 @@ namespace Wagenheimer.RateControl.Editor
                         ? "RateConfig was successfully synchronized from project settings and GameConfig!"
                         : "RateConfig is already up to date with project settings and GameConfig.",
                     "OK");
-            }) { text = "⚡ Sync from Project & GameConfig" };
+            });
+            RateControlUIStyle.ApplyIconText(syncBtn, "⚡ Sync from Project & GameConfig");
             syncBtn.style.fontSize = 10;
             syncBtn.style.unityFontStyleAndWeight = FontStyle.Bold;
             syncBtn.style.color = Color.white;
@@ -152,19 +154,22 @@ namespace Wagenheimer.RateControl.Editor
             syncBtn.style.paddingTop = syncBtn.style.paddingBottom = 4;
             btnRow.Add(syncBtn);
 
-            var pMac = new Button(() => ApplyPreset(so, MacOsChannel.MacAppStore, StandaloneChannel.None)) { text = "🍎 Mac App Store" };
+            var pMac = new Button(() => ApplyPreset(so, MacOsChannel.MacAppStore, StandaloneChannel.None));
+            RateControlUIStyle.ApplyIconText(pMac, "🍎 Mac App Store");
             pMac.style.fontSize = 9;
             pMac.style.marginRight = 4;
             pMac.style.marginBottom = 4;
             btnRow.Add(pMac);
 
-            var pMgs = new Button(() => ApplyPreset(so, MacOsChannel.MacGameStore, StandaloneChannel.None)) { text = "🎮 MacGameStore" };
+            var pMgs = new Button(() => ApplyPreset(so, MacOsChannel.MacGameStore, StandaloneChannel.None));
+            RateControlUIStyle.ApplyIconText(pMgs, "🎮 MacGameStore");
             pMgs.style.fontSize = 9;
             pMgs.style.marginRight = 4;
             pMgs.style.marginBottom = 4;
             btnRow.Add(pMgs);
 
-            var pSteam = new Button(() => ApplyPreset(so, MacOsChannel.Steam, StandaloneChannel.Steam)) { text = "♨️ Steam" };
+            var pSteam = new Button(() => ApplyPreset(so, MacOsChannel.Steam, StandaloneChannel.Steam));
+            RateControlUIStyle.ApplyIconText(pSteam, "♨️ Steam");
             pSteam.style.fontSize = 9;
             pSteam.style.marginRight = 4;
             pSteam.style.marginBottom = 4;
@@ -431,7 +436,8 @@ namespace Wagenheimer.RateControl.Editor
             var migrateBtn = new Button(() =>
             {
                 RateLegacyMigrator.Migrate(true);
-            }) { text = "🔄 Migrate Legacy RateControl Setup..." };
+            });
+            RateControlUIStyle.ApplyIconText(migrateBtn, "🔄 Migrate Legacy RateControl Setup...");
             migrateBtn.style.fontSize = 10;
             migrateBtn.style.paddingTop = migrateBtn.style.paddingBottom = 4;
             migrateBtn.style.marginTop = 4;
@@ -556,7 +562,8 @@ namespace Wagenheimer.RateControl.Editor
 
                 if (!string.IsNullOrEmpty(consoleUrl))
                 {
-                    var btn = new Button(() => Application.OpenURL(consoleUrl)) { text = "Open ↗" };
+                    var btn = new Button(() => Application.OpenURL(consoleUrl));
+                    RateControlUIStyle.ApplyIconText(btn, "Open ↗");
                     SmallBtn(btn, accent);
                     howRow.Add(btn);
                 }
@@ -589,7 +596,8 @@ namespace Wagenheimer.RateControl.Editor
             urlLabel.style.flexShrink              = 1;
             previewRow.Add(urlLabel);
 
-            var openBtn = new Button { text = "Open ↗" };
+            var openBtn = new Button();
+            RateControlUIStyle.ApplyIconText(openBtn, "Open ↗");
             SmallBtn(openBtn, new Color(0.35f, 0.75f, 0.42f));
             openBtn.style.display = DisplayStyle.None;
             previewRow.Add(openBtn);

@@ -188,7 +188,8 @@ namespace Wagenheimer.RateControl.Editor
 
         private static Button ToolbarButton(string text, Action clicked, Color? accent = null)
         {
-            var button = new Button(clicked) { text = text };
+            var button = new Button(clicked);
+            RateControlUIStyle.ApplyIconText(button, text);
             button.style.height = 22;
             button.style.marginLeft = 4;
             button.style.paddingLeft = 10;
@@ -259,7 +260,8 @@ namespace Wagenheimer.RateControl.Editor
                 {
                     RunChecks();
                 }
-            }) { text = "⚡ Run 1-Click Migration & Cleanup" };
+            });
+            RateControlUIStyle.ApplyIconText(migrateBtn, "⚡ Run 1-Click Migration & Cleanup");
             migrateBtn.style.fontSize = 11;
             migrateBtn.style.unityFontStyleAndWeight = FontStyle.Bold;
             migrateBtn.style.color = Color.white;

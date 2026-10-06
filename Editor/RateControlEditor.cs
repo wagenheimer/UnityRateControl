@@ -43,12 +43,14 @@ namespace Wagenheimer.RateControl.Editor
 
                 var btnRow1 = new VisualElement { style = { flexDirection = FlexDirection.Row, flexWrap = Wrap.Wrap, marginBottom = 4 } };
 
-                var forceBtn = new Button(() => { if (rc != null) rc.ForceShowPrompt(); }) { text = "⚡ Force Show Prompt" };
+                var forceBtn = new Button(() => { if (rc != null) rc.ForceShowPrompt(); });
+                RateControlUIStyle.ApplyIconText(forceBtn, "⚡ Force Show Prompt");
                 forceBtn.AddToClassList("rc-btn");
                 forceBtn.AddToClassList("rc-btn-primary");
                 btnRow1.Add(forceBtn);
 
-                var clearCooldownBtn = new Button(() => { if (rc != null) rc.ClearRemindCooldown(); }) { text = "⏳ Clear Remind Cooldown" };
+                var clearCooldownBtn = new Button(() => { if (rc != null) rc.ClearRemindCooldown(); });
+                RateControlUIStyle.ApplyIconText(clearCooldownBtn, "⏳ Clear Remind Cooldown");
                 clearCooldownBtn.AddToClassList("rc-btn");
                 btnRow1.Add(clearCooldownBtn);
 
@@ -56,15 +58,18 @@ namespace Wagenheimer.RateControl.Editor
 
                 var btnRow2 = new VisualElement { style = { flexDirection = FlexDirection.Row, flexWrap = Wrap.Wrap, marginBottom = 4 } };
 
-                var logEventBtn = new Button(RateControl.LogEvent) { text = "📈 Log Event (+1)" };
+                var logEventBtn = new Button(RateControl.LogEvent);
+                RateControlUIStyle.ApplyIconText(logEventBtn, "📈 Log Event (+1)");
                 logEventBtn.AddToClassList("rc-btn");
                 btnRow2.Add(logEventBtn);
 
-                var logStartBtn = new Button(RateControl.LogStart) { text = "🚀 Log Start (+1)" };
+                var logStartBtn = new Button(RateControl.LogStart);
+                RateControlUIStyle.ApplyIconText(logStartBtn, "🚀 Log Start (+1)");
                 logStartBtn.AddToClassList("rc-btn");
                 btnRow2.Add(logStartBtn);
 
-                var resetBtn = new Button(RateControl.ResetAll) { text = "↺ Reset All State" };
+                var resetBtn = new Button(RateControl.ResetAll);
+                RateControlUIStyle.ApplyIconText(resetBtn, "↺ Reset All State");
                 resetBtn.AddToClassList("rc-btn");
                 btnRow2.Add(resetBtn);
 
