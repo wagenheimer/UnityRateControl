@@ -261,7 +261,9 @@ namespace Wagenheimer.RateControl.UI
             _floatingBtn.name = "RateDebugFloatingButton";
             _floatingBtn.pickingMode = PickingMode.Position;
             _floatingBtn.style.position = Position.Absolute;
-            _floatingBtn.style.bottom = 18;
+            // Shared debug-button layout (no overlaps): bottom-right column 18/62/106 = Console, Rate, Social;
+            // bottom-left column 18/62/106 = IAP, Build, CloudSave; ADS (LevelPlay) sits top-center.
+            _floatingBtn.style.bottom = 62;
             _floatingBtn.style.right = 18;
             _floatingBtn.style.height = 34;
             _floatingBtn.style.paddingLeft = 12;
