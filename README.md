@@ -52,7 +52,7 @@ Or add it manually to `Packages/manifest.json`:
 To lock a specific commit or tag:
 
 ```
-https://github.com/wagenheimer/UnityRateControl.git#v1.24.6
+https://github.com/wagenheimer/UnityRateControl.git#vX.Y.Z
 ```
 
 ---
