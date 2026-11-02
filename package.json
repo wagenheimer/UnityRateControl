@@ -18,5 +18,18 @@
     "in-app-review"
   ],
   "category": "Tools",
+  "wagenheimer": {
+    "defines": [
+      {
+        "symbol": "RATECONTROL_GOOGLE_PLAY_REVIEW",
+        "description": "Uses the Google Play In-App Review API for the rate prompt. Automatic inside the RateControl assembly when com.google.play.review is installed.",
+        "scope": "assembly",
+        "autoFromPackage": "com.google.play.review",
+        "platforms": [
+          "Android"
+        ]
+      }
+    ]
+  },
   "dependencies": {}
 }
