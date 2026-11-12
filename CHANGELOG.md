@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.24.8] - 2026-11-12
+
+### Added
+- declare scripting defines for the Build Pipeline 2.0 registry
+
+### Changed
+- chore: ignore Git Bash crash dumps (*.stackdump)
+- chore: add issue and pull request templates [skip ci]
+- chore: add issue/PR templates and ecosystem footer [skip ci]
+- docs: use a version placeholder for the install pin [skip ci]
+
 ## [1.24.7] - 2026-10-29
 
 ### Changed
